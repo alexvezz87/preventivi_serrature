@@ -11,4 +11,6 @@ require_once '/DAO/TabellaPrezziDAO.php';
 
 require_once '/controller/TabellaPrezziController.php';
 
+require_once '/view/GestionePrezziView.php';
+
 ?>

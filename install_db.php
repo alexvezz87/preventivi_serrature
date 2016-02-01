@@ -46,7 +46,8 @@ function install_tabella_articoli($wpdb, $charset_collate) {
                 step_rows INT NOT NULL,
                 start_cols INT NOT NULL,
                 end_cols INT NOT NULL,
-                step_cols INT NOT NULL
+                step_cols INT NOT NULL,
+                ante INT NOT NULL
              );{$charset_collate}";   
     try{
             require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
@@ -66,7 +67,7 @@ function install_tabella_prezzi($wpdb, $charset_collate){
                 id_tabella INT NOT NULL,
                 val_row INT NOT NULL,
                 val_col INT NOT NULL,
-                prezzo DECIMAL(5,2)                
+                prezzo DECIMAL(8,2)                
              );{$charset_collate}";   
     try{
             require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );

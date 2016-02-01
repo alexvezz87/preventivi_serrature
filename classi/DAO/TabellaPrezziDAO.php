@@ -68,9 +68,10 @@ class TabellaPrezziDAO {
                             'step_rows' => $tab->getStepRows(),
                             'start_cols' => $tab->getStartCols(),
                             'end_cols' => $tab->getEndCols(),
-                            'step_cols' => $tab->getStepCols()
+                            'step_cols' => $tab->getStepCols(),
+                            'ante' => $tab->getAnte()
                         ),
-                        array('%s', '%d', '%d', '%d', '%d', '%d', '%d')
+                        array('%s', '%d', '%d', '%d', '%d', '%d', '%d', '%d')
                     );
             return $this->wpdb->insert_id;
             
@@ -93,9 +94,10 @@ class TabellaPrezziDAO {
                         array(
                             'id_tabella' => $prezzo->getIdTabella(),
                             'val_row' => $prezzo->getValRow(),
-                            'val_col' => $prezzo->getValCol()                            
+                            'val_col' => $prezzo->getValCol(),
+                            'prezzo' => $prezzo->getPrezzo()
                         ),
-                        array('%d', '%d', '%d')
+                        array('%d', '%d', '%d', '%f')
                     );
             return true;
             
@@ -133,7 +135,7 @@ class TabellaPrezziDAO {
     
     public function getTabelle(){
         try{
-            $query = "SELECT * FROM ".$this->table_tabelle;
+            $query = "SELECT * FROM ".$this->table_tabelle.' ORDER BY ID DESC';
             return $this->wpdb->get_results($query);
         } catch (Exception $ex) {
             _e($ex);
@@ -145,6 +147,24 @@ class TabellaPrezziDAO {
         try{
             $query = "SELECT * FROM ".$this->table_prezzi." WHERE id_tabella = ".$idTabella;
             return $this->wpdb->get_results($query);
+        } catch (Exception $ex) {
+            _e($ex);
+            return false;
+        }
+    }
+    
+    /**
+     * Funzione che cancella tabella articolo e tabella prezzi dal database
+     * @param type $idTabella
+     * @return boolean
+     */
+    public function deleteTabellaPrezzi($idTabella){
+        try{
+            
+            $this->wpdb->delete($this->table_prezzi, array('id_tabella' =>$idTabella));
+            $this->wpdb->delete($this->table_tabelle, array('ID' => $idTabella));
+            return true;
+            
         } catch (Exception $ex) {
             _e($ex);
             return false;

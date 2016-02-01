@@ -40,13 +40,12 @@ class TabellaPrezziController {
                     $prezzo->setIdTabella($idTabella);
                     $prezzo->setValRow($rowCount);
                     $prezzo->setValCol($colCount);
-                    $this->DAO->savePrezziTabella($idTabella);
+                    $prezzo->setPrezzo(0);
+                    $this->DAO->savePrezziTabella($prezzo);
                 }
-            }
-            
+            }            
             return true;
-        }
-        
+        }        
         return false;
     }
     
@@ -62,7 +61,7 @@ class TabellaPrezziController {
      * Funzione che restituisce un array di tabelle articoli
      * @return array
      */
-    public function getTabelleArticolo(){
+    public function getTabelleArticoli(){
         //Funzione che racchiude in un array tutte le tabelle coi prezzi
         $tabelle = array();
         //query sulle tabelle
@@ -78,12 +77,12 @@ class TabellaPrezziController {
             $tabella->setStartCols($temp_tabella->start_cols);
             $tabella->setEndCols($temp_tabella->end_cols);
             $tabella->setStepCols($temp_tabella->step_cols);
+            $tabella->setAnte($temp_tabella->ante);
                         
             //query sui prezzi         
             $tabella->setPrezzi($this->getArrayPrezzi($this->DAO->getPrezzi($tabella->getId())));
             array_push($tabelle, $tabella);
-        }
-        
+        }        
         return $tabelle;
     }
     
@@ -99,6 +98,15 @@ class TabellaPrezziController {
                 array_push($result, $prezzo);
             }
         return $result;
+    }
+    
+    /**
+     * Funzione che ricevuto in ingresso l'ID della tabella, la elimina
+     * @param type $idTabella
+     * @return type
+     */
+    public function deleteTabellaPrezzi($idTabella){
+        return $this->DAO->deleteTabellaPrezzi($idTabella);
     }
 
 }

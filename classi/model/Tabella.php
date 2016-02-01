@@ -16,6 +16,7 @@ class Tabella {
     private $stepCols;
     private $id;
     private $prezzi;
+    private $ante;
     
     function __construct() {
         
@@ -93,6 +94,14 @@ class Tabella {
 
     function setPrezzi($prezzi) {
         $this->prezzi = $prezzi;
+    }
+
+    function getAnte() {
+        return $this->ante;
+    }
+
+    function setAnte($ante) {
+        $this->ante = $ante;
     }
 
 

@@ -18,7 +18,7 @@ License: GPLv2 or later
 //includo le librerie
 require_once 'install_db.php';
 require_once 'classi/classes.php';
-
+require_once 'functions.php';
 
 //indico la cartella dove è contenuto il plugin
 require_once (dirname(__FILE__) . '/preventivi_serrature.php');
@@ -36,4 +36,22 @@ function remove_DB(){
     dropDB();
 }
 
+
+//Aggiungo il menu di Plugin
+function add_admin_menu(){
+    add_menu_page('Gestione Preventivi', 'Gestione Preventivi', 'administrator', 'gestione_preventivi', 'add_gestione_preventivi', plugins_url('images/ico_plugin.png', __FILE__), 9 );
+    add_submenu_page('gestione_preventivi', 'Gestione Prezzi', 'Gestione prezzi', 'administrator', 'gestione_prezzi', 'add_gestione_prezzi');
+}
+
+
+function add_gestione_preventivi(){
+    include 'pages/admin/gestione_preventivi.php';
+}
+
+function add_gestione_prezzi(){
+     include 'pages/admin/gestione_prezzi.php';
+}
+
+//registro il menu
+add_action('admin_menu', 'add_admin_menu');
 ?>
