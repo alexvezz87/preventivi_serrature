@@ -66,18 +66,9 @@ class TabellaPrezziController {
         $tabelle = array();
         //query sulle tabelle
         $result_tabelle = $this->DAO->getTabelle();
-        foreach($result_tabelle as $temp_tabella){
-            //creo l'oggetto tabella
-            $tabella = new Tabella();
-            $tabella->setId($temp_tabella->ID);
-            $tabella->setNomeTabella($temp_tabella->nome);
-            $tabella->setStartRows($temp_tabella->start_rows);
-            $tabella->setEndRows($temp_tabella->end_rows);
-            $tabella->setStepRows($temp_tabella->step_rows);
-            $tabella->setStartCols($temp_tabella->start_cols);
-            $tabella->setEndCols($temp_tabella->end_cols);
-            $tabella->setStepCols($temp_tabella->step_cols);
-            $tabella->setAnte($temp_tabella->ante);
+        foreach($result_tabelle as $temp_tabella){            
+            
+            $tabella = $this->getArrayTabella($temp_tabella);
                         
             //query sui prezzi         
             $tabella->setPrezzi($this->getArrayPrezzi($this->DAO->getPrezzi($tabella->getId())));
@@ -86,8 +77,36 @@ class TabellaPrezziController {
         return $tabelle;
     }
     
+    /**
+     * Funzione che ritorna un oggetto del database (non trasformato in oggetto Tabella per via della ajax call)
+     * @param type $idTabella
+     * @return type
+     */
+    public function getTabellaById($idTabella){
+        return $this->DAO->getTabella($idTabella);
+    }
     
-    function getArrayPrezzi($array){
+    /**
+     * Funzione che trasforma un array in un oggetto tabella
+     * @param type $array
+     * @return \Tabella
+     */
+    private function getArrayTabella($array){
+        $result = new Tabella();
+        $result->setId($array->ID);
+        $result->setNomeTabella($array->nome);
+        $result->setStartRows($array->start_rows);
+        $result->setEndRows($array->end_rows);
+        $result->setStepRows($array->step_rows);
+        $result->setStartCols($array->start_cols);
+        $result->setEndCols($array->end_cols);
+        $result->setStepCols($array->step_cols);
+        $result->setAnte($array->ante);
+        
+        return $result;
+    }
+        
+    private function getArrayPrezzi($array){
         $result = array();
         foreach($array as $item){
                 $prezzo = new Prezzo();
@@ -107,6 +126,72 @@ class TabellaPrezziController {
      */
     public function deleteTabellaPrezzi($idTabella){
         return $this->DAO->deleteTabellaPrezzi($idTabella);
+    }
+    
+    /**
+     * Funzione che restituisce tabelle in base ai parametri passati 
+     * @return array
+     */
+    public function getTabelleByParameters($parameters){
+        $string = "1 = 1";
+        //controllo i parametri
+        //tipo di infisso
+        $string.= $this->getType($parameters);
+        //numero di ante
+        if(isset($parameters['ante'])){
+            $string .= " AND ante = ".$parameters['ante'];
+        }
+               
+        $tabelle = array();
+        //ottengo le finesre        
+        $tArray = $this->DAO->getTabelleByParameters($string);
+        //le trasformo in tabelle
+        foreach($tArray as $tItem){            
+            array_push($tabelle, $tItem);
+        }        
+        return $tabelle;            
+    }
+    
+    
+    /** 
+     * Funzione che restituisce il numero di ante sapendo l'infisso scelto
+     * @param type $parameters
+     * @return array
+     */
+    public function getAnte($parameters){        
+        $ante = array();
+        $string = "1 = 1";
+        $string.= $this->getType($parameters);
+        $array = $this->DAO->getAnte($string);
+        
+        foreach($array as $item){
+            array_push($ante, $item);
+        }        
+        return $ante;
+        
+    }
+    
+    
+    private function getType($parameters){
+        $limite = 1800; //rappresenta il limite di altezza minimo che determina una finestra da una portafinestra        
+        if(isset($parameters['type']) && $parameters['type'] == 'F'){
+            return " AND start_rows < ".$limite;
+        }
+        else if((isset($parameters['type']) && $parameters['type'] == 'P')){
+            return " AND start_rows >= ".$limite;
+        }        
+        return "";
+    }
+    
+    /**
+     * La funzione ritorna il prezzo, passati la tabella, riga e colonna
+     * @param type $idTabella
+     * @param type $row
+     * @param type $col
+     * @return type
+     */
+    public function getPrezzo($idTabella, $row, $col){
+        return $this->DAO->getPrezzo($idTabella, $row, $col);
     }
 
 }

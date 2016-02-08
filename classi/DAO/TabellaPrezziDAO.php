@@ -135,8 +135,19 @@ class TabellaPrezziDAO {
     
     public function getTabelle(){
         try{
-            $query = "SELECT * FROM ".$this->table_tabelle.' ORDER BY ID DESC';
+            $query = 'SELECT * FROM '.$this->table_tabelle.' ORDER BY ID DESC';
             return $this->wpdb->get_results($query);
+        } catch (Exception $ex) {
+            _e($ex);
+            return false;
+        }
+    }
+    
+    
+    public function getTabella($idTabella){
+        try{
+            $query = "SELECT * FROM ".$this->table_tabelle.' WHERE ID = '.$idTabella;
+            return $this->wpdb->get_row($query);
         } catch (Exception $ex) {
             _e($ex);
             return false;
@@ -147,6 +158,23 @@ class TabellaPrezziDAO {
         try{
             $query = "SELECT * FROM ".$this->table_prezzi." WHERE id_tabella = ".$idTabella;
             return $this->wpdb->get_results($query);
+        } catch (Exception $ex) {
+            _e($ex);
+            return false;
+        }
+    }
+    
+    /**
+     * La funzione restituisce il prezzo passati in ingresso una tabella, riga e colonna
+     * @param type $idTabella
+     * @param type $row
+     * @param type $col
+     * @return boolean
+     */
+    public function getPrezzo($idTabella, $row, $col){
+        try{
+            $query = "SELECT prezzo FROM ".$this->table_prezzi." WHERE id_tabella = ".$idTabella." AND val_row = ".$row." AND val_col = ".$col;
+            return $this->wpdb->get_var($query);
         } catch (Exception $ex) {
             _e($ex);
             return false;
@@ -171,4 +199,36 @@ class TabellaPrezziDAO {
         }
     }
     
+    /**
+     * La funzione resituisce le tabelle che ritrovano riscontro nei parametri passati
+     * @param type $value
+     * @param type $operator
+     * @return boolean
+     */
+    public function getTabelleByParameters($string_parameters){
+        try{
+            $query = "SELECT * FROM ".$this->table_tabelle.' WHERE '.$string_parameters;
+            //echo $query;
+            return $this->wpdb->get_results($query);
+        } catch (Exception $ex) {
+            _e($ex);
+            return false;
+        }
+    }
+    
+    /**
+     * Funzione che restituisce il numero di ante a seconda di determinati parametri passati
+     * @param type $string_parameters
+     * @return boolean
+     */
+    public function getAnte($string_parameters){
+        try{
+            $query = "SELECT DISTINCT ante FROM ".$this->table_tabelle.' WHERE '.$string_parameters;
+            
+            return $this->wpdb->get_results($query);            
+        } catch (Exception $ex) {
+            _e($ex);
+            return false;
+        }
+    }
 }
