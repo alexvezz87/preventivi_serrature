@@ -7,7 +7,7 @@
  */
 
 /**
- * Description of GestionePrezziView
+ * La classe gestisce i prezzi 
  *
  * @author Alex
  */

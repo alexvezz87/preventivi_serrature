@@ -1,0 +1,152 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 2-feb-2016, 15.16.44
+    Author     : Alex
+*/
+
+.box {
+    display:block;
+    width:100px;
+    min-height: 100px;
+    border:1px solid black;
+    background:green;
+    float:left;
+    margin-right:10px;
+    text-align: center;
+    cursor:pointer;
+    margin-bottom:10px;
+}
+
+.selected, .box-2.selected {
+    border:2px solid red;
+}
+
+
+.box-2 {
+    display: block;
+    width:90%;
+    clear:both;
+    cursor:pointer;
+    margin-bottom:10px;
+    border:1px solid black;    
+    padding:10px;
+}
+
+.box-2 div{
+    float:left;   
+    width:25%;
+}
+.box-2 div.nome{
+    width:75%;
+}
+
+.selezione-infissi {
+    display:none;
+    clear:both;
+    float:none;
+    width:100%;
+    margin-top:20px;
+    min-height: 10px;    
+   
+}
+
+.clear {
+    clear:both;
+    display:block;
+    width:100%;      
+    margin-top:10px;
+    margin-bottom:10px;
+}
+
+.selettore-box {
+    border:2px solid black;
+    width:350px;
+    height:50px;
+}
+
+.selettore-box .selettore-show{
+    border-right: 1px solid black;
+    width:300px;
+    height: 48px;
+    float:left;
+    
+}
+.selettore-box .selettore-arrow{
+    border-left: 1px solid black;
+    width:46px;
+    height: 48px;
+    float:right;
+    cursor: pointer;
+    background:url('../images/arrow_down.png') center center no-repeat ;
+    
+}
+
+.select-ral {
+    display:none;
+    position:absolute;
+    z-index:10;
+    border:2px solid black;
+    border-top:none;
+    margin-bottom: 20px;
+}
+
+.select-ral div {
+    height: 48px;
+    width:346px;
+    text-align:right;
+    padding:12px;
+    cursor:pointer;
+    color:#333;   
+}
+
+.selettore-box .selettore-show div{
+    height: 46px;
+    width:299px;
+    text-align:right;
+    padding:11px;
+}
+
+.ral-9016 { background:rgb(241, 240, 234); }
+.ral-9010 { background:rgb(241, 236, 225); }
+.ral-7035 { background:rgb(197, 199, 196); }
+.ral-7040 { background:rgb(152, 158, 161); }
+.ral-9007 { background:rgb(135, 133, 129); }
+.ral-9006 { background:rgb(161, 161, 160); }
+.ral-7016 { background:rgb(56, 62, 66); }
+.ral-7030 { background:rgb(146, 142, 133); }
+.ral-8028 { background:rgb(81, 58, 42); }
+.ral-6009 { background:rgb(39, 53, 42); }
+.ral-8003 { background:rgb(126, 75, 38); }
+.ral-8001 { background:rgb(157, 98, 43); }
+.ral-6005 { background:rgb(17, 66, 50); }
+.ral-3003 { background:rgb(134, 26, 34); }
+.ral-1013 { background:rgb(227, 217, 198); }
+.ral-9005 { background:rgb(14, 14, 16); }
+
+.select-ral div.text-white, .text-white{ color:#999 ; }
+
+.select-ral div:hover{font-weight: bold;}
+.select-ral div.text-white:hover {color:#fff}
+
+.selettore-box .selettore-show div {color:#000}
+.selettore-box .selettore-show div.text-white {color:#fff}
+
+.step {
+    display:block;
+    width:100%;
+    clear:both;
+    margin-bottom:5px;
+}
+
+.ricerca, .selezione-misure, .selezione-apertura, .particolari-costruttivi, .maggiorazioni, .numero-infissi{
+    display:none;
+    clear:both;
+}
+
+.container-serratura, .container-nodo, .selezione-colore, .selezione-cerniera{
+    display:none;
+}
