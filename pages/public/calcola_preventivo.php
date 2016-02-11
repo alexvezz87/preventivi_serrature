@@ -39,7 +39,7 @@ $current_user = wp_get_current_user();
             </div>
         </div>
         <br><br>
-        <input class="clear" type="button" name="aggiungi-infisso" value="Aggiungi nuovo infisso" />
+        <input class="clear" type="button" name="aggiungi-infisso" value="Aggiungi nuovo infisso" disabled />
         
         
         <div class="totale-preventivo">
@@ -48,6 +48,8 @@ $current_user = wp_get_current_user();
             <div class="prezzo-preventivo">0</div>
         </div>
         
+        
+        <input type="button" name="invia-preventivo" value="Invia Preventivo" /> 
     </form>
     
     

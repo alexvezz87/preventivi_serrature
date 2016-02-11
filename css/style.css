@@ -85,7 +85,7 @@ and open the template in the editor.
     
 }
 
-.select-ral {
+.select-ral, .select-micacei {
     display:none;
     position:absolute;
     z-index:10;
@@ -94,7 +94,7 @@ and open the template in the editor.
     margin-bottom: 20px;
 }
 
-.select-ral div {
+.select-ral div, .select-micacei div {
     height: 48px;
     width:346px;
     text-align:right;
@@ -126,6 +126,16 @@ and open the template in the editor.
 .ral-3003 { background:rgb(134, 26, 34); }
 .ral-1013 { background:rgb(227, 217, 198); }
 .ral-9005 { background:rgb(14, 14, 16); }
+
+.none {background: #fff}
+
+.scuro-gr {background: #fff}
+.marmo {background: #fff}
+.opaco {background: #fff}
+.antracite {background: #fff}
+.brown {background: #fff}
+.asfalto {background: #fff}
+
 
 .select-ral div.text-white, .text-white{ color:#999 ; }
 
