@@ -105,6 +105,21 @@ class MaggiorazioneDAO {
     }
     
     /**
+     * La funzione restituisce una maggiorazione conoscendone l'ID
+     * @param type $idMaggiorazione
+     * @return boolean
+     */
+    public function getMaggiorazione($idMaggiorazione){
+        try{
+            $query = 'SELECT * FROM '.$this->table.' WHERE ID = '.$idMaggiorazione;
+            return $this->wpdb->get_row($query);
+        } catch (Exception $ex) {
+            _e($ex);
+            return false;
+        }
+    }
+    
+    /**
      * Funzione che elimina una maggiorazione dal database
      * @param type $idM
      * @return boolean

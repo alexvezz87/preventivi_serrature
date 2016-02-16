@@ -160,3 +160,28 @@ and open the template in the editor.
 .container-serratura, .container-nodo, .selezione-colore, .selezione-cerniera{
     display:none;
 }
+
+.error-box{
+    width:75%;
+    min-height: 200px;
+    position:fixed;
+    border:1px solid black;
+    padding:20px;    
+    top:0px;
+    left:0px;
+    margin-top:15%;
+    margin-left:12.5%;
+    background:#999;
+    display:none;
+}
+
+.error-box h4{
+    margin:0;
+    margin-top:0px !important;
+    margin-bottom:0px !important;
+    padding:0;
+}
+
+.error-box .punto {
+    margin-left:10px;
+}

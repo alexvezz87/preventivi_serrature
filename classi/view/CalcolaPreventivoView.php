@@ -61,9 +61,9 @@ class CalcolaPreventivoView {
                         </p>
                     </div>
                 </div>
-                <div class="clear container-serratura" data-type="serratura" data-name="leva">
+                <div class="clear container-serratura">
                     <p class="step">7. SERRATURA</p>
-                    <div class="box serratura-leva">
+                    <div class="box serratura-leva" data-type="serratura" data-name="leva">
                         <p>
                           A leva con maniglia in pvc
                         </p>

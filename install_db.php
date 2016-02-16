@@ -3,6 +3,9 @@
 //Autore: Alex Vezzelli - Alex Soluzioni Web
 //url: http://www.alexsoluzioniweb.it/
 
+
+/********************* CREATE TABLES *******************/
+
 function install_preventivi(){
     //La funzione installa due tabelle:
     //1. Tabella che identifica le tabelle di prezzi
@@ -27,7 +30,12 @@ function install_preventivi(){
         //installo la tabella delle maggiorazioni
         install_tabella_maggiorazioni($wpdb, $charset_collate);
         
-        //installo le altre tabelle
+        //installo la tabella degli infissi
+        install_tabella_infissi($wpdb, $charset_collate);
+        install_tabella_infissi_maggiorazioni($wpdb, $charset_collate);
+        
+        //installo la tabelal dei preventivi
+        install_tabella_preventivo($wpdb, $charset_collate);
         
        return true;
         
@@ -102,6 +110,82 @@ function install_tabella_maggiorazioni($wpdb, $charset_collate){
     }      
 }
 
+//installo tabella infisso
+function install_tabella_infissi($wpdb, $charset_collate){
+    $table = $wpdb->prefix.'infissi';
+    $query = "CREATE TABLE IF NOT EXISTS $table (
+                ID INT NOT NULL auto_increment PRIMARY KEY,
+                id_preventivo INT NOT NULL,
+                tipo VARCHAR(50) NOT NULL,
+                n_ante INT NOT NULL,
+                id_infisso INT NOT NULL,
+                altezza INT NOT NULL,
+                lunghezza INT NOT NULL,
+                apertura VARCHAR(100) NOT NULL,
+                barra VARCHAR(100) NOT NULL,
+                serratura VARCHAR(100) NOT NULL,
+                nodo VARCHAR(100) NOT NULL,
+                colore VARCHAR(100) NOT NULL,
+                cerniera VARCHAR(100) NOT NULL,
+                n_infisso INT NOT NULL,
+                spesa_infisso DECIMAL(15,2)
+              );{$charset_collate}";
+    
+    try{
+        require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+        dbDelta($query);   
+        return true;
+    } catch (Exception $ex) {
+        _e($ex);
+        return false;
+    }                
+}
+
+//installo tabella infisso_maggiorazione
+function install_tabella_infissi_maggiorazioni($wpdb, $charset_collate){
+    $table = $wpdb->prefix.'infissi_maggiorazioni';
+    $query = "CREATE TABLE IF NOT EXISTS $table (
+                ID INT NOT NULL auto_increment PRIMARY KEY,
+                id_infisso INT NOT NULL,
+                id_maggiorazione INT NOT NULL
+              );{$charset_collate}";
+    
+    try{
+        require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+        dbDelta($query);   
+        return true;
+    } catch (Exception $ex) {
+        _e($ex);
+        return false;
+    }      
+}
+
+//Tabella del preventivo
+function install_tabella_preventivo($wpdb, $charset_collate){
+    $table = $wpdb->prefix.'preventivi';
+    $query = "CREATE TABLE IF NOT EXISTS $table (
+                ID INT NOT NULL auto_increment PRIMARY KEY,
+                data TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+                id_utente INT NOT NULL,
+                cliente_nome VARCHAR(100) NOT NULL,
+                cliente_via TEXT NOT NULL,
+                cliente_tel VARCHAR(100) NOT NULL,               
+                spesa_totale DECIMAL(15,2),
+                visionato INT NOT NULL DEFAULT 0
+              );{$charset_collate}";    
+    try{
+        require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+        dbDelta($query);   
+        return true;
+    } catch (Exception $ex) {
+        _e($ex);
+        return false;
+    }      
+}
+
+
+/********************* DROP TABLES *******************/
+
 function dropDB(){
     global $wpdb;
     $wpdb->prefix = 'pps_';
@@ -110,7 +194,10 @@ function dropDB(){
         //cancello le tabelle dei prezzi
         dropTabellaArticoli($wpdb);
         dropTabellaPrezzi($wpdb);    
-       
+        dropTabellaMaggiorazioni($wpdb);
+        dropTabellaInfissi($wpdb);
+        dropTabellaInfissiMaggiorazioni($wpdb);
+        dropTabellaPreventivi($wpdb);       
     }
     catch(Exception $ex){
         _e($ex);        
@@ -146,6 +233,42 @@ function dropTabellaPrezzi($wpdb){
 function dropTabellaMaggiorazioni($wpdb){
    try{
             $query = "DROP TABLE IF EXISTS ".$wpdb->prefix."maggiorazioni;";
+            $wpdb->query($query);
+            return true;
+        }
+    catch(Exception $e){
+        _e($e);
+        return false;
+    }
+}
+
+function dropTabellaInfissi($wpdb){
+    try{
+            $query = "DROP TABLE IF EXISTS ".$wpdb->prefix."infissi;";
+            $wpdb->query($query);
+            return true;
+        }
+    catch(Exception $e){
+        _e($e);
+        return false;
+    }
+}
+
+function dropTabellaInfissiMaggiorazioni($wpdb){
+    try{
+            $query = "DROP TABLE IF EXISTS ".$wpdb->prefix."infissi_maggiorazioni;";
+            $wpdb->query($query);
+            return true;
+        }
+    catch(Exception $e){
+        _e($e);
+        return false;
+    }
+}
+
+function dropTabellaPreventivi($wpdb){
+    try{
+            $query = "DROP TABLE IF EXISTS ".$wpdb->prefix."preventivi;";
             $wpdb->query($query);
             return true;
         }

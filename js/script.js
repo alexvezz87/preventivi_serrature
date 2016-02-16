@@ -264,11 +264,12 @@ jQuery(document).ready(function($){
     //gestione automatizzata dei due tipi di colori
     function gestoreSelettoreColori(type){
         $('.'+type+'-box.selettore-box').click(function(){
-            $('.select-'+type).slideToggle();
+            $(this).siblings('.select-'+type).slideToggle();
         });
+        
         $('.select-'+type+' div').click(function(){
             var $box = $(this).parent('.select-'+type).siblings('.'+type+'-box');
-            var $select = $(this).parent('.select-'+type);
+            var $select = $(this).parent('.select-'+type);            
             $box.find('.selettore-show').html('');
             $(this).clone().appendTo($box.find('.selettore-show'));
             $select.hide();    
@@ -283,8 +284,15 @@ jQuery(document).ready(function($){
                 $box.siblings('.ral-box').find('.selettore-show').html('<div class="none" data-type="colore" data-name="none">selezione RAL</div>');
             }
             
-            //mostro il punto successivo
-            $('.selezione-cerniera').show();
+            //mostro il punto successivo se ho effettuato una scelta diversa da none           
+            if($(this).data('name')!== 'none'){                
+                $select.parent('.selezione-colore').siblings('.selezione-cerniera').show();
+                
+            }
+            else{
+                $select.parent('.selezione-colore').siblings('.selezione-cerniera').hide();
+                $select.parent('.selezione-colore').siblings('.selezione-cerniera').find('.box').removeClass('selected');
+            }
             
         });
         
@@ -293,28 +301,19 @@ jQuery(document).ready(function($){
         
         
     //gestione del selettore dei ral
-    function selettoreRAL(){
-        
-       gestoreSelettoreColori('ral');        
-       
+    function selettoreRAL(){        
+       gestoreSelettoreColori('ral');    
     }
     
     //gestione del selettore dei micacei
     function selettoreMICACEI(){
         gestoreSelettoreColori('micacei');
-        
-        $('.selezione-colore .box').click(function(){
-            //se seleziono un box micaceo, devo de-selezionare il RAL
-            $(this).siblings('.selettore-box').find('.selettore-show').html('<div class="none">seleziona RAL</div>');
-        });
-
-       
     }
         
     //Gestione selettore delle maggiorazioni
     function selettoreMaggiorazioni(){
         $('.box-2').click(function(){
-            console.log('clicked!') ;
+            //console.log('clicked!') ;
             $(this).toggleClass('selected');
             //calcolo la spesa complessiva in toggle
             var qt = $(this).find('input[name=maggiorazione-qt]').val();
@@ -403,6 +402,10 @@ jQuery(document).ready(function($){
         aggiungiInfisso();
         eliminaInfisso();     
         inviaPreventivo();
+        
+        $('input[name=close-box]').click(function(){
+            $('.error-box').hide();
+        });
         
     }    
     
@@ -511,8 +514,11 @@ jQuery(document).ready(function($){
             //Ciclo sui container
             $('.selezione-container').each(function(){
                 infissi[count];
-                var infisso = new Array();
-                infisso['maggiorazione'] = new Array();
+                var infisso = new Array();                
+               
+               if($(this).find('.box-2.selected').size() > 0){
+                   infisso['maggiorazione'] = new Array();
+               }
                
                 //ciclo sui selezionati
                 $(this).find('.selected').each(function(){
@@ -537,12 +543,19 @@ jQuery(document).ready(function($){
                 });
                 //fine ciclo sui selezioanti
                 
-                //7. Selezione sul numero di ante
-                infisso['numero-ante'] = $(this).find('select[name=seleziona-ante]').val();
+                //7. Selezione sul numero di ante                
+                if(typeof($(this).find('select[name=seleziona-ante]').val())!== 'undefined'){
+                    infisso['numero-ante'] = $(this).find('select[name=seleziona-ante]').val();
+                }
+                
                 //9. Selezione della misura di altezza
-                infisso['altezza'] = $(this).find('select[name=infisso-altezza]').val();
+                if( typeof($(this).find('select[name=infisso-altezza]').val()) !== 'undefined'){
+                    infisso['altezza'] = $(this).find('select[name=infisso-altezza]').val();
+                }
                 //10. Selezione della misura di lunghezza
-                infisso['lunghezza'] = $(this).find('select[name=infisso-lunghezza]').val();
+                if(typeof($(this).find('select[name=infisso-lunghezza]').val()) !== 'undefined'){
+                    infisso['lunghezza'] = $(this).find('select[name=infisso-lunghezza]').val();
+                }
                 //15. Selezione sul colore
                 // 15.ral --> controllo i RAL
                 if($(this).find('.ral-box .selettore-show div').data('name') !== 'none'){
@@ -553,20 +566,120 @@ jQuery(document).ready(function($){
                     infisso['colore'] = $(this).find('.micacei-box .selettore-show div').data('name');
                 } 
                 
-                //18. Selezione sul numero di infissi
-                infisso['num-infissi'] = $(this).find('input[name=numero-infissi]').val();
+                //18. Selezione sul numero di infissi   
+                if(typeof($(this).find('input[name=numero-infissi]').val()) !== 'undefined'){
+                    infisso['num-infissi'] = $(this).find('input[name=numero-infissi]').val();
+                }
                 
-                console.log(Object.size(infisso));
+                //console.log(Object.size(infisso));
                 
                 infissi.push(infisso);
                 count++;
             });
             //fine ciclo sui container
             
+            //scremo gli infissi dagli undefined
+            infissi = $.grep(infissi, function(value){
+               return typeof(value) !== 'undefined'; 
+            });
+            
             console.log(infissi);
+            
+            //controllo i campi
+            var check = checkFields(infissi);
+            if(check !== true){
+                //I campi non sono stati compilati nel modo corretto
+                
+                //console.log('campi non soddisfatti');
+                //console.log(check);
+                var html = "";
+               
+                $.each(check, function(index, value){
+                    if(index === 0){
+                        html += "Nell'infisso n."+value+" serve: <br>";
+                    }
+                    else{
+                        html+= '<div class="punto">- '+value+'</div>';
+                    }
+                    
+                });
+                
+                $('.error-box p').html(html);
+                $('.error-box').show();
+            }
+            else{
+                //I campi sono stati compilati nel modo corretto ora devo:
+                //1. salvare i dati nel database
+                //2. visualizzare i dati nello storico di admin e utente
+                //3. comporre il pdf 
+                //4. creare la mail e allegarci il pdf
+                
+                
+                //console.log('campi soddisfatti!');
+                
+            }
             
             
         });
+    }
+    
+    //funzione che esegue un controllo sui campi
+    function checkFields(infissi){
+        //Controllo sui campi            
+        for(var i=0; i < infissi.length; i++){
+            if(typeof(infissi[i])!== 'undefined'){
+                //console.log(infissi[i]);
+                //controllo la dimensione dell'array
+                //se è minore di 12, non sono stati compilati tutti i campi
+                if(Object.size(infissi[i]) < 12){
+                    var mancanti = new Array();
+                    //il campo numero zero indica a quale infisso mancano i valori
+                    mancanti[0] = i+1;                    
+                    
+                    //controllo i valori mancanti
+                    if(!('altezza' in infissi[i])){
+                        mancanti.push('Indicare l\'altezza dell\'infisso');
+                    } 
+                    if(!('apertura' in infissi[i])){
+                        mancanti.push('Specifcare il tipo di apertura');
+                    } 
+                    if(!('barra' in infissi[i])){
+                        mancanti.push('Indicare il tipo di barra');
+                    } 
+                    if(!('cerniera' in infissi[i])){
+                        mancanti.push('Indicare il tipo di cerniera');
+                    } 
+                    if(!('colore' in infissi[i])){
+                        mancanti.push('Selezionare il colore');
+                    } 
+                    if(!('infisso' in infissi[i])){
+                        mancanti.push('Indicare l\'inifsso specifico');
+                    } 
+                    if(!('lunghezza' in infissi[i])){
+                        mancanti.push('Indicare la lunghezza');
+                    } 
+                    if(!('num-infissi' in infissi[i])){
+                        mancanti.push('Indicare il numero di infissi');
+                    } 
+                    if(!('nodo' in infissi[i])){
+                        mancanti.push('Indicare il tipo di nodo');
+                    }                     
+                    if(!('numero-ante' in infissi[i])){
+                        mancanti.push('Indicare il numero di ante dell\'infisso');
+                    } 
+                    if(!('serratura' in infissi[i])){
+                        mancanti.push('Indicare il tipo di serratura');
+                    } 
+                    if(!('tipo-infisso' in infissi[i])){
+                        mancanti.push('Indicare il tipo di infisso');
+                    } 
+                    
+                    return mancanti;
+                }               
+            }
+        }
+        
+        return true;
     }
     
     

@@ -52,5 +52,10 @@ $current_user = wp_get_current_user();
         <input type="button" name="invia-preventivo" value="Invia Preventivo" /> 
     </form>
     
+    <div class="error-box">
+        <h4>Preventivo non compilato correttamente</h4>
+        <p></p>
+        <input type="button" name="close-box" value="OK" />
+    </div>
     
 </div>
