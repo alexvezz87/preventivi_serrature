@@ -20,6 +20,9 @@ require_once 'install_db.php';
 require_once 'classi/classes.php';
 require_once 'functions.php';
 
+global $DIR_PDF;
+
+$DIR_PDF = plugin_dir_path(__FILE__).'\\preventivi_pdf\\';
 
 //indico la cartella dove è contenuto il plugin
 require_once (dirname(__FILE__) . '/preventivi_serrature.php');
@@ -79,7 +82,9 @@ function register_style(){
 add_action( 'wp_enqueue_scripts', 'register_js_script' );
 
 function register_js_script(){
-     wp_register_script('functions-js', plugins_url('preventivi_serrature/js/script.js'), array('jquery'), '1.0', false);     
+     wp_register_script('functions-js', plugins_url('preventivi_serrature/js/script.js'), array('jquery'), '1.0', false);          
+     wp_register_script('json-js', plugins_url('preventivi_serrature/js/jquery.json.min.js'), array('jquery'), '1.0', false);     
+     wp_enqueue_script('json-js');   
      wp_enqueue_script('functions-js');   
 } 
 

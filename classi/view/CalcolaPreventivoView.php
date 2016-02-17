@@ -14,11 +14,11 @@
 class CalcolaPreventivoView {
     
     private $tPrezzi;
-    private $tMaggiorazioni;
+    private $tMaggiorazioni;    
     
     function __construct() {
         $this->tPrezzi = new TabellaPrezziController();
-        $this->tMaggiorazioni = new MaggiorazioneController();
+        $this->tMaggiorazioni = new MaggiorazioneController();       
     }
 
     //METODI

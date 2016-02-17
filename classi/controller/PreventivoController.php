@@ -15,11 +15,13 @@ class PreventivoController {
     private $pDAO; //DAO del preventivo
     private $iDAO; //DAO dell'infisso
     private $imDAO; //DAO di infisso_maggiorazione
+    private $pdfWriter;
     
     function __construct() {
         $this->pDAO = new PreventivoDAO();
         $this->iDAO = new InfissoDAO();
         $this->imDAO = new InfissoMaggiorazioneDAO();
+        $this->pdfWriter = new PdfController();
     }
 
     /**
@@ -28,50 +30,42 @@ class PreventivoController {
      * @param type $array
      * @return boolean
      */
-    public function savePreventivo(Preventivo $p, $array){
+    public function savePreventivo(Preventivo $p){
         //Per salvare il preventivo devo:
         //1. salvare il preventivo nel database e ottenere l'id
         //2. salvare tutti gli infissi con l'id del preventivo
         
+        //$p = $this->convertToPreventivo($pArray);
+        
         $idPreventivo = $this->pDAO->savePreventivo($p);
-        $spesaTotale = 0;
+        
         
         if($idPreventivo == false){
             return false;
         }
         //dormo un secondo per dare tempo al db di ricevere risposta
         //sleep(1);
-        foreach($array as $item){
+        foreach($p->getInfissi() as $item){
             //il parametro $array è composto da un vettore di oggetti infisso
             $i = new Infisso();
             $i = $item;
             
             $i->setIdPreventivo($idPreventivo);
-            //il totale è quello complessivo, viene salvata la spesa dal front-end
-            $spesaTotale+= floatval($i->getSpesaInfisso()) * floatval($i->getNInfisso());
-            
-            //ottengo gli id delle maggiorazioni associate
-            //il pattern è x,x,x            
-            $temp = explode(',', $i->getMaggiorazioni());
-            
+                        
             $idInfisso = $this->iDAO->saveInfisso($i);
             if($idInfisso == false){
                 return false;
             }
             //sleep(1);
-            for($k=0; $k < count($temp); $k++){
-                //associo nel database la maggiorazione all'infisso
-                if(!$this->imDAO->saveInfissoMaggiorazione($idInfisso, $temp[$k])){
+            
+            foreach($i->getMaggiorazioni() as $m){
+                if(!$this->imDAO->saveInfissoMaggiorazione($idInfisso, $m)){
                     return false;
                 }
             }
-        }   
-        //aggiorno la spesa totale
-        if(!$this->pDAO->updateSpesaTotale($idPreventivo, $spesaTotale)){
-            return false;
-        }
-        
-        return true;
+        }  
+                
+        return  $idPreventivo;
     }
     
     /**
@@ -97,6 +91,7 @@ class PreventivoController {
             $p->setClienteTel($item->cliente_tel);
             $p->setSpesaTotale($item->spesa_totale);
             $p->setVisionato($item->visionato);
+            $p->setPdf($item->pdf);
             
             //ottengo gli infissi
             $array2 = $this->iDAO->getInfissi($p->getId());
@@ -110,10 +105,105 @@ class PreventivoController {
         return $preventivi;
     }
     
+    /**
+     * La funzione restituisce un oggetto Preventivo dal database conoscendone l'ID
+     * @param type $idPreventivo
+     * @return \Preventivo|boolean
+     */
+    public function getPreventivo($idPreventivo){
+        //chiamata al db
+        $item = $this->pDAO->getPreventivo($idPreventivo);
+        if($item == null){
+            return false;
+        }
+        $p = new Preventivo();
+        $p->setId($item->ID);
+        $p->setData($item->data);
+        $p->setIdUtente($item->id_utente);
+        $p->setClienteNome($item->cliente_nome);
+        $p->setClienteVia($item->cliente_via);
+        $p->setClienteTel($item->cliente_tel);
+        $p->setSpesaTotale($item->spesa_totale);
+        $p->setVisionato($item->visionato);
+        $p->setPdf($item->pdf);
+
+        //ottengo gli infissi
+        $array2 = $this->iDAO->getInfissi($p->getId());
+        $infissi = array();
+        foreach($array2 as $item2){               
+            array_push($infissi, $this->getInfisso($item2));
+        }
+        $p->setInfissi($infissi);
+        
+        return $p;
+        
+    }
+    
+    /**
+     * La funzione riceve un array associativo preventivo e restituisce un oggetto preventivo
+     * @param type $item
+     * @return \Preventivo
+     */
+    public function convertToPreventivo($item){
+        $p = new Preventivo();
+        $p->setData($item['data']);
+        $p->setIdUtente($item['rivenditore']);
+        $p->setClienteNome($item['clienteNome']);
+        $p->setClienteVia($item['clienteVia']);
+        $p->setClienteTel($item['clienteTel']);
+        $p->setSpesaTotale($item['totale']);
+        
+        $infissi = array();
+        foreach($item['infissi'] as $item){
+            array_push($infissi, $this->convertToInfisso($item));
+        }        
+        $p->setInfissi($infissi);
+        
+        return $p;
+        
+    }
+    
+    /**
+     * Funzione che converte un array associativo di inifisso in un oggetto infisso
+     * @param type $item
+     * @return \Infisso
+     */
+    private function convertToInfisso($item){
+        $i = new Infisso(); 
+        
+        $i->setTipo($item['tipo-infisso']);
+        $i->setNAnte($item['numero-ante']);
+        $i->setIdInfisso($item['infisso']);
+        $i->setAltezza($item['altezza']);
+        $i->setLunghezza($item['lunghezza']);
+        $i->setApertura($item['apertura']);
+        $i->setBarra($item['barra']);
+        $i->setSerratura($item['serratura']);
+        $i->setNodo($item['nodo']);
+        $i->setColore($item['colore']);
+        $i->setCerniera($item['cerniera']);
+        $i->setNInfisso($item['num-infissi']);
+        $i->setSpesaInfisso($item['spesa-parziale']);       
+
+        //ottengo le maggiorazioni        
+        
+        
+        $maggiorazioni = array();
+        if(isset($item['maggiorazione']) && count($item['maggiorazione']) > 0){
+            foreach($item['maggiorazione'] as $m){
+                //ciclo le maggiorazioni                    
+                array_push($maggiorazioni, $m);
+            }   
+        }
+        $i->setMaggiorazioni($maggiorazioni);
+        return $i;
+        
+    }
+    
     private function getInfisso($item2){
         //ciclo gli infissi
         $i = new Infisso();
-        $i->setId($item2->id);
+        $i->setId($item2->ID);
         $i->setIdInfisso($item2->id_infisso);
         $i->setTipo($item2->tipo);
         $i->setNAnte($item2->n_ante);
@@ -141,6 +231,27 @@ class PreventivoController {
         return $i;
     }
     
+    
+    public function createPDF($idPreventivo){
+        global $DIR_PDF;
+        
+        //ottengo il preventivo
+        $p = new Preventivo();
+        $p = $this->getPreventivo($idPreventivo);       
+       
+        try{
+            $this->pdfWriter->createHeader();
+            $this->pdfWriter->savePDF($DIR_PDF.'preventivo-'.$p->getId().'.pdf');
+            
+            
+            return $DIR_PDF.'preventivo-'.$p->getId().'.pdf';
+        }
+        catch (Exception $ex){
+            _e($ex);
+            return false;
+        }
+        
+    }
     
     
     

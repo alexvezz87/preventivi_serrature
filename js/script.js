@@ -404,7 +404,7 @@ jQuery(document).ready(function($){
         inviaPreventivo();
         
         $('input[name=close-box]').click(function(){
-            $('.error-box').hide();
+            $(this).parent('.message-box').hide();
         });
         
     }    
@@ -492,18 +492,20 @@ jQuery(document).ready(function($){
             * 16. Selezione sul tipo di cerniera
             * 17. Selezione sulle maggiorazioni
             * 18. Selezione sul numero di infissi
+            * 19. Spesa parziale infisso
             */
            
             //1. Data odierna
-            var dataPreventivo = $('input[name=data-odierna]').val();
+            var preventivo = new Object();
+            preventivo.data = $('input[name=data-odierna]').val();
             //2. Nome rivenditore/agente
-            var nomeRivenditore = $('input[name=rivenditore-agente]').val();
+            preventivo.rivenditore = $('input[name=rivenditore-agente]').val();
             //3. Nome cliente
-            var nomeCliente = $('input[name=nome-cliente]').val();
+            preventivo.clienteNome = $('input[name=nome-cliente]').val();
             //4. Via cliente
-            var viaCliente = $('input[name=via-cliente]').val();
+            preventivo.clienteVia = $('input[name=via-cliente]').val();
             //5. Telefono cliente
-            var telefonoCliente = $('input[name=telefono-cliente]').val();
+            preventivo.clienteTel = $('input[name=telefono-cliente]').val();
             
             
             //creo l'array che conterrà i dati            
@@ -514,15 +516,16 @@ jQuery(document).ready(function($){
             //Ciclo sui container
             $('.selezione-container').each(function(){
                 infissi[count];
-                var infisso = new Array();                
+                var infisso = new Object();;                
                
                if($(this).find('.box-2.selected').size() > 0){
-                   infisso['maggiorazione'] = new Array();
+                   infisso.maggiorazione = new Array();
                }
                
                 //ciclo sui selezionati
                 $(this).find('.selected').each(function(){
                     //Soddisfo i punti 6, 8, 11, 12, 13, 14, 16, 17
+                    
                     if($(this).data('type') === 'barra'){
                         //Punto 12
                         infisso[$(this).data('type')] = $(this).data('name')+'-'+$(this).find('select').val();
@@ -571,6 +574,9 @@ jQuery(document).ready(function($){
                     infisso['num-infissi'] = $(this).find('input[name=numero-infissi]').val();
                 }
                 
+                //19. Spesa parziale infisso
+                infisso['spesa-parziale'] = $(this).find('input[name=spesa-parziale-infisso]').val();
+                
                 //console.log(Object.size(infisso));
                 
                 infissi.push(infisso);
@@ -583,7 +589,7 @@ jQuery(document).ready(function($){
                return typeof(value) !== 'undefined'; 
             });
             
-            console.log(infissi);
+            //console.log(infissi);
             
             //controllo i campi
             var check = checkFields(infissi);
@@ -608,14 +614,38 @@ jQuery(document).ready(function($){
                 $('.error-box').show();
             }
             else{
+                              
+                preventivo.infissi = infissi;
+                preventivo.totale = $('.totale-preventivo .prezzo-preventivo').text();
                 //I campi sono stati compilati nel modo corretto ora devo:
                 //1. salvare i dati nel database
                 //2. visualizzare i dati nello storico di admin e utente
                 //3. comporre il pdf 
                 //4. creare la mail e allegarci il pdf
+                //console.log(preventivo);  
+              
+                //1. Chiamata ajax per salavare i dati
+                $.ajax({
+                    type:'POST',
+                    dataType: 'json',
+                    url: $urlAjax,
+                    data: {preventivo: preventivo},
+                    success: function(data){
+                        var html = "";
+                        if(data.salvato == true){
+                            //il preventivo è stato salvato correttamente nel database
+                            html+= 'Il preventivo è stato correttamente registrato!'; 
+                        }
+                        else{
+                            //il preventivo non è stato salvato correttamente nel database
+                            html+='Ci sono stati dei problemi nella registrazione del preventivo!'
+                        }
+                        $('.ok-box p').html(html);
+                        $('.ok-box').show();
+                    }
+                });
                 
                 
-                //console.log('campi soddisfatti!');
                 
             }
             

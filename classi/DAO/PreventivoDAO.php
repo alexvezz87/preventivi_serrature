@@ -58,9 +58,10 @@ class PreventivoDAO {
                         'cliente_nome' => $p->getClienteNome(),
                         'cliente_via' => $p->getClienteVia(),
                         'cliente_tel' => $p->getClienteTel(),
-                        'spesa_totale' => $p->getSpesaTotale()
+                        'spesa_totale' => $p->getSpesaTotale(),
+                        'visionato' => 0
                     ),
-                    array('%s', '%d', '%s', '%s', '%s', '%f')
+                    array('%s', '%d', '%s', '%s', '%s', '%f', '%d')
                 );
             //restituisco l'id del record di preventivo inserito
             return $this->wpdb->insert_id;  
@@ -92,6 +93,27 @@ class PreventivoDAO {
         }
     }
     
+    /**
+     * La funzione aggiorna il campo pdf nel database
+     * @param type $id
+     * @param type $pdf
+     * @return boolean
+     */
+    public function setPDF($id, $pdf){
+        try{
+            $this->wpdb->update(
+                    $this->table,
+                    array('pdf' => $pdf),
+                    array('ID' => $id),
+                    array('%s'),
+                    array('%d')
+                );
+            return true;
+        } catch (Exception $ex) {
+            _e($ex);
+            return false;
+        }
+    }
     
     public function updateSpesaTotale($id, $spesa){
         try{
@@ -132,6 +154,21 @@ class PreventivoDAO {
             _e($ex);
             return false;
         }        
+    }
+    
+    /**
+     * La funzione ritorna un oggetto preventivo dal DB
+     * @param type $idPreventivo
+     * @return boolean
+     */
+    public function getPreventivo($idPreventivo){
+        try{
+            $query = 'SELECT * FROM '.$this->table.' WHERE ID = '.$idPreventivo;
+            return $this->wpdb->get_row($query);
+        } catch (Exception $ex) {
+            _e($ex);
+            return false;
+        }
     }
     
     /**

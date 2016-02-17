@@ -62,7 +62,7 @@ class InfissoDAO {
                         'nodo' => $i->getNodo(),
                         'colore' => $i->getColore(),
                         'cerniera' => $i->getCerniera(),
-                        'n_inifisso' => $i->getNInfisso(),
+                        'n_infisso' => $i->getNInfisso(),
                         'spesa_infisso' => $i->getSpesaInfisso()
                     ),
                     array('%d', '%s', '%d', '%d', '%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%f')

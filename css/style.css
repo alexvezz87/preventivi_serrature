@@ -161,7 +161,7 @@ and open the template in the editor.
     display:none;
 }
 
-.error-box{
+.message-box{
     width:75%;
     min-height: 200px;
     position:fixed;

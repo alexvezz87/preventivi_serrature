@@ -60,6 +60,39 @@ function pps_ajax_callback(){
         echo json_encode($result);
     }
     
+    
+    if(isset($_POST['preventivo'])){
+        
+        $pController = new PreventivoController();
+        $preventivo = $_POST['preventivo'];
+        
+        $p = $pController->convertToPreventivo($preventivo);
+        
+        //1. salvare i dati nel database        
+        //2. comporre il pdf 
+        //3. creare la mail e allegarci il pdf
+                
+        $result = array();
+        
+        //1. salvo il preventivo nel database
+        $idPreventivo = $pController->savePreventivo($p);
+        if($idPreventivo != false){
+            $result['salvato'] = true;
+            
+            //2. compongo il pdf
+            
+            $pController->createPDF($idPreventivo);
+        }
+        else{
+            $result['salvato'] = false;
+        }
+        
+        echo json_encode($result);
+        
+        
+        
+    }
+    
 }
 
         

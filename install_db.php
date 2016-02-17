@@ -171,7 +171,8 @@ function install_tabella_preventivo($wpdb, $charset_collate){
                 cliente_via TEXT NOT NULL,
                 cliente_tel VARCHAR(100) NOT NULL,               
                 spesa_totale DECIMAL(15,2),
-                visionato INT NOT NULL DEFAULT 0
+                visionato INT NOT NULL DEFAULT 0,
+                pdf TEXT
               );{$charset_collate}";    
     try{
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );

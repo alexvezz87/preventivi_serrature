@@ -22,6 +22,7 @@ class Preventivo {
     private $spesaTotale;
     private $infissi;
     private $visionato;
+    private $pdf;
     
     function __construct() {
         //costruttore vuoto
@@ -97,6 +98,14 @@ class Preventivo {
 
     function setVisionato($visionato) {
         $this->visionato = $visionato;
+    }
+
+    function getPdf() {
+        return $this->pdf;
+    }
+
+    function setPdf($pdf) {
+        $this->pdf = $pdf;
     }
 
 

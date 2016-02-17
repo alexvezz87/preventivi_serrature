@@ -24,7 +24,7 @@ $current_user = wp_get_current_user();
         </p>
         <p class="rivenditore">
             Rivenditore/Agente: <?php echo $current_user->display_name ?>
-            <input type="hidden" name="rivenditore-agente" value="<?php echo $current_user->display_name ?>" />
+            <input type="hidden" name="rivenditore-agente" value="<?php echo $current_user->ID ?>" />
         </p>
         <p class="info-cliente">
             <label>Nome Cliente</label><input type="text" value="" name="nome-cliente" /><br>
@@ -52,8 +52,12 @@ $current_user = wp_get_current_user();
         <input type="button" name="invia-preventivo" value="Invia Preventivo" /> 
     </form>
     
-    <div class="error-box">
+    <div class="error-box message-box">
         <h4>Preventivo non compilato correttamente</h4>
+        <p></p>
+        <input type="button" name="close-box" value="OK" />
+    </div>
+    <div class="ok-box message-box">
         <p></p>
         <input type="button" name="close-box" value="OK" />
     </div>
