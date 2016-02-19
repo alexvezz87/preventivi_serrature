@@ -23,13 +23,11 @@ class PdfController extends FPDF {
         $this->AddPage();
         $this->SetFont('Arial','B',15);
         $this->Cell(30,10,'Preventivo',1,0,'C');
-       
     }
     
-    public function savePDF($path){
-       
-        $this->Output($path, 'F');
-                
+    public function savePDF($path){       
+        //salvo il file nel file system
+        $this->Output($path, 'F');   
     }
 
     

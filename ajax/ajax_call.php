@@ -80,8 +80,25 @@ function pps_ajax_callback(){
             $result['salvato'] = true;
             
             //2. compongo il pdf
+            $pdf = $pController->createPDF($idPreventivo);           
             
-            $pController->createPDF($idPreventivo);
+            if($pdf['url'] != false){                
+                //inserisco l'url del pdf nel record del preventivo appena salvato
+                $pController->updateUrlPdf($idPreventivo, $pdf['url']);
+                $result['pdf'] = $pdf['url'];  
+                
+                //3. Invio della mail
+                if($pController->sendEmailtoAdmin($idPreventivo, $pdf['dir'])){
+                    $result['mail'] = true;
+                }
+                else{
+                    $result['mail'] = false;
+                }
+                
+            }
+            else{
+                $result['pdf'] = false;
+            }
         }
         else{
             $result['salvato'] = false;

@@ -231,28 +231,106 @@ class PreventivoController {
         return $i;
     }
     
-    
+    /**
+     * La funzione sfruttando le classi FPDF crea un pdf e ne restituisce l'url salvato nel server
+     * @global type $DIR_PDF
+     * @global type $URL_PDF
+     * @param type $idPreventivo
+     * @return boolean
+     */
     public function createPDF($idPreventivo){
         global $DIR_PDF;
+        global $URL_PDF;
         
         //ottengo il preventivo
         $p = new Preventivo();
-        $p = $this->getPreventivo($idPreventivo);       
+        $p = $this->getPreventivo($idPreventivo);    
+        
+        $name = 'preventivo-'.$p->getId().'.pdf';
        
         try{
             $this->pdfWriter->createHeader();
-            $this->pdfWriter->savePDF($DIR_PDF.'preventivo-'.$p->getId().'.pdf');
+            $this->pdfWriter->savePDF($DIR_PDF.$name);            
             
-            
-            return $DIR_PDF.'preventivo-'.$p->getId().'.pdf';
+            $result['url'] = $URL_PDF.$name;
+            $result['dir'] = $DIR_PDF.$name;
+                        
+            return $result;
         }
         catch (Exception $ex){
             _e($ex);
             return false;
-        }
+        }        
+    }
+    
+    /**
+     * La funzione aggiorna il campo pdf nel database
+     * @param type $idPreventivo
+     * @param type $url
+     * @return type
+     */
+    public function updateUrlPdf($idPreventivo, $url){
+        return $this->pDAO->updatePDF($idPreventivo, $url);
+    }
+    
+    /**
+     * La funzione aggiorna il campo visionato nel database a 1
+     * @param type $idPreventivo
+     * @return type
+     */
+    public function setPreventivoVisionato($idPreventivo){
+        return $this->pDAO->setPreventivoVisionato($idPreventivo);
+    }
+    
+    /**
+     * La funzione elabora un preventivo ed invia una mail con associato un allegato
+     * @param type $idPreventivo
+     * @param type $dir
+     * @return type
+     */
+    public function sendEmailtoAdmin($idPreventivo, $dir){
+        //creo un oggetto preventivo
+        $p = new Preventivo();
+        $p = $this->getPreventivo($idPreventivo);
+        
+        //ottengo il nome del rivenditore/agente
+        $user_info = get_userdata($p->getIdUtente());
+        
+        $to = 'info@alexsoluzioniweb.it';
+        $subject = "Ricevuto Preventivo online da ".$user_info->display_name;
+        $message = "Un nuovo preventivo online è stato ricevuto!";
+        $attachments = array($dir);
+        
+        add_filter('wp_mail_content_type',create_function('', 'return "text/html"; '));
+        return wp_mail($to, $subject, $message, $headers = '', $attachments );                
         
     }
     
+    public function deletePreventivo($idPreventivo){
+        //devo eliminare tutto ciò che riguarda il preventivo
+        
+        //ottengo gli id degli infissi del preventivo
+        $infissi = $this->iDAO->getIdInfissi($idPreventivo);
+        //elimino tutti le associazioni di maggiorazione/infisso dedicate a quell'infisso
+        foreach($infissi as $infisso){
+            if(!$this->imDAO->deleteMaggiorazioni($infisso->ID)){
+                return false;
+            }
+        }
+        
+        //elimino tutti gli infissi del preventivo
+        if(!$this->iDAO->deleteInfissi($idPreventivo)){
+            return false;
+        }
+        
+        //elimino il preventivo
+        if(!$this->pDAO->deletePreventivo($idPreventivo)){
+            return false;
+        }
+        
+        return true;
+        
+    }
     
     
 }

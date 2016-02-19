@@ -24,7 +24,7 @@ require_once 'controller/PdfController.php';
 require_once 'view/GestionePrezziView.php';
 require_once 'view/CalcolaPreventivoView.php';
 require_once 'view/GestioneMaggiorazioneView.php';
-require_once 'view/GestionePreventiviView.php';
+require_once 'view/GestionePreventivoView.php';
 
 
 ?>

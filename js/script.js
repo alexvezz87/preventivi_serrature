@@ -399,6 +399,9 @@ jQuery(document).ready(function($){
             $('input[name=aggiungi-infisso]').removeAttr('disabled');
         });
         
+        //LISTENER SU SELEZIONA NUMERO ANTE        
+        listenerNumeroAnte();
+        
         aggiungiInfisso();
         eliminaInfisso();     
         inviaPreventivo();
@@ -408,6 +411,31 @@ jQuery(document).ready(function($){
         });
         
     }    
+    
+    /**
+     * Listner che se in etinere della composizione di un infisso vengono modificati
+     * i dati riferiti al numero di ante, vengono resettati i parametri di successivo sviluppo
+     * e azzerata la spesa dell'infisso
+     * @returns {undefined}
+     */
+    function listenerNumeroAnte(){
+        //cambiando il numero di ante, va resettata la visualizzazione successiva
+        $(document).on('change', 'select[name=seleziona-ante]', function(){     
+            $(this).parent('.step').parent('.selezione-ante').siblings('.selezione-infissi').html('');
+            $(this).parent('.step').parent('.selezione-ante').siblings('.selezione-misure').html('');
+            
+            //deseleziono le maggiorazioni
+            $(this).parent('.step').parent('.selezione-ante').siblings('.maggiorazioni').find('.box-2').each(function(){
+                $(this).removeClass('selected');
+            });
+            //cambio il totale parziale dell'infisso
+            $(this).parent('.step').parent('.selezione-ante').siblings('.spesa-parziale-infisso').find('input[name=spesa-parziale-infisso]').val(0);
+            $(this).parent('.step').parent('.selezione-ante').siblings('.spesa-parziale-infisso').find('span.spesa-infisso').text('0');
+            $(this).parent('.step').parent('.selezione-ante').siblings('input[name=totale-infisso]').val(0);
+            
+            aggiornoTotalePreventivo();
+        });
+    }
     
     function reset(){
         //resetto le selezioni
@@ -592,7 +620,7 @@ jQuery(document).ready(function($){
             //console.log(infissi);
             
             //controllo i campi
-            var check = checkFields(infissi);
+            var check = checkFields(infissi, preventivo);
             if(check !== true){
                 //I campi non sono stati compilati nel modo corretto
                 
@@ -601,8 +629,15 @@ jQuery(document).ready(function($){
                 var html = "";
                
                 $.each(check, function(index, value){
-                    if(index === 0){
-                        html += "Nell'infisso n."+value+" serve: <br>";
+                    if(index >= 0 && index < 6){
+                        if(index >= 0 && index < 5){
+                            if(typeof(value) !== 'undefined'){
+                                html+= '<div class="punto">- '+value+'</div>';
+                            }
+                        }
+                        else if(index === 5){
+                            html += "Nell'infisso n."+value+" serve: <br>";
+                        }
                     }
                     else{
                         html+= '<div class="punto">- '+value+'</div>';
@@ -632,9 +667,23 @@ jQuery(document).ready(function($){
                     data: {preventivo: preventivo},
                     success: function(data){
                         var html = "";
-                        if(data.salvato == true){
+                        if(data.salvato === true){
                             //il preventivo è stato salvato correttamente nel database
                             html+= 'Il preventivo è stato correttamente registrato!'; 
+                            if(data.pdf !== false){
+                                html+='<br><a target="_blank" href="'+data.pdf+'">Rivedi la tua richiesta di preventivo</a>';
+                                
+                                if(data.mail === true){
+                                    html+='<br>Email inviata all\'amministrazione!';
+                                }
+                                else{
+                                    html+='<br>Errore nell\'invio dell\'email!';
+                                }
+                            }
+                            else{
+                                html+='<br>Errore nel salvataggio del pdf!';
+                            }
+                            
                         }
                         else{
                             //il preventivo non è stato salvato correttamente nel database
@@ -654,7 +703,26 @@ jQuery(document).ready(function($){
     }
     
     //funzione che esegue un controllo sui campi
-    function checkFields(infissi){
+    function checkFields(infissi, preventivo){
+        var mancanti = new Array();
+        //Controllo sui preventivi
+        
+        if(preventivo.data === ''){
+            mancanti[0] = 'Indicare la data del preventivo';
+        }
+        if(preventivo.rivenditore === ''){
+            mancanti[1] = 'Non è stato effettuato l\'accesso come utente rivenditore/agente';
+        }
+        if(preventivo.clienteNome === ''){
+            mancanti[2] = 'Indicare il nome del cliente';
+        }
+        if(preventivo.clienteVia === ''){
+            mancanti[3] = 'Indicare l\'indirizzo del cliente';
+        }
+        if(preventivo.clienteTel === ''){
+            mancanti[4]= 'Indicare il recapito telefonico del cliente';
+        }
+        
         //Controllo sui campi            
         for(var i=0; i < infissi.length; i++){
             if(typeof(infissi[i])!== 'undefined'){
@@ -662,9 +730,9 @@ jQuery(document).ready(function($){
                 //controllo la dimensione dell'array
                 //se è minore di 12, non sono stati compilati tutti i campi
                 if(Object.size(infissi[i]) < 12){
-                    var mancanti = new Array();
+                    
                     //il campo numero zero indica a quale infisso mancano i valori
-                    mancanti[0] = i+1;                    
+                    mancanti[5] = i+1;                    
                     
                     //controllo i valori mancanti
                     if(!('altezza' in infissi[i])){
@@ -704,9 +772,13 @@ jQuery(document).ready(function($){
                         mancanti.push('Indicare il tipo di infisso');
                     } 
                     
-                    return mancanti;
+                    //return mancanti;
                 }               
             }
+        }
+        
+        if(mancanti.length > 0){
+            return mancanti;
         }
         
         return true;

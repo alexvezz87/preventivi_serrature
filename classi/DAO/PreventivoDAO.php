@@ -45,11 +45,11 @@ class PreventivoDAO {
      * @param Preventivo $p
      * @return type
      */
-    public function savePreventivo(Preventivo $p){
-        //imposto il timezone
-        date_default_timezone_set('Europe/Rome');
-        $timestamp = date('Y-m-d H:i:s', strtotime("now")); 
+    public function savePreventivo(Preventivo $p){        
         try{
+            //imposto il timezone
+            date_default_timezone_set('Europe/Rome');
+            $timestamp = date('Y-m-d H:i:s', strtotime("now")); 
             $this->wpdb->insert(
                     $this->table,
                     array(
@@ -79,11 +79,14 @@ class PreventivoDAO {
      */
     public function setPreventivoVisionato($id){
         try{
+            //imposto il timezone
+            date_default_timezone_set('Europe/Rome');
+            $timestamp = date('Y-m-d H:i:s', strtotime("now")); 
             $this->wpdb->update(
                     $this->table,
-                    array('visionato' => 1),
+                    array('visionato' => 1, 'data_visionato' => $timestamp),
                     array('ID' => $id),
-                    array('%d'),
+                    array('%d', '%s'),
                     array('%d')
                 );
             return true;
@@ -130,6 +133,22 @@ class PreventivoDAO {
             return false;
         }
     }
+    
+    public function updatePDF($id, $url){
+        try{
+            $this->wpdb->update(
+                    $this->table,
+                    array('pdf' => $url),
+                    array('ID' => $id),
+                    array('%s'),
+                    array('%d')
+                );
+            return true;
+        } catch (Exception $ex) {
+            _e($ex);
+            return false;
+        }
+    }
        
     /**
      * La funzione passati dei parametri di ricerca di preventivi, restituisce i risultati corrispondenti
@@ -148,7 +167,16 @@ class PreventivoDAO {
             }
             if(isset($parameters['visionato'])){
                 $query.= ' AND visionato = '.$parameters['visionato'];
-            }            
+            }    
+            
+            if(isset($parameters['order']) && isset($parameters['type-order'])){
+                $query.= ' ORDER BY '.$parameters['order'].' '.$parameters['type-order'];
+            }
+            
+            if(isset($parameters['limit'])){
+                $query.= ' LIMIT '.$parameters['limit'];
+            }
+            //echo $query;
             return $this->wpdb->get_results($query);            
         } catch (Exception $ex) {
             _e($ex);

@@ -21,8 +21,12 @@ require_once 'classi/classes.php';
 require_once 'functions.php';
 
 global $DIR_PDF;
+global $URL_PDF;
+global $URL_IMG;
 
 $DIR_PDF = plugin_dir_path(__FILE__).'\\preventivi_pdf\\';
+$URL_PDF = plugins_url().'/preventivi_serrature/preventivi_pdf/';
+$URL_IMG = plugins_url().'/preventivi_serrature/images/';
 
 //indico la cartella dove è contenuto il plugin
 require_once (dirname(__FILE__) . '/preventivi_serrature.php');

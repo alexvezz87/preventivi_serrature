@@ -89,6 +89,16 @@ class InfissoDAO {
         }
     }
     
+    public function getIdInfissi($idPreventivo){
+        try{
+            $query = 'SELECT ID FROM '.$this->table.' WHERE id_preventivo = '.$idPreventivo;
+            return $this->wpdb->get_results($query);
+        } catch (Exception $ex) {
+            _e($ex);
+            return false;
+        }
+    }
+    
     /**
      * La funzione elimina dal database tutti gli infissi associati ad un determinato preventivo
      * @param type $idPreventivo
