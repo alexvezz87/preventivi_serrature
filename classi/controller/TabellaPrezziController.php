@@ -86,6 +86,12 @@ class TabellaPrezziController {
         return $this->DAO->getTabella($idTabella);
     }
     
+    public function getNomeInfisso($idTabella){
+        $tabella = $this->getTabellaById($idTabella);
+        return $tabella->nome;        
+    }
+    
+    
     /**
      * Funzione che trasforma un array in un oggetto tabella
      * @param type $array

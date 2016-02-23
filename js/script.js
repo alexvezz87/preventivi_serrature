@@ -710,7 +710,7 @@ jQuery(document).ready(function($){
         if(preventivo.data === ''){
             mancanti[0] = 'Indicare la data del preventivo';
         }
-        if(preventivo.rivenditore === ''){
+        if(preventivo.rivenditore === '0'){
             mancanti[1] = 'Non è stato effettuato l\'accesso come utente rivenditore/agente';
         }
         if(preventivo.clienteNome === ''){

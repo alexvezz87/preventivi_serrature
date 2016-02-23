@@ -249,7 +249,19 @@ class PreventivoController {
         $name = 'preventivo-'.$p->getId().'.pdf';
        
         try{
-            $this->pdfWriter->createHeader();
+            //creo la pagina
+            $this->pdfWriter->setPage();
+            
+            //intestazione          
+            $this->pdfWriter->createHeader($p->getId());
+            
+            //corpo del preventivo
+            $this->pdfWriter->createBody($p);
+            
+            //footer
+            //$this->pdfWriter->createFooter();
+            
+            //salvo il pdf
             $this->pdfWriter->savePDF($DIR_PDF.$name);            
             
             $result['url'] = $URL_PDF.$name;

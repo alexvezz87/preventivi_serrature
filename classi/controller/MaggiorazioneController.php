@@ -67,7 +67,11 @@ class MaggiorazioneController {
         return $this->DAO->deleteMaggiorazione($idM);
     }
     
-    
+    public function getInfoMaggiorazione($idMaggiorazione){
+        $maggiorazione = $this->DAO->getMaggiorazione($idMaggiorazione);
+        
+        return $maggiorazione->nome.' + '.$maggiorazione->quantita.' '.$maggiorazione->unita_misura;
+    }
     
 
 }

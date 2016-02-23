@@ -98,7 +98,7 @@ class InfissoDAO {
             return false;
         }
     }
-    
+   
     /**
      * La funzione elimina dal database tutti gli infissi associati ad un determinato preventivo
      * @param type $idPreventivo

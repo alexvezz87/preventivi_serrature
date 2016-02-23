@@ -97,7 +97,7 @@ class GestionePreventivoView {
     ?>
                 <tr class="row-data">
                     <td><?php echo $p->getId() ?></td>
-                    <td><?php echo $this->getTime($p->getData()) ?></td>
+                    <td><?php echo getTime($p->getData()) ?></td>
                     <td><?php echo $nomeRivenditore ?></td>                    
                     <td><?php echo $p->getClienteNome() ?></td>
                     <td><?php echo $p->getClienteVia() ?></td>
@@ -154,19 +154,4 @@ class GestionePreventivoView {
          }
     }
     
-    /**
-     * Funzione che converte il timestamp in un tempo leggibile
-     * @param type $time
-     * @return type
-     */
-    private function getTime($time){
-        //viene passata una data nella forma aaaa-mmm-dd hh:mm:ss (es. 2015-09-13 16:30:40)
-        //devo restituire gg/mm/aaaa hh:mm
-
-        $temp = explode(' ', $time);
-        $time1 = explode('-', $temp[0]);
-        $time2 = explode(':', $temp[1]);
-
-        return $time1[2].'/'.$time1[1].'/'.$time1[0].' '.$time2[0].':'.$time2[1];
-    }
 }

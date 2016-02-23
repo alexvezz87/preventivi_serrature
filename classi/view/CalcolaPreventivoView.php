@@ -27,8 +27,8 @@ class CalcolaPreventivoView {
     ?>    
             <h3 class="title-infisso">Infisso N. <span>1</span></h3>       
             <p class="step">1. Seleziona il tipo di infisso</p>
-            <div class="porta box" data-type="tipo-infisso" data-name="porta">porta</div>
-            <div class="finestra box" data-type="tipo-infisso" data-name="finestra">finestra</div>
+            <div class="porta box" data-type="tipo-infisso" data-name="Portafinestra">Portafinestra</div>
+            <div class="finestra box" data-type="tipo-infisso" data-name="Finestra">finestra</div>
             <div class="selezione-ante"></div>
             <input class="ricerca" type="button" name="ricerca-infissi" value="Prosegui">
             <div class="selezione-infissi"></div>
