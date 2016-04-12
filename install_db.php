@@ -58,7 +58,9 @@ function install_tabella_articoli($wpdb, $charset_collate) {
                 start_cols INT NOT NULL,
                 end_cols INT NOT NULL,
                 step_cols INT NOT NULL,
-                ante INT NOT NULL
+                ante INT NOT NULL,
+                prezzo_iniziale DECIMAL(8,2) NOT NULL,
+                incremento DECIMAL(8,2) NOT NULL
              );{$charset_collate}";   
     try{
             require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
@@ -168,12 +170,17 @@ function install_tabella_preventivo($wpdb, $charset_collate){
                 data TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
                 data_visionato TIMESTAMP,
                 id_utente INT NOT NULL,
+                cliente_tipo VARCHAR(20) NOT NULL,
                 cliente_nome VARCHAR(100) NOT NULL,
                 cliente_via TEXT NOT NULL,
-                cliente_tel VARCHAR(100) NOT NULL,               
+                cliente_tel VARCHAR(100) NOT NULL,
+                cliente_email TEXT, 
+                cliente_cf TEXT,
                 spesa_totale DECIMAL(15,2),
                 visionato INT NOT NULL DEFAULT 0,
-                pdf TEXT
+                pdf TEXT,
+                note TEXT,
+                tipo INT NOT NULL
               );{$charset_collate}";    
     try{
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );

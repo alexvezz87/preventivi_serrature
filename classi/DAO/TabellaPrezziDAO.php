@@ -69,9 +69,11 @@ class TabellaPrezziDAO {
                             'start_cols' => $tab->getStartCols(),
                             'end_cols' => $tab->getEndCols(),
                             'step_cols' => $tab->getStepCols(),
-                            'ante' => $tab->getAnte()
+                            'ante' => $tab->getAnte(),
+                            'prezzo_iniziale' => $tab->getPrezzoIniziale(),
+                            'incremento' => $tab->getIncremento()
                         ),
-                        array('%s', '%d', '%d', '%d', '%d', '%d', '%d', '%d')
+                        array('%s', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%f', '%f')
                     );
             return $this->wpdb->insert_id;
             
@@ -175,6 +177,26 @@ class TabellaPrezziDAO {
         try{
             $query = "SELECT prezzo FROM ".$this->table_prezzi." WHERE id_tabella = ".$idTabella." AND val_row = ".$row." AND val_col = ".$col;
             return $this->wpdb->get_var($query);
+        } catch (Exception $ex) {
+            _e($ex);
+            return false;
+        }
+    }
+    
+    public function getRows($idTabella){
+        try{
+            $query = "SELECT DISTINCT val_row FROM ".$this->table_prezzi." WHERE id_tabella = ".$idTabella." ORDER BY val_row ASC";
+            return $this->wpdb->get_col($query);
+        } catch (Exception $ex) {
+            _e($ex);
+            return false;
+        }
+    }
+    
+    public function getCols($idTabella){
+        try{
+            $query = "SELECT DISTINCT val_col FROM ".$this->table_prezzi." WHERE id_tabella = ".$idTabella." ORDER BY val_col ASC";
+            return $this->wpdb->get_col($query);
         } catch (Exception $ex) {
             _e($ex);
             return false;

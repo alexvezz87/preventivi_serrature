@@ -92,6 +92,11 @@ class PreventivoController {
             $p->setSpesaTotale($item->spesa_totale);
             $p->setVisionato($item->visionato);
             $p->setPdf($item->pdf);
+            $p->setNote($item->note);
+            $p->setTipo($item->tipo);
+            $p->setClienteTipo($item->cliente_tipo);
+            $p->setClienteEmail($item->cliente_email);
+            $p->setClienteCF($item->cliente_cf);
             
             //ottengo gli infissi
             $array2 = $this->iDAO->getInfissi($p->getId());
@@ -126,6 +131,11 @@ class PreventivoController {
         $p->setSpesaTotale($item->spesa_totale);
         $p->setVisionato($item->visionato);
         $p->setPdf($item->pdf);
+        $p->setNote($item->note);
+        $p->setTipo($item->tipo);
+        $p->setClienteTipo($item->cliente_tipo);
+        $p->setClienteEmail($item->cliente_email);
+        $p->setClienteCF($item->cliente_cf);
 
         //ottengo gli infissi
         $array2 = $this->iDAO->getInfissi($p->getId());
@@ -152,6 +162,11 @@ class PreventivoController {
         $p->setClienteVia($item['clienteVia']);
         $p->setClienteTel($item['clienteTel']);
         $p->setSpesaTotale($item['totale']);
+        $p->setNote($item['note']);
+        $p->setTipo($item['tipo']);
+        $p->setClienteTipo($item['clienteTipo']);
+        $p->setClienteEmail($item['clienteEmail']);
+        $p->setClienteCF($item['clienteCF']);
         
         $infissi = array();
         foreach($item['infissi'] as $item){
@@ -253,7 +268,7 @@ class PreventivoController {
             $this->pdfWriter->setPage();
             
             //intestazione          
-            $this->pdfWriter->createHeader($p->getId());
+            $this->pdfWriter->createHeader($p->getId(), $p->getTipo());
             
             //corpo del preventivo
             $this->pdfWriter->createBody($p);

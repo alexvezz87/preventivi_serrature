@@ -17,6 +17,8 @@ class Tabella {
     private $id;
     private $prezzi;
     private $ante;
+    private $prezzoIniziale;
+    private $incremento;
     
     function __construct() {
         
@@ -102,6 +104,22 @@ class Tabella {
 
     function setAnte($ante) {
         $this->ante = $ante;
+    }
+
+    function getPrezzoIniziale() {
+        return $this->prezzoIniziale;
+    }
+
+    function getIncremento() {
+        return $this->incremento;
+    }
+
+    function setPrezzoIniziale($prezzoIniziale) {
+        $this->prezzoIniziale = $prezzoIniziale;
+    }
+
+    function setIncremento($incremento) {
+        $this->incremento = $incremento;
     }
 
 

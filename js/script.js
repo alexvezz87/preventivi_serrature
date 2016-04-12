@@ -57,7 +57,7 @@ jQuery(document).ready(function($){
                 url: $urlAjax,
                 data: {id_type : type},
                 success: function(data){
-                    printAnte(data, $element, $button);
+                    printAnte(data, $element, $button, type);
                 }            
             });
 
@@ -87,7 +87,7 @@ jQuery(document).ready(function($){
                 url: $urlAjax,
                 data: {id_type_2: type, ante : ante},
                 success: function(data){
-                    printInfissi(data, $infissi);
+                    printInfissi(data, $infissi, type, ante);
 
                     //Evento click su un infisso
                     $('.infisso').click(function(){                        
@@ -111,35 +111,41 @@ jQuery(document).ready(function($){
                                 printMisure(data, $boxMisure);
                                 //listener sulla modifica delle misure ed inserimento del prezzo
                                 $('input[name=conferma-misure]').click(function(){
-
+                                    
                                     //ottengo il valore del prezzo
-                                    var row = $(this).siblings('.table-misure').find('select[name=infisso-altezza]').val();
-                                    var col = $(this).siblings('.table-misure').find('select[name=infisso-lunghezza]').val();
+                                    var row = $(this).siblings('.table-misure').find('input[name=infisso-altezza]').val();
+                                    var col = $(this).siblings('.table-misure').find('input[name=infisso-lunghezza]').val();
+                                    
+                                    if(row !== '' && row !== null && col !== '' && col !== null){
 
-                                    //chiamata ajax per il prezzo
-                                    $.ajax({
-                                        type:'POST',
-                                        dataType: 'json',
-                                        url: $urlAjax,
-                                        data: {id_tabella_2 : idTabella, row : row, col : col },
-                                        success: function(data){
-                                            var totale = printPrezzo(data);
-                                            //inserisco il prezzo nel parziale
-                                            $boxMisure.siblings('.spesa-parziale-infisso').find('input[name=spesa-parziale-infisso]').val(totale);
-                                            //aggiorno il prezzo totale dell'infisso                                            
-                                            $boxMisure.siblings('.spesa-parziale-infisso').find('span.spesa-infisso').text(totale);
-                                            
-                                            //inserisco il prezzo dell'infisso senza maggiorazioni
-                                            $boxMisure.siblings('input[name=totale-infisso]').val(totale);
-                                            
-                                            
-                                            
-                                            //aggiorno il preventivo totale
-                                            aggiornoTotalePreventivo();                                            
-                                        }
-                                    });
+                                        //chiamata ajax per il prezzo
+                                        $.ajax({
+                                            type:'POST',
+                                            dataType: 'json',
+                                            url: $urlAjax,
+                                            data: {id_tabella_2 : idTabella, row : row, col : col },
+                                            success: function(data){
+                                                var totale = printPrezzo(data);
+                                                //inserisco il prezzo nel parziale
+                                                $boxMisure.siblings('.spesa-parziale-infisso').find('input[name=spesa-parziale-infisso]').val(totale);
+                                                //aggiorno il prezzo totale dell'infisso                                            
+                                                $boxMisure.siblings('.spesa-parziale-infisso').find('span.spesa-infisso').text(totale);
 
-                                    $boxMisure.siblings('.selezione-apertura').show();
+                                                //inserisco il prezzo dell'infisso senza maggiorazioni
+                                                $boxMisure.siblings('input[name=totale-infisso]').val(totale);
+
+
+
+                                                //aggiorno il preventivo totale
+                                                aggiornoTotalePreventivo();                                            
+                                            }
+                                        });
+
+                                        $boxMisure.siblings('.selezione-apertura').show();
+                                    }
+                                    else{
+                                        alert('Le misure da inserire sono obbligatorie!');
+                                    }
                                 });
 
                             }
@@ -203,19 +209,14 @@ jQuery(document).ready(function($){
         var maxL = parseInt(data.end_cols);
         var stepL = parseInt(data.step_cols);
         
-        var html = '<p class="step">4. Seleziona le misure</p>';
-        html += '<table class="table-misure"><tr><td><label>Seleziona altezza </label></td>';
-        html+= '<td><select name="infisso-altezza">';        
-        for(var i=minH; i <= maxH; i+=stepH){
-            html+='<option value="'+i+'">'+i+'</option>';
-        }        
-        html+= '</select></td></tr>';
-        html+= '<tr><td><label> Seleziona lunghezza</label></td>';
-        html+= '<td><select name="infisso-lunghezza">';
-        for(var j=minL; j <= maxL; j+=stepL){
-            html+='<option value="'+j+'">'+j+'</option>';
-        }
-        html+= '</select></td></tr></table>';
+        var html = '<p class="step">4. Indica le misure in millimetri</p>';
+        html += '<table class="table-misure"><tr><td><label>Altezza (mm) </label></td>';
+        html+= '<td><input type="number" value="'+minH+'" min="'+minH+'" name="infisso-altezza" /></td></tr>';       
+        html+= '<tr><td><label>Lunghezza (mm)</label></td>';
+        html+= '<td><input type="number" value="'+minL+'" min="'+minL+'" name="infisso-lunghezza" />';        
+        html+= '</td></tr></table>';
+        
+        html+= '<p class="istruzioni">Come prendere le misure correttamente?<br><a target="_blank" href="#">Leggi le istruzioni</a></p>';
         
         html+= '<input type="button" name="conferma-misure" value="conferma misure" /><br><br>';       
         
@@ -224,10 +225,10 @@ jQuery(document).ready(function($){
         
     }
     
-    function printAnte(data, $element, $button){
+    function printAnte(data, $element, $button, type){
         $(function(){
             
-            var html = '<p class="step">2. Scegli il numero di ante ';
+            var html = '<p class="step">2. Scegli il numero di ante</p>';
             html += '<select name="seleziona-ante">';
             for(var i=0; i< data.length; i++){
                 if(data[i].ante === '0'){
@@ -237,22 +238,34 @@ jQuery(document).ready(function($){
                     html+= '<option value="'+data[i].ante+'">'+data[i].ante+'</option>';
                 }
             }
-            html += '</select></p>';
-                        
+            html += '</select>';
+            
+            if(type === 'F'){
+                html+='<div id="show-img-infisso" class="f0"></div>';
+            }
+            else{
+                html+='<div id="show-img-infisso" class="p1"></div>';
+            }              
+            html+='<div class="clear"></div>';            
             $element.html(html);
             $button.show();
            
         });
     }
     
-    function printInfissi(data, $infissi){
+    function printInfissi(data, $infissi, type, ante){
         $infissi.html('');
         $infissi.show();        
         var html = '<p class="step">3. Selezione l\'articolo desiderato</p>';
         for(var i=0; i < data.length; i++){
-            html+='<div class="box infisso" data-type="infisso" data-name="'+data[i].ID+'" >';
+            var nuovaClasse = type+ante;
+            if (data[i].nome.indexOf("libro") >= 0){
+                nuovaClasse+='L';
+            }
+            
+            html+='<div class="box infisso '+nuovaClasse+'" data-type="infisso" data-name="'+data[i].ID+'" >';
             html+='<input type="hidden" name="infisso-id" value="'+data[i].ID+'" />';
-            html+='<p style="font-size:14px">'+data[i].ID+'<br>'+data[i].nome+'</p>';           
+            html+='<p>'+data[i].nome+'</p>';           
             html+='</div>';
         }
         
@@ -262,38 +275,76 @@ jQuery(document).ready(function($){
     }
     
     //gestione automatizzata dei due tipi di colori
-    function gestoreSelettoreColori(type){
-        $('.'+type+'-box.selettore-box').click(function(){
-            $(this).siblings('.select-'+type).slideToggle();
+    function gestoreSelettoreColori(){
+        
+        //La gestione dei colori deve tenere conto di tre opzioni:
+        //1. Se il selettore è puntato sul RAL allora MICACEI e ZINCATURA devono essere deselezionati
+        //2. Se il selettore è puntato su MICACEI, RAL e ZINCATURA devono essere deselezionati
+        //3. Se il selettore è puntato su ZINCATURA, RAL e MICACEI devono essere deselezionati
+        //Quando avviene questa selezione/deselezione, al campo nascosto "colore-scelto" deve essere modificato il valore di conseguenza
+        
+        $('.ral-box.selettore-box').click(function(){
+            $(this).siblings('.select-ral').slideToggle();
         });
         
-        $('.select-'+type+' div').click(function(){
-            var $box = $(this).parent('.select-'+type).siblings('.'+type+'-box');
-            var $select = $(this).parent('.select-'+type);            
+        $('.select-ral > div').click(function(){
+            //se faccio click sul selettore del ral, devo deselezionare gli altri
+            $(this).siblings('.micacei').find('.box').removeClass('selected');
+            $(this).siblings('.box-zincatura').find('.box').removeClass('selected');
+        });
+        
+        //1. Se il selettore è puntato sul RAL allora MICACEI e ZINCATURA devono essere deselezionati
+        $('.select-ral div').click(function(){
+            var $box = $(this).parent('.select-ral').siblings('.ral-box');
+            var $micacei = $(this).parent('.select-ral').siblings('.micacei');
+            var $zincatura = $(this).parent('.select-ral').siblings('.box-zincatura');
+            var $select = $(this).parent('.select-ral');
+            var $colore = $(this).parent('.select-ral').siblings('input[name=colore-scelto]');           
+            
             $box.find('.selettore-show').html('');
             $(this).clone().appendTo($box.find('.selettore-show'));
             $select.hide();    
             
-            //codice per de-selezionare il relativo colore
-            if(type==='ral'){
-                //deseleziono i micacei
-                $box.siblings('.micacei-box').find('.selettore-show').html('<div class="none" data-type="colore" data-name="none">selezione Micacei</div>');
-            }
-            else{
-                //deseleziono i ral
-                $box.siblings('.ral-box').find('.selettore-show').html('<div class="none" data-type="colore" data-name="none">selezione RAL</div>');
-            }
-            
+            //deseleziono i micacei e zincatura            
+            $micacei.find('.box').removeClass('selected');
+            $zincatura.find('.box').removeClass('selected');           
+           
             //mostro il punto successivo se ho effettuato una scelta diversa da none           
-            if($(this).data('name')!== 'none'){                
-                $select.parent('.selezione-colore').siblings('.selezione-cerniera').show();
-                
+            if($(this).data('name')!== 'none'){        
+                $colore.val($(this).data('name'));
+                $select.parent('.selezione-colore').siblings('.selezione-cerniera').show();                
             }
             else{
                 $select.parent('.selezione-colore').siblings('.selezione-cerniera').hide();
                 $select.parent('.selezione-colore').siblings('.selezione-cerniera').find('.box').removeClass('selected');
             }
             
+        });      
+        //2. Se il selettore è puntato su MICACEI, RAL e ZINCATURA devono essere deselezionati
+        $('.micacei div').click(function(){
+           var $ral = $(this).parent('.micacei').siblings('.ral-box');
+           var $zincatura = $(this).parent('.micacei').siblings('.box-zincatura');
+           var $colore = $(this).parent('.micacei').siblings('input[name=colore-scelto]');
+           
+           //deseleziono il ral e zincatura
+           $ral.find('.selettore-show').html('<div class="none" data-type="colore" data-name="none">selezione RAL</div>');
+           $zincatura.find('.box').removeClass('selected');
+           
+           //aggiorno il colore
+           $colore.val($(this).data('name'));
+        });
+        //3. Se il selettore è puntato su ZINCATURA, RAL e MICACEI devono essere deselezionati
+        $('.box-zincatura div').click(function(){
+            var $ral = $(this).parent('.box-zincatura').siblings('.ral-box');
+            var $micacei = $(this).parent('.box-zincatura').siblings('.micacei');
+            var $colore = $(this).parent('.box-zincatura').siblings('input[name=colore-scelto]');
+            
+            //deselziono il ral e micacei
+            $ral.find('.selettore-show').html('<div class="none" data-type="colore" data-name="none">selezione RAL</div>');
+            $micacei.find('.box').removeClass('selected');
+            
+            //aggiorno il colore
+            $colore.val($(this).data('name'));            
         });
         
         
@@ -369,8 +420,7 @@ jQuery(document).ready(function($){
         selettoreMaggiorazioni();
         selectInfisso();
         searchInfisso();
-        selettoreRAL();
-        selettoreMICACEI();        
+        gestoreSelettoreColori();
         changeNumeroInfissi();
         
         $('.selezione-apertura .box').click(function(){
@@ -505,6 +555,11 @@ jQuery(document).ready(function($){
             * 3. Nome cliente
             * 4. Via cliente
             * 5. Telefono cliente
+            * 5a. Tipologia (preventivo/ordine)
+            * 5b. Note
+            * 5c. Tipo cliente
+            * 5d. Email cliente
+            * 5e. CF cliente
             * ciclo su tutti div selezione-container
             * controllo se sono stati compilati i diversi campi:
             * 6. Selezione su tipo di infisso (finestra o porta)
@@ -517,10 +572,11 @@ jQuery(document).ready(function($){
             * 13. Selezione sul tipo di serratura
             * 14. Selezione sul tipo di nodo
             * 15. Selezione sul colore
+            * 15b. Seleziono il tipo di colore
             * 16. Selezione sul tipo di cerniera
             * 17. Selezione sulle maggiorazioni
             * 18. Selezione sul numero di infissi
-            * 19. Spesa parziale infisso
+            * 19. Spesa parziale infisso            * 
             */
            
             //1. Data odierna
@@ -534,7 +590,16 @@ jQuery(document).ready(function($){
             preventivo.clienteVia = $('input[name=via-cliente]').val();
             //5. Telefono cliente
             preventivo.clienteTel = $('input[name=telefono-cliente]').val();
-            
+            //5a. Tipo
+            preventivo.tipo = $('input[name=tipo]:checked').val();
+            //5b. Note
+            preventivo.note = $('textarea[name=note]').val();
+            //5c. Tipo cliente
+            preventivo.clienteTipo = $('input[name=tipo-cliente]:checked').val();
+            //5d. Email cliente
+            preventivo.clienteEmail = $('input[name=mail-cliente]').val();
+            //5e. CF cliente
+            preventivo.clienteCF = $('input[name=cf]').val();
             
             //creo l'array che conterrà i dati            
             var infissi = new Array($('.selezione-container').size());
@@ -580,22 +645,23 @@ jQuery(document).ready(function($){
                 }
                 
                 //9. Selezione della misura di altezza
-                if( typeof($(this).find('select[name=infisso-altezza]').val()) !== 'undefined'){
-                    infisso['altezza'] = $(this).find('select[name=infisso-altezza]').val();
+                if( typeof($(this).find('input[name=infisso-altezza]').val()) !== 'undefined'){
+                    infisso['altezza'] = $(this).find('input[name=infisso-altezza]').val();
                 }
                 //10. Selezione della misura di lunghezza
-                if(typeof($(this).find('select[name=infisso-lunghezza]').val()) !== 'undefined'){
-                    infisso['lunghezza'] = $(this).find('select[name=infisso-lunghezza]').val();
+                if(typeof($(this).find('input[name=infisso-lunghezza]').val()) !== 'undefined'){
+                    infisso['lunghezza'] = $(this).find('input[name=infisso-lunghezza]').val();
                 }
                 //15. Selezione sul colore
                 // 15.ral --> controllo i RAL
-                if($(this).find('.ral-box .selettore-show div').data('name') !== 'none'){
-                    infisso['colore'] = $(this).find('.ral-box .selettore-show div').data('name');
+                if($(this).find('.ral-box .selettore-show div').data('name') !== 'none'){                    
+                    //15b --> se il RAL è selezionato, considero anche il tipo                    
+                    infisso['colore'] = $(this).find('input[name=colore-scelto]').val()+' '+$(this).find('.tipo-ral input[name=tipo-ral]:checked').val();                   
                 }
-                // 15.micacei --> controllo i micacei
-                if($(this).find('.micacei-box .selettore-show div').data('name') !== 'none'){
-                    infisso['colore'] = $(this).find('.micacei-box .selettore-show div').data('name');
-                } 
+                else{
+                    //se il valore del RAL non è indicato allora si tratta di un micaceo o solo zincatura
+                    infisso['colore'] = $(this).find('input[name=colore-scelto]').val();
+                }                
                 
                 //18. Selezione sul numero di infissi   
                 if(typeof($(this).find('input[name=numero-infissi]').val()) !== 'undefined'){
@@ -604,7 +670,7 @@ jQuery(document).ready(function($){
                 
                 //19. Spesa parziale infisso
                 infisso['spesa-parziale'] = $(this).find('input[name=spesa-parziale-infisso]').val();
-                
+                                
                 //console.log(Object.size(infisso));
                 
                 infissi.push(infisso);
@@ -629,13 +695,13 @@ jQuery(document).ready(function($){
                 var html = "";
                
                 $.each(check, function(index, value){
-                    if(index >= 0 && index < 6){
-                        if(index >= 0 && index < 5){
+                    if(index >= 0 && index < 7){
+                        if(index >= 0 && index < 6){
                             if(typeof(value) !== 'undefined'){
                                 html+= '<div class="punto">- '+value+'</div>';
                             }
                         }
-                        else if(index === 5){
+                        else if(index === 6){
                             html += "Nell'infisso n."+value+" serve: <br>";
                         }
                     }
@@ -723,6 +789,10 @@ jQuery(document).ready(function($){
             mancanti[4]= 'Indicare il recapito telefonico del cliente';
         }
         
+        if(typeof(preventivo.tipo) === 'undefined'){
+            mancanti[5] = 'Indicare la tipologia (se preventivo o se ordine)';
+        }
+        
         //Controllo sui campi            
         for(var i=0; i < infissi.length; i++){
             if(typeof(infissi[i])!== 'undefined'){
@@ -732,7 +802,7 @@ jQuery(document).ready(function($){
                 if(Object.size(infissi[i]) < 12){
                     
                     //il campo numero zero indica a quale infisso mancano i valori
-                    mancanti[5] = i+1;                    
+                    mancanti[6] = i+1;                    
                     
                     //controllo i valori mancanti
                     if(!('altezza' in infissi[i])){
@@ -794,7 +864,45 @@ jQuery(document).ready(function($){
         return size;
     };
 
-    
+    //funzione che cambia l'immagine dell'infisso a seconda delle ante selezionate
+    $(document).on('change', 'select[name=seleziona-ante]', function(){    
+        var tipo = $(this).parent('.selezione-ante').siblings('.selected[data-type]').data('name');
+        var ante = $(this).val();
+        var newclass = "";
+        
+        if(tipo === 'Finestra'){
+            if(ante == 0){
+                newclass = "f0";
+            }
+            else if(ante == 1){
+                newclass = "f1";
+            }
+            else if(ante == 2){
+                newclass = "f2";
+            }
+            else if(ante == 3){
+                newclass = "f3";
+            }
+        }
+        else if(tipo === 'Portafinestra'){
+            if(ante == 1){
+                newclass = "p1";
+            }
+            else if(ante == 2){
+                newclass = "p2";
+            }
+            else if(ante == 3){
+                newclass = "p3";
+            }
+            else if(ante == 4){
+                newclass = "p4";
+            }
+        }
+        
+        $(this).siblings('#show-img-infisso').removeClass();
+        $(this).siblings('#show-img-infisso').addClass(newclass);
+        
+    });
     
     
 });

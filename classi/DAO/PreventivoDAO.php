@@ -59,9 +59,14 @@ class PreventivoDAO {
                         'cliente_via' => $p->getClienteVia(),
                         'cliente_tel' => $p->getClienteTel(),
                         'spesa_totale' => $p->getSpesaTotale(),
-                        'visionato' => 0
+                        'visionato' => 0,
+                        'note' => $p->getNote(),
+                        'tipo' => $p->getTipo(),
+                        'cliente_tipo' => $p->getClienteTipo(),
+                        'cliente_email' => $p->getClienteEmail(),
+                        'cliente_cf' => $p->getClienteCF()
                     ),
-                    array('%s', '%d', '%s', '%s', '%s', '%f', '%d')
+                    array('%s', '%d', '%s', '%s', '%s', '%f', '%d', '%s', '%d', '%s', '%s', '%s')
                 );
             //restituisco l'id del record di preventivo inserito
             return $this->wpdb->insert_id;  
@@ -167,7 +172,11 @@ class PreventivoDAO {
             }
             if(isset($parameters['visionato'])){
                 $query.= ' AND visionato = '.$parameters['visionato'];
-            }    
+            }   
+            
+            if(isset($parameters['tipo'])){
+                $query.= ' AND tipo = '.$parameters['tipo'];
+            }
             
             if(isset($parameters['order']) && isset($parameters['type-order'])){
                 $query.= ' ORDER BY '.$parameters['order'].' '.$parameters['type-order'];

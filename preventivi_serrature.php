@@ -41,7 +41,7 @@ function install_DB(){
 //rimuovo il db quando disattivo il plugin
 register_deactivation_hook( __FILE__, 'remove_DB');
 function remove_DB(){
-    //dropDB();
+    dropDB();
 }
 
 
@@ -72,7 +72,12 @@ add_action('admin_menu', 'add_admin_menu');
 //inserisco shortcode di pagina
 add_shortcode('calcolaPreventivo', 'add_calcola_preventivo');
 function add_calcola_preventivo(){
-    include 'pages/public/calcola_preventivo.php';
+    if(is_user_logged_in ()){    
+        include 'pages/public/calcola_preventivo.php';
+    }
+    else{
+        echo '<p>Per effettuare un preventivo devi essere registrato al sito!</p>';
+    }
 }
 
 //registro lo stile

@@ -34,15 +34,24 @@ class TabellaPrezziController {
         if($idTabella != false){
             //agisco solo se la tabella è stata salvata
             
+            $prezzoIniziale = $tab->getPrezzoIniziale();
+            $incremento = $tab->getIncremento();
+            
+            
+            $numRow = 0;            
             for($rowCount = $tab->getStartRows(); $rowCount <= $tab->getEndRows(); $rowCount += $tab->getStepRows()){
+                $numCol = 0;
                 for($colCount = $tab->getStartCols(); $colCount <= $tab->getEndCols(); $colCount += $tab->getStepCols()){
                     $prezzo = new Prezzo();
                     $prezzo->setIdTabella($idTabella);
                     $prezzo->setValRow($rowCount);
                     $prezzo->setValCol($colCount);
-                    $prezzo->setPrezzo(0);
+                    $prezzoCella = floatval($prezzoIniziale + (($incremento * $prezzoIniziale )/ 100)*($numCol + $numRow));
+                    $prezzo->setPrezzo($prezzoCella);
                     $this->DAO->savePrezziTabella($prezzo);
+                    $numCol++;
                 }
+                $numRow++;
             }            
             return true;
         }        
@@ -197,7 +206,77 @@ class TabellaPrezziController {
      * @return type
      */
     public function getPrezzo($idTabella, $row, $col){
-        return $this->DAO->getPrezzo($idTabella, $row, $col);
+        
+        //Il calcolo del prezzo diventa complesso nel caso vengano inseriti valori al di fuori dei campi
+        //specificati nelle tabelle corrispondenti. In quel caso bisogna gestire i valori nei determinati casi
+        
+        //1. Controllo se i valori inseriti rispettano i valori presenti nel db
+        $tabella = $this->getTabellaById($idTabella);
+        
+        if($row < $tabella->end_rows && $col < $tabella->end_cols){
+            //2a in caso positivo continuo con il normale procedimento
+            
+            $rows = $this->DAO->getRows($idTabella);
+            $cols = $this->DAO->getCols($idTabella);
+
+            //devo controllare le misure di riga e colonna.
+            //se eccedono devo passare alla misura successiva
+            $r = $this->getValorePerEccesso($rows, $row);
+            $c = $this->getValorePerEccesso($cols, $col);    
+            return $this->DAO->getPrezzo($idTabella, $r, $c);
+        }
+        else{
+            //2b in caso negativo devo quantificare di quanto sono uscito dai canoni normali e capire il prezzo
+           
+            //la funzione di calcolo è sempre questa --> prezzoIniziale + ((incremento*prezzoIniziale)/100)*(numCol + numRow)
+            //diventa incognita il valore delle colonne e delle righe
+            //ciò si misura dividendo per l'offset e arrotondando per eccesso
+            $numCol = intval((intval($col)-intval($tabella->start_cols)) / intval($tabella->step_cols));
+            if(intval($col) % intval($tabella->step_cols) != 0){
+                $numCol++;
+            }
+            $numRow = intval((intval($row) - intval($tabella->start_rows) )/ intval($tabella->step_rows));
+            if(intval($row) % intval($tabella->step_rows) != 0){
+                $numRow++;
+            }            
+            
+            //print_r($numCol.'-'.$numRow.' ');
+            
+            $prezzo = floatval($tabella->prezzo_iniziale + (($tabella->incremento * $tabella->prezzo_iniziale))/100 * ($numCol + $numRow));
+            return number_format($prezzo,2);
+        }
     }
+    
+    /**
+     * La funzione preso un array ordinato e un valore, restituisce il valore se presente nel db, 
+     * o il valore arrotondato per eccesso se non è presente nel db
+     * @param type $array
+     * @param type $item
+     * @return type
+     */
+    private function getValorePerEccesso($array, $item){
+        $same = false;
+        $result = 0;
+        $i=0;
+        while($same == false && $i < count($array)){
+            if($array[$i] == $item){
+                $same = true;
+                $result = $item;
+            }
+            else{
+                //rows ha i valori ordinati in modo ascendente
+                //il primo valore maggiore che becca row è per forza il valore per eccesso che cerco
+                if($item < $array[$i]){
+                    $result = $array[$i];
+                    break;
+                }
+            }
+            
+            $i++;
+        }
+        
+        return $result;
+    }
+    
 
 }

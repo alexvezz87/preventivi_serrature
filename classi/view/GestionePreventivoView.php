@@ -38,6 +38,7 @@ class GestionePreventivoView {
         //ottengo tutti i preventivi non visionati
         $parameters['visionato'] = 0;
         $parameters['order'] = 'ID';
+        $parameters['tipo'] = 0;
         $parameters['type-order'] = 'ASC';
        
         $preventivi = $this->pController->getPreventivi($parameters);
@@ -45,12 +46,42 @@ class GestionePreventivoView {
         $this->printTable($preventivi, 0);
         
     }
-    
-    
+     
        
     public function printPreventiviVisionati(){
          //ottengo tutti i preventivi non visionati
         $parameters['visionato'] = 1;
+        $parameters['tipo'] = 0;
+        $parameters['order'] = 'data_visionato';
+        $parameters['type-order'] = 'DESC';
+        $parameters['limit'] = 10;
+        
+        
+        $preventivi = $this->pController->getPreventivi($parameters);
+        
+              
+        $this->printTable($preventivi, 1);
+    }
+    
+    public function printOrdiniNonVisionati(){       
+        
+        //ottengo tutti i preventivi non visionati
+        $parameters['visionato'] = 0;
+        $parameters['tipo'] = 1;
+        $parameters['order'] = 'ID';
+        $parameters['type-order'] = 'ASC';
+       
+        $preventivi = $this->pController->getPreventivi($parameters);
+        
+        $this->printTable($preventivi, 0);
+        
+    }
+     
+       
+    public function printOrdiniVisionati(){
+         //ottengo tutti i preventivi non visionati
+        $parameters['visionato'] = 1;
+        $parameters['tipo'] = 1;
         $parameters['order'] = 'data_visionato';
         $parameters['type-order'] = 'DESC';
         $parameters['limit'] = 10;

@@ -69,6 +69,11 @@ class GestionePrezziView {
                 <input type="text" value="" name="stepCols" required />
             </div>
             <div>
+                <label>Prezzo iniziale</label>
+                <input type="text" value="" name="prezzo-iniziale" required />
+                <label>Tasso di incremento (%)</label>
+                <input type="text" value="" name="incremento" required />
+            <div>
                 <input type="submit" value="Genera Tabella" name="genera-tabella-articolo" />
             </div>
         </form>
@@ -91,6 +96,9 @@ class GestionePrezziView {
         $endCols = isset($_POST['endCols']) ? intval($_POST['endCols']) : null;
         $stepCols = isset($_POST['stepCols']) ? intval($_POST['stepCols']) : null;
         
+        $prezzoIniziale = isset($_POST['prezzo-iniziale']) ? floatval($_POST['prezzo-iniziale']) : null;
+        $incremento = isset($_POST['incremento']) ? ($_POST['incremento']) : null;
+        
         $nameTable = isset($_POST['nameTable']) ? strip_tags($_POST['nameTable']) : null;
         $ante = isset($_POST['ante']) ? strip_tags($_POST['ante']) : null;
         
@@ -109,6 +117,8 @@ class GestionePrezziView {
         $tabella->setEndCols($endCols);
         $tabella->setStepCols($stepCols);
         $tabella->setAnte($ante);
+        $tabella->setPrezzoIniziale($prezzoIniziale);
+        $tabella->setIncremento($incremento);
         
         //salvo l'oggetto nel database
         if(!$this->tPrezzi->saveTabellaArticolo($tabella)){

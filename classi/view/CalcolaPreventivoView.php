@@ -28,54 +28,69 @@ class CalcolaPreventivoView {
             <h3 class="title-infisso">Infisso N. <span>1</span></h3>       
             <p class="step">1. Seleziona il tipo di infisso</p>
             <div class="porta box" data-type="tipo-infisso" data-name="Portafinestra">Portafinestra</div>
-            <div class="finestra box" data-type="tipo-infisso" data-name="Finestra">finestra</div>
+            <div class="finestra box" data-type="tipo-infisso" data-name="Finestra">Finestra</div>
+            <div class="clear"></div>
             <div class="selezione-ante"></div>
-            <input class="ricerca" type="button" name="ricerca-infissi" value="Prosegui">
+            
+            <input class="ricerca clear" type="button" name="ricerca-infissi" value="Prosegui">
+           
             <div class="selezione-infissi"></div>
             <div class="selezione-misure"></div>
             <div class="selezione-apertura">
                 <p class="step">5. Seleziona il tipo di apertura</p>
-                <div class="box si" data-type="apertura" data-name="sinistra-interna"><p>Sinistra interna</p></div>
-                <div class="box se" data-type="apertura" data-name="sinistra-esterna"><p>Sinistra esterna</p></div>
-                <div class="box di" data-type="apertura" data-name="destra-interna"><p>Destra interna</p></div>
-                <div class="box de" data-type="apertura" data-name="destra-esterna"><p>Destra esterna</p></div>
+                
+                    <div class="box si" data-type="apertura" data-name="sinistra-interna"><p>Sinistra Interna</p></div>
+                    <div class="box se" data-type="apertura" data-name="sinistra-esterna"><p>Sinistra Esterna</p></div>
+                    
+                    <div class="separator"></div>
+                    
+                    <div class="box di" data-type="apertura" data-name="destra-interna"><p>Destra Interna</p></div>
+                    <div class="box de" data-type="apertura" data-name="destra-esterna"><p>Destra Esterna</p></div>
+                    
+                    <div class="separator"></div>
+                  
+                    <div class="box fx" data-type="apertura" data-name="fissa"><p>Fissa</p></div>
+                    <div class="clear last"></div>
             </div>
-            <div class="particolari-costruttivi clear">
-                <h3>Particolari Costruttivi</h3>
+            <div class="particolari-costruttivi clear">                
                 <div class="clear container-barra">
-                    <p class="step">6. BARRA</P>
+                    <p class="step">6. PARTICOLARI COSTRUTTIVI: BARRA</P>
                     <div class="box barra-tonda" data-type="barra" data-name="barra-tonda">
                         <p>Barra tonda con &#248; 
                             <select name="barra-tonda">
-                                <option value="16">16</option>
-                                <option value="18">18</option>
+                                <option value="16">16 mm</option>
+                                <option value="18">18 mm</option>
                             </select>                    
                         </p>
                     </div>
                     <div class="box barra-quadrata" data-type="barra" data-name="barra-quadrata">
                         <p>Barra quadrata con &#248; 
                             <select name="barra-quadrata">
-                                <option value="14">14</option>
-                                <option value="16">16</option>
+                                <option value="14">14 mm</option>
+                                <option value="16">16 mm</option>
                             </select>                    
                         </p>
                     </div>
+                    <div class="clear last"></div>
                 </div>
                 <div class="clear container-serratura">
-                    <p class="step">7. SERRATURA</p>
+                    <p class="step">7. PARTICOLARI COSTRUTTIVI: SERRATURA</p>
                     <div class="box serratura-leva" data-type="serratura" data-name="leva">
                         <p>
-                          A leva con maniglia in pvc
+                            A leva con maniglia
+                            <span>a leva con maniglia standard in pvc nera</span>
                         </p>
                     </div>
                     <div class="box serratura-cilindro" data-type="serratura" data-name="cilindro">
                         <p>
-                          Solo cilindro
+                            Solo cilindro
+                            <span>tipo cilindro europeo</span>
                         </p>
                     </div>
+                    <div class="clear last"></div>
                 </div>
                 <div class="clear container-nodo">
-                    <p class="step">8. NODO</p>
+                    <p class="step">8. PARTICOLARI COSTRUTTIVI: NODO</p>
                     <div class="box nodo-b" data-type="nodo" data-name="B">
                         <p>Nodo B</p>
                     </div>
@@ -88,13 +103,14 @@ class CalcolaPreventivoView {
                     <div class="box nodo-g" data-type="nodo" data-name="G">
                         <p>Nodo G</p>
                     </div>
-                    <div class="box nodo-altro" data-type="nodo" data-name="altro">
-                        <p>Altro</p>
+                    <div class="box nodo-altro" data-type="nodo" data-name="nessuno">
+                        <p>Nessun nodo</p>
                     </div>
+                    <div class="clear last"></div>
                 </div>
                 
                 <div class="clear selezione-colore">
-                    <p class="step">9. COLORE</p>
+                    <p class="step">9. PARTICOLARI COSTRUTTIVI: COLORE</p>
                     <!-- SELEZIONE RAL -->
                     <p>RAL<br>Colori preferenziali disponibili in tonalità lucida o opaca</p>
                     <div class="ral-box selettore-box">
@@ -122,10 +138,15 @@ class CalcolaPreventivoView {
                         <div class="ral-1013" data-type="colore" data-name="ral-1013">RAL 1013</div>
                         <div class="ral-9005 text-white" data-type="colore" data-name="ral-9005">RAL 9005</div>
                     </div>
-                    
+                    <div class="tipo-ral">
+                        <input type="radio" name="tipo-ral" value="lucido" checked /><label>Lucido</label>
+                        <input type="radio" name="tipo-ral" value="opaco" /><label>Opaco</label>
+                    </div>
+                    <div class="clear last"></div>
                     <!-- SELEZIONE MICACEI -->
                     <p>MICACEI</p>
                     
+                    <!--
                     <div class="micacei-box selettore-box">
                         <div class="selettore-show">
                             <div class="none" data-type="colore" data-name="none">selezione Micacei</div>
@@ -141,6 +162,36 @@ class CalcolaPreventivoView {
                         <div class="brown" data-type="colore" data-name="micaceo-brown">Marrone raggrinzato brown</div>
                         <div class="asfalto" data-type="colore" data-name="micaceo-asfalto">Grigio raggrinzato asfalto</div>
                     </div>
+                    -->
+                    
+                    <div class="micacei clear">
+                        <div class="box scuro-gr" data-type="colore" data-name="Grigio micaceo scuro gr">
+                            <p>Grigio micaceo scuro gr</p>
+                        </div>
+                        <div class="box marmo" data-type="colore" data-name="Verde rangrizzato marmo">
+                            <p>Verde rangrizzato marmo</p>
+                        </div>
+                        <div class="box nero-opaco" data-type="colore" data-name="Nero raggrinzato opaco">
+                            <p>Nero raggrinzato opaco</p>
+                        </div>
+                        <div class="box nero-antracite" data-type="colore" data-name="Nero raggrinzato antracite">
+                            <p>Nero raggrinzato antracite</p>
+                        </div>
+                        <div class="box marrone" data-type="colore" data-name="Marrone raggrinzato brown">
+                            <p>Marrone raggrinzato brown</p>
+                        </div>
+                        <div class="box asfalto" data-type="colore" data-name="Grigio raggrinzato asfalto">
+                            <p>Grigio raggrinzato asfalto</p>
+                        </div>
+                    </div>
+                    
+                    <div class="box-zincatura clear">
+                        <div class="box zincatura" data-type="colore" data-name="solo zincatura">
+                            <p>Solo zincatura</p>
+                        </div>
+                    </div>
+                    
+                    <input type="hidden" name="colore-scelto" value="" />
                     
                     
                 </div>

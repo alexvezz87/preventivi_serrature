@@ -8,12 +8,202 @@ and open the template in the editor.
     Author     : Alex
 */
 
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800);
+@import url(https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,300italic,700);
+
+.intestazione{
+    background:#e2001a;
+    padding:25px;
+    width:100%;
+    margin-bottom:40px;
+}
+
+.intestazione .field{
+    margin:0;
+    float:left;
+    margin-right: 10px;
+    width:100%;
+}
+
+.intestazione input[name=nome-cliente]{
+    float:left;
+    width:100%;
+    margin-right:10px;
+}
+.intestazione .tipo-cliente{
+    float:left;
+}
+
+.intestazione .radio > input, .intestazione .radio > label{
+    float:left;
+    width:auto;
+    margin-right: 10px;
+    height: 30px;
+    line-height: 30px;
+}
+
+
+.intestazione input, .intestazione{
+    font-size:16px;
+    font-family: 'Open Sans Condensed', sans-serif;
+    color:#000;
+    font-weight: bold;
+}
+
+.intestazione input{
+    margin-bottom:10px;
+    height: 30px;
+    padding:0px;
+    padding-left:10px;
+    padding-right: 10px;
+    border:0px;
+    width:100%;
+}
+
+
+#container-infissi h3.title-infisso{
+    font-family:'Open Sans';
+    font-size:24px;
+    font-weight: bold;
+    color:#000;
+    text-transform: uppercase;
+    padding-left: 25px;
+}
+
+#container-infissi .step{
+    width:100%;
+    display: block;
+    background:#f2f2f2;
+    height: 30px;
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size:16px;
+    font-weight: bold;
+    color:#000;
+    text-transform: uppercase;
+    padding-left:25px;
+    margin-bottom:10px;
+}
+
+#container-infissi .porta, #container-infissi .finestra{
+    width:110px;
+    height: 90px;
+    min-height: 90px;
+    border:0px;
+    padding-top:70px;   
+    margin-bottom:30px;
+}
+
+#container-infissi .porta, 
+#container-infissi .finestra,
+#container-infissi select[name=seleziona-ante],
+#container-infissi input.ricerca,
+#container-infissi .box.infisso p,
+.table-misure td,
+.table-misure td input,
+#container-infissi input[name=conferma-misure],
+#container-infissi .selezione-apertura p,
+.box p,
+.box-2 {
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size:14px;
+    font-weight: bold;
+    color:#000;
+    text-transform: uppercase;  
+}
+
+#container-infissi .istruzioni{
+    font-family: 'Open Sans', sans-serif;
+    font-size:13px;
+    font-weight: normal;
+    color:#000;
+}
+
+#container-infissi .istruzioni a{
+    color:#E2001A;
+    text-decoration: underline;
+}
+
+.table-misure td input{
+    padding-left:15px;
+}
+
+#container-infissi .porta{
+    background:url('../images/portafinestra.png') center 10px no-repeat;
+    margin-left:45px;
+}
+
+#container-infissi .finestra{
+    background:url('../images/finestra.png') center 10px no-repeat;
+}
+
+#container-infissi select[name=seleziona-ante]{
+    height: 45px;
+    padding: 0px 0px 0px 15px;
+    margin-top:50px;
+    margin-bottom:50px;
+    float:left;
+    margin-left:45px;
+}
+
+#container-infissi #show-img-infisso{
+    float: right;
+    width: 100%;
+    height: 200px;    
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+}
+
+
+#container-infissi #show-img-infisso.f0{
+    background:url('../images/finestra-ante-00.png');
+}
+#container-infissi #show-img-infisso.f1{
+    background:url('../images/finestra-ante-01.png');
+}
+#container-infissi #show-img-infisso.p1{
+    background:url('../images/portafinestra-ante-01.png');
+}
+#container-infissi #show-img-infisso.f2{
+    background:url('../images/finestra-ante-02.png');
+}
+#container-infissi #show-img-infisso.p2{
+    background:url('../images/portafinestra-ante-02.png');
+}
+#container-infissi #show-img-infisso.f3{
+    background:url('../images/finestra-ante-03.png');
+}
+#container-infissi #show-img-infisso.p3{
+    background:url('../images/portafinestra-ante-03.png');
+}
+#container-infissi #show-img-infisso.f4{
+    background:url('../images/finestra-ante-04.png');
+}
+#container-infissi #show-img-infisso.p4{
+    background:url('../images/portafinestra-ante-04.png');
+}
+
+#container-infissi input.ricerca, #container-infissi input[name=conferma-misure]{
+    width:130px;
+    height: 30px;
+    color:#fff;
+    background:#999;
+    border:0px;
+    line-height: 30px;  
+    margin-left:45px;
+    margin-bottom:30px;
+}
+
+#container-infissi input[name=conferma-misure]{
+    clear:both;
+    display:block;
+}
+
 .box {
     display:block;
     width:100px;
     min-height: 100px;
     border:1px solid black;
-    background:green;
+    /*background:green;*/
     float:left;
     margin-right:10px;
     text-align: center;
@@ -21,19 +211,59 @@ and open the template in the editor.
     margin-bottom:10px;
 }
 
-.selected, .box-2.selected {
-    border:2px solid red;
+#container-infissi .selected, .box-2.selected,
+#container-infissi .box.infisso.selected,
+#container-infissi .selezione-apertura .box.selected,
+#container-infissi .container-barra .box.selected{
+    border:1px solid #e2001a !important;
 }
 
+#container-infissi .box.infisso{
+    width:100%;
+    margin:auto;    
+    border:0px;
+    background-position: center 40px !important;
+    background-repeat: no-repeat !important;
+    margin-bottom:25px;
+    padding-bottom:25px;
+}
+
+#container-infissi .box.infisso.F0{
+    background:url('../images/infisso-fisso-anta-00.png');
+    min-height: 150px;
+}
+#container-infissi .box.infisso.F1, #container-infissi .box.infisso.P1{
+    background:url('../images/infisso-apribile-anta-01.png');
+    min-height: 380px;
+}
+#container-infissi .box.infisso.F2, #container-infissi .box.infisso.P2{
+    background:url('../images/infisso-apribile-anta-02.png');
+    min-height: 410px;
+}
+#container-infissi .box.infisso.F2L, #container-infissi .box.infisso.P2L{
+    background:url('../images/infisso-apribile-anta-02-libro.png');
+    min-height: 540px;
+}
+#container-infissi .box.infisso.F3, #container-infissi .box.infisso.P3{
+    background:url('../images/infisso-apribile-anta-03.png');
+    min-height: 540px;
+}
+#container-infissi .box.infisso.F3L, #container-infissi .box.infisso.P3L{
+    
+}
+#container-infissi .box.infisso.P4{
+    background:url('../images/infisso-apribile-anta-04.png');
+    min-height: 520px;
+}
 
 .box-2 {
     display: block;
-    width:90%;
+    width:100%;
     clear:both;
     cursor:pointer;
     margin-bottom:10px;
     border:1px solid black;    
-    padding:10px;
+    padding:10px;    
 }
 
 .box-2 div{
@@ -92,6 +322,10 @@ and open the template in the editor.
     border:2px solid black;
     border-top:none;
     margin-bottom: 20px;
+    font-family: 'Open sans Condensed';
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
 }
 
 .select-ral div, .select-micacei div {
@@ -142,7 +376,36 @@ and open the template in the editor.
 .select-ral div:hover{font-weight: bold;}
 .select-ral div.text-white:hover {color:#fff}
 
-.selettore-box .selettore-show div {color:#000}
+.ral-box.selettore-box{
+   
+}
+
+.tipo-ral{
+    margin-top:-50px;    
+    float:right;
+}
+
+.tipo-ral > input, .tipo-ral > label{
+    float: left;
+    width: auto;
+    margin-right: 10px;
+    height: 50px;
+    line-height: 50px;
+    font-family: 'Open sans Condensed';
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color:#000;
+}
+
+
+.selettore-box .selettore-show div {
+    color:#000;
+    font-family: 'Open sans Condensed';
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
 .selettore-box .selettore-show div.text-white {color:#fff}
 
 .step {
@@ -184,4 +447,196 @@ and open the template in the editor.
 
 .error-box .punto {
     margin-left:10px;
+}
+
+.table-misure {    
+    margin-left:45px;
+    margin-bottom: 10px;
+    float:left;
+}
+
+.table-misure td{
+    text-align: left;
+    padding: 0;
+    padding-top: 10px;
+}
+
+.table-misure td input{
+    height: 30px;
+    border:1px solid #E2001A
+}
+
+#container-infissi .selezione-apertura .box{
+    width:140px;
+    height:118px;
+    border:0px;
+    background-repeat:no-repeat !important;
+    padding-top:90px;
+    margin-right:5px;
+    margin-top:10px;
+}
+
+#container-infissi .selezione-apertura p{
+    margin-bottom:0px;
+}
+
+#container-infissi .selezione-apertura .separator{
+    height: 116px;
+    width:1px;
+    background:#000;
+    float:left;
+    margin-right: 5px;
+    margin-top:10px;
+}
+
+#container-infissi .selezione-apertura .box.si{
+    background:url('../images/apertura-sinistra-interna.png') center 37px no-repeat;
+}
+#container-infissi .selezione-apertura .box.se{
+    background:url('../images/apertura-sinistra-esterna.png') center 5px no-repeat;    
+}
+#container-infissi .selezione-apertura .box.di{
+    background:url('../images/apertura-destra-interna.png') center 37px no-repeat;
+}
+#container-infissi .selezione-apertura .box.de{
+    background:url('../images/apertura-destra-esterna.png') center 5px no-repeat;
+}
+#container-infissi .selezione-apertura .box.fx{
+    background:url('../images/apertura-fissa.png') center 21px no-repeat;
+}
+
+#container-infissi .clear.last{
+    height: 30px;
+}
+
+#container-infissi .container-barra .box,
+#container-infissi .container-serratura .box{
+    width:100%;    
+    border:0px;
+}
+
+
+#container-infissi .container-barra .box select {
+    margin:auto;
+    margin-top:10px;
+}
+
+#container-infissi .container-serratura .box{
+    height:140px;
+    padding-top:105px;
+}
+
+#container-infissi .container-serratura .box.serratura-leva{
+    background:url('../images/serratura-leva.png') no-repeat center 10px;    
+}
+#container-infissi .container-serratura .box.serratura-cilindro{
+    background:url('../images/serratura-clindro.png') no-repeat center 50px;
+}
+
+#container-infissi .container-serratura .box p{
+    line-height: 15px;
+}
+
+#container-infissi .container-serratura .box p span{
+    font-family: 'Open sans';
+    font-size:8px;
+    font-weight: normal;
+    display:block;
+}
+
+#container-infissi .container-nodo .box{
+    width:145px;
+    height: 200px;
+    margin-right: 5px;
+    border:0px;
+    padding-top:175px;
+    background-repeat: no-repeat !important;
+    background-position: center 10px !important;
+}
+
+#container-infissi .container-nodo .box.nodo-b{
+    background:url('../images/nodo-b.png');
+}
+#container-infissi .container-nodo .box.nodo-d{
+    background:url('../images/nodo-d.png');
+}
+#container-infissi .container-nodo .box.nodo-l{
+    background:url('../images/nodo-l.png');
+}
+#container-infissi .container-nodo .box.nodo-g{
+    background:url('../images/nodo-g.png');
+}
+#container-infissi .container-nodo .box.nodo-altro{
+    background:url('../images/nodo-no.png');
+}
+
+/** TABLET **/
+@media (min-width: 768px) {
+    .intestazione .rivenditore{
+        width:72%;
+    }
+
+    .intestazione .data-odierna{
+        width:25%;
+    }
+    
+    .intestazione input[name=nome-cliente]{
+        float:left;
+        width:73%;
+    }
+    
+    .intestazione input[name=telefono-cliente]{
+        float:left;
+        width:35%;
+        margin-right: 14px;
+    }
+    
+    .intestazione input[name=mail-cliente]{
+        float:left;
+        width:60%;
+    }
+    
+    #container-infissi .box.infisso{
+        width:48%;
+        margin:auto;
+        margin-right: 1%;
+        border:0px;
+        background-position: center 40px !important;
+        background-repeat: no-repeat !important;
+        margin-bottom:25px;
+    }
+    
+    #container-infissi #show-img-infisso{
+        float: right;
+        width: 350px;
+        height: 200px;    
+        background-position: center center !important;
+        background-repeat: no-repeat !important;
+    }
+
+    .table-misure{
+        width:50%;
+    }
+    
+    #container-infissi .container-barra .barra-tonda,
+    #container-infissi .container-serratura .box.serratura-leva{
+        margin-left:45px;
+    }
+    
+    #container-infissi .container-barra .box,
+    #container-infissi .container-serratura .box{
+        width:45%;
+        margin-right:1%; 
+    }
+    
+    .box-2 {
+        display: block;
+        width:95%;
+        clear:both;
+        cursor:pointer;
+        margin-bottom:10px;
+        border:1px solid black;    
+        padding:10px;    
+        margin-left:45px;
+    }
 }

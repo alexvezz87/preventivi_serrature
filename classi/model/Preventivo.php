@@ -23,7 +23,12 @@ class Preventivo {
     private $infissi;
     private $visionato;
     private $pdf;
-    
+    private $note;
+    private $tipo;
+    private $clienteTipo;
+    private $clienteCF;
+    private $clienteEmail;
+        
     function __construct() {
         //costruttore vuoto
     }
@@ -106,6 +111,46 @@ class Preventivo {
 
     function setPdf($pdf) {
         $this->pdf = $pdf;
+    }
+
+    function getNote() {
+        return $this->note;
+    }
+
+    function getTipo() {
+        return $this->tipo;
+    }
+
+    function setNote($note) {
+        $this->note = $note;
+    }
+
+    function setTipo($tipo) {
+        $this->tipo = $tipo;
+    }
+
+    function getClienteTipo() {
+        return $this->clienteTipo;
+    }
+
+    function getClienteCF() {
+        return $this->clienteCF;
+    }
+
+    function getClienteEmail() {
+        return $this->clienteEmail;
+    }
+
+    function setClienteTipo($clienteTipo) {
+        $this->clienteTipo = $clienteTipo;
+    }
+
+    function setClienteCF($clienteCF) {
+        $this->clienteCF = $clienteCF;
+    }
+
+    function setClienteEmail($clienteEmail) {
+        $this->clienteEmail = $clienteEmail;
     }
 
 

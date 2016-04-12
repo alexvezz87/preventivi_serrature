@@ -29,4 +29,10 @@ if(isset($_POST['cancella-preventivo'])){
 
 <?php echo $writer->printPreventiviVisionati() ?>
 
+<hr>
 
+<h3>Ordini da visionare</h3>
+<?php echo $writer->printOrdiniNonVisionati() ?>
+
+<h3>Ordini visionati</h3>
+<?php echo $writer->printOrdiniVisionati() ?>

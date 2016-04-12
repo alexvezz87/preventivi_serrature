@@ -25,13 +25,20 @@ class PdfController extends FPDF {
         $this->SetFont('Times','',12);
     }    
     
-    public function createHeader($num){
+    public function createHeader($num, $tipo){
         global $URL_IMG;        
+        
+        if($tipo == 0){
+            $tipo = 'Preventivo';
+        }
+        else{
+            $tipo = 'Ordine';
+        }
         
         $this->SetFont('Arial','B',18);
         $this->Image($URL_IMG.'logo_pradelli.png',10,10,30);
         $this->Cell(40);        
-        $this->Cell(60,10,'Preventivo online '.$num,0,0,'L');
+        $this->Cell(60,10, $tipo.' online n. '.$num,0,0,'L');
         $this->Ln();
         $this->Line(5, 25, 205, 25);
         $this->Ln(7);
@@ -52,17 +59,30 @@ class PdfController extends FPDF {
             $nomeRivenditore = $user_info->display_name; 
         }
         $info_preventivo['Rivenditore/Agente'] = $nomeRivenditore;
+        $info_preventivo['Tipo Cliente'] = $p->getClienteTipo();
         $info_preventivo['Cliente'] = $p->getClienteNome();
+        $info_preventivo['CF/PIVA'] = $p->getClienteCF();
         $info_preventivo['Indirizzo'] = $p->getClienteVia();
-        $info_preventivo['Telefono'] = $p->getClienteTel();   
+        $info_preventivo['Telefono'] = $p->getClienteTel();
+        $info_preventivo['Email'] = $p->getClienteEmail();
+        $tipo = "";
+        if($p->getTipo() == 0){
+            $tipo = 'Preventivo';
+        }
+        else{
+            $tipo = 'Ordine';
+        }        
+        $info_preventivo['Tipo'] = $tipo;
         $info_preventivo['Num. Infissi'] = count($infissi);
         $info_preventivo['Prezzo Totale'] = EURO.' '.$p->getSpesaTotale();
+        $info_preventivo['Note'] = $p->getNote();
         
+        $this->printPdfTable($info_preventivo);                   
         
-        $this->printPdfTable($info_preventivo);   
-                
-        $this->Line(5, 85, 205, 85);
-        $this->Ln();
+        //stampo una linea
+            $this->Ln(3);
+            $this->Cell(180,0,'',1);
+            $this->Ln(3);
         
         //scrivo la tabella per gli infissi 
         $this->printTableInfissi($infissi);        
@@ -111,7 +131,7 @@ class PdfController extends FPDF {
                 $count_maggiorazioni++;
             }            
             $array['Spesa'] = EURO.' '.$i->getSpesaInfisso();
-            $array['Copie infisso'] = $i->getNInfisso();
+            $array['Copie infisso'] = $i->getNInfisso();            
             
             $this->printPdfTable($array);            
             
