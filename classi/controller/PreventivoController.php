@@ -15,12 +15,14 @@ class PreventivoController {
     private $pDAO; //DAO del preventivo
     private $iDAO; //DAO dell'infisso
     private $imDAO; //DAO di infisso_maggiorazione
+    private $fDAO; //DAO della foto
     private $pdfWriter;
     
     function __construct() {
         $this->pDAO = new PreventivoDAO();
         $this->iDAO = new InfissoDAO();
         $this->imDAO = new InfissoMaggiorazioneDAO();
+        $this->fDAO = new FotoDAO();
         $this->pdfWriter = new PdfController();
     }
 
@@ -168,6 +170,20 @@ class PreventivoController {
         $p->setClienteEmail($item['clienteEmail']);
         $p->setClienteCF($item['clienteCF']);
         
+        //gli ho passato un array di nomi di foto
+        //NB. Non è un oggetto foto
+        //NB2. Potrebbero non aver incluso foto
+        if(isset($item['foto'])){
+            $fotos = array();
+            foreach($item['foto'] as $nomeFoto){
+               array_push($fotos, $nomeFoto);
+            }
+            $p->setFoto($fotos);
+        }
+        else{
+            $p->setFoto(null);
+        }
+        
         $infissi = array();
         foreach($item['infissi'] as $item){
             array_push($infissi, $this->convertToInfisso($item));
@@ -177,6 +193,7 @@ class PreventivoController {
         return $p;
         
     }
+    
     
     /**
      * Funzione che converte un array associativo di inifisso in un oggetto infisso
@@ -198,7 +215,9 @@ class PreventivoController {
         $i->setColore($item['colore']);
         $i->setCerniera($item['cerniera']);
         $i->setNInfisso($item['num-infissi']);
-        $i->setSpesaInfisso($item['spesa-parziale']);       
+        $i->setSpesaInfisso($item['spesa-parziale']);      
+        $i->setAntaPrincipale($item['anta-principale']);
+        $i->setPosizioneSerratura($item['posizione-serratura']);
 
         //ottengo le maggiorazioni        
         
@@ -232,7 +251,9 @@ class PreventivoController {
         $i->setColore($item2->colore);
         $i->setCerniera($item2->cerniera);
         $i->setNInfisso($item2->n_infisso);
-        $i->setSpesaInfisso($item2->spesa_infisso);       
+        $i->setSpesaInfisso($item2->spesa_infisso);     
+        $i->setAntaPrincipale($item2->anta_principale);
+        $i->setPosizioneSerratura($item2->posizione_serratura);
 
         //ottengo le maggiorazioni
         $array3 = $this->imDAO->getIdMaggiorazione($i->getId());
@@ -273,6 +294,12 @@ class PreventivoController {
             //corpo del preventivo
             $this->pdfWriter->createBody($p);
             
+            //stampo immagini se ce ne sono
+            $foto = $this->getFotoPreventivo($idPreventivo);
+            if($foto != null){
+                $this->pdfWriter->printFoto($foto);
+            }
+            
             //footer
             //$this->pdfWriter->createFooter();
             
@@ -310,6 +337,16 @@ class PreventivoController {
     }
     
     /**
+     * La funzione aggiorna il campo tipo, da preventivo ad ordine (da 0 a 1)
+     * @param type $idPreventivo
+     * @return type
+     */
+    public function setPreventivoToOrdine($idPreventivo){
+        return $this->pDAO->setPreventivoToOrdine($idPreventivo);
+    }
+
+
+    /**
      * La funzione elabora un preventivo ed invia una mail con associato un allegato
      * @param type $idPreventivo
      * @param type $dir
@@ -335,6 +372,8 @@ class PreventivoController {
     
     public function deletePreventivo($idPreventivo){
         //devo eliminare tutto ciò che riguarda il preventivo
+        global $DIR_IMG_PREVENTIVI; 
+        global $DIR_IMG_PREVENTIVI_THUMB;
         
         //ottengo gli id degli infissi del preventivo
         $infissi = $this->iDAO->getIdInfissi($idPreventivo);
@@ -350,14 +389,66 @@ class PreventivoController {
             return false;
         }
         
+        //elimino tutte le foto del preventivo
+        $fotos = $this->getFotoPreventivo($idPreventivo);
+        if($fotos != null){
+            
+            foreach($fotos as $item){               
+                $f = new Foto();
+                $f = $item;
+                unlink($DIR_IMG_PREVENTIVI.$f->getNomeFoto());
+                unlink($DIR_IMG_PREVENTIVI_THUMB.$f->getNomeFoto());
+            }
+            if(!$this->fDAO->deleteFotoPreventivo($idPreventivo)){
+                return false;
+            }
+        }
+        
+        
+        
         //elimino il preventivo
         if(!$this->pDAO->deletePreventivo($idPreventivo)){
             return false;
         }
         
+        
+        
         return true;
         
     }
+    
+    /**
+     * La funzione salva le foto nel sistema
+     * @param Foto $f
+     * @return type
+     */
+    public function saveFoto(Foto $f){
+        return $this->fDAO->saveFoto($f);
+    }
+    
+    /**
+     * La funzione esegue una query sul db per ottenere tutte le foto di un determinato
+     * preventivo e restituisce un array di oggetti foto
+     * @param type $idPreventivo
+     * @return array
+     */
+    public function getFotoPreventivo($idPreventivo){
+        $results = array();
+        $foto = $this->fDAO->getFotoPreventivo($idPreventivo);
+        
+        foreach($foto as $item){
+            $i = new Foto();
+            $i->setIdPreventivo($item->id_preventivo);
+            $i->setNomeFoto($item->nome_foto);
+            $i->setUrlFoto($item->url_foto);
+            $i->setUrlThumbFoto($item->url_thumb_foto);
+            
+            array_push($results, $i);
+        }
+        
+        return $results;
+    }
+    
     
     
 }

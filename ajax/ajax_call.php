@@ -63,9 +63,16 @@ function pps_ajax_callback(){
     
     if(isset($_POST['preventivo'])){
         
+        global $DIR_TEMP_IMG_PREVENTIVI;
+        global $DIR_TEMP_IMG_PREVENTIVI_THUMB;
+        global $DIR_IMG_PREVENTIVI;
+        global $DIR_IMG_PREVENTIVI_THUMB;
+        global $URL_IMG_PREVENTIVI;
+        
         $pController = new PreventivoController();
         $preventivo = $_POST['preventivo'];
         
+        $p = new Preventivo();
         $p = $pController->convertToPreventivo($preventivo);
         
         //1. salvare i dati nel database        
@@ -78,6 +85,28 @@ function pps_ajax_callback(){
         $idPreventivo = $pController->savePreventivo($p);
         if($idPreventivo != false){
             $result['salvato'] = true;
+            
+            //1a. Salvo le immagini del preventivo nel DB
+            $temp = $p->getFoto();
+            //ho ottenuto un array di nomi di foto
+            //potrebbero anche non esserci foto, in quel caso $temp = null
+            if($temp != null){
+                foreach($temp as $item){
+                    $foto = new Foto();
+                    $foto->setIdPreventivo($idPreventivo);
+                    $foto->setNomeFoto($item);                
+                    //salvo la voto
+                    if($pController->saveFoto($foto) != false){
+                        //la foto è stata salvata.
+                        //devo copiare la foto dalla cartella temporanea alla cartella definitiva                    
+                        copy($DIR_TEMP_IMG_PREVENTIVI.$item, $DIR_IMG_PREVENTIVI.$item);
+                        copy($DIR_TEMP_IMG_PREVENTIVI_THUMB.$item, $DIR_IMG_PREVENTIVI_THUMB.$item);
+                        //devo eliminare la foto e il thumb dalla cartella temporanea
+                        unlink($DIR_TEMP_IMG_PREVENTIVI_THUMB.$item);
+                        unlink($DIR_TEMP_IMG_PREVENTIVI.$item);        
+                    }
+                }
+            }
             
             //2. compongo il pdf
             $pdf = $pController->createPDF($idPreventivo);           
@@ -93,8 +122,7 @@ function pps_ajax_callback(){
                 }
                 else{
                     $result['mail'] = false;
-                }
-                
+                }                
             }
             else{
                 $result['pdf'] = false;
@@ -107,6 +135,17 @@ function pps_ajax_callback(){
         echo json_encode($result);
         
         
+        
+    }
+    
+    //ascoltatore sul cancella file 
+    if(isset($_POST['nomeFile'])){
+        global $DIR_TEMP_IMG_PREVENTIVI;
+        global $DIR_TEMP_IMG_PREVENTIVI_THUMB;
+        
+        //rimuovo il thumbnail
+        unlink($DIR_TEMP_IMG_PREVENTIVI_THUMB.$_POST['nomeFile']);
+        unlink($DIR_TEMP_IMG_PREVENTIVI.$_POST['nomeFile']);
         
     }
     

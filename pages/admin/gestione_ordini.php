@@ -17,19 +17,12 @@ if(isset($_POST['cancella-preventivo'])){
     $writer->listenerCancella();
 }
 
-if(isset($_POST['ordine'])){
-    $writer->listenerPreventivo();
-}
-
 
 ?>
 
-<h3>Preventivi da visionare</h3>
 
-<?php echo $writer->printPreventiviNonVisionati() ?>
+<h3>Ordini da visionare</h3>
+<?php echo $writer->printOrdiniNonVisionati() ?>
 
-
-<h3>Preventivi visionati</h3>
-
-<?php echo $writer->printPreventiviVisionati() ?>
-
+<h3>Ordini visionati</h3>
+<?php echo $writer->printOrdiniVisionati() ?>

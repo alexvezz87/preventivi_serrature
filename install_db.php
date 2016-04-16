@@ -37,6 +37,9 @@ function install_preventivi(){
         //installo la tabelal dei preventivi
         install_tabella_preventivo($wpdb, $charset_collate);
         
+        //installo la tabella delle foto
+        install_tabella_foto($wpdb, $charset_collate);
+        
        return true;
         
     } catch (Exception $ex) {
@@ -130,7 +133,9 @@ function install_tabella_infissi($wpdb, $charset_collate){
                 colore VARCHAR(100) NOT NULL,
                 cerniera VARCHAR(100) NOT NULL,
                 n_infisso INT NOT NULL,
-                spesa_infisso DECIMAL(15,2)
+                spesa_infisso DECIMAL(15,2),
+                anta_principale VARCHAR(2) NOT NULL,
+                posizione_serratura VARCHAR(1) NOT NULL
               );{$charset_collate}";
     
     try{
@@ -192,6 +197,27 @@ function install_tabella_preventivo($wpdb, $charset_collate){
     }      
 }
 
+//installo tabella foto
+function install_tabella_foto($wpdb, $charset_collate){
+    $table = $wpdb->prefix.'foto';
+    $query = "CREATE TABLE IF NOT EXISTS $table (
+                ID INT NOT NULL auto_increment PRIMARY KEY,
+                id_preventivo INT NOT NULL,
+                nome_foto TEXT NOT NULL,
+                url_foto TEXT NOT NULL, 
+                url_thumb_foto TEXT NOT NULL
+              );{$charset_collate}";
+    
+    try{
+        require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+        dbDelta($query);   
+        return true;
+    } catch (Exception $ex) {
+        _e($ex);
+        return false;
+    }      
+}
+
 
 /********************* DROP TABLES *******************/
 
@@ -207,6 +233,7 @@ function dropDB(){
         dropTabellaInfissi($wpdb);
         dropTabellaInfissiMaggiorazioni($wpdb);
         dropTabellaPreventivi($wpdb);       
+        dropTabellaFoto($wpdb);
     }
     catch(Exception $ex){
         _e($ex);        
@@ -282,6 +309,17 @@ function dropTabellaPreventivi($wpdb){
             return true;
         }
     catch(Exception $e){
+        _e($e);
+        return false;
+    }
+}
+
+function dropTabellaFoto($wpdb){
+    try{
+        $query = "DROP TABLE IF EXISTS ".$wpdb->prefix."foto;";
+        $wpdb->query($query);
+        return true;
+    } catch (Exception $ex) {
         _e($e);
         return false;
     }

@@ -47,6 +47,7 @@ class TabellaPrezziController {
                     $prezzo->setValRow($rowCount);
                     $prezzo->setValCol($colCount);
                     $prezzoCella = floatval($prezzoIniziale + (($incremento * $prezzoIniziale )/ 100)*($numCol + $numRow));
+                    $prezzoCella = ceil($prezzoCella);
                     $prezzo->setPrezzo($prezzoCella);
                     $this->DAO->savePrezziTabella($prezzo);
                     $numCol++;
@@ -243,6 +244,8 @@ class TabellaPrezziController {
             //print_r($numCol.'-'.$numRow.' ');
             
             $prezzo = floatval($tabella->prezzo_iniziale + (($tabella->incremento * $tabella->prezzo_iniziale))/100 * ($numCol + $numRow));
+            //arrotondo per eccesso
+            $prezzo = ceil($prezzo);
             return number_format($prezzo,2);
         }
     }

@@ -77,7 +77,10 @@ class PdfController extends FPDF {
         $info_preventivo['Prezzo Totale'] = EURO.' '.$p->getSpesaTotale();
         $info_preventivo['Note'] = $p->getNote();
         
-        $this->printPdfTable($info_preventivo);                   
+        $this->printPdfTable($info_preventivo);   
+        
+        
+        
         
         //stampo una linea
             $this->Ln(3);
@@ -113,6 +116,25 @@ class PdfController extends FPDF {
             $array['Altezza'] = $i->getAltezza().' mm';
             $array['Lunghezza'] = $i->getLunghezza().' mm';
             $array['Apertura (vista interna)'] = str_replace('-', ' ', $i->getApertura());
+            
+            $antaPrincipale = "";
+            switch ($i->getAntaPrincipale()){
+                case 'D': $antaPrincipale = "Destra"; break;
+                case 'DC': $antaPrincipale = "Centrale Destra"; break;
+                case 'S' : $antaPrincipale = "Sinistra"; break;
+                case 'SC' : $antaPrincipale = "Centrale Sinistra"; break;
+                default : $antaPrincipale = "Centrale"; break;
+            }                        
+            $array['Anta principale'] = $antaPrincipale;
+            
+            $posizioneSerratura = "";
+            switch($i->getPosizioneSerratura()){
+                case 'S': $posizioneSerratura = "Sinistra"; break;
+                case 'D': $posizioneSerratura = "Destra"; break;
+                default : $posizioneSerratura = "Nessuna"; break;                
+            }            
+            $array['Posizione serratura'] = $posizioneSerratura;
+            
             $array['Barra'] = str_replace('-', ' ', $i->getBarra());
             if($i->getSerratura() == 'cilindro'){
                 $array['Serratura'] = 'Solo cilindro';
@@ -160,17 +182,34 @@ class PdfController extends FPDF {
                 //imposto il font bold per la chiave
                 $this->SetFont('Arial','B',10);
                 //scrivo la chiave
-                $this->Cell(50, 8, $chiave, $border);            
+                $this->Cell(50, 4, $chiave, $border);            
                 //imposto il font non bold per il valore
                 $this->SetFont('Arial','',10);
                 //scrivo il valore
-                $this->Cell(130, 8, $valore, $border); 
+                $this->MultiCell(130, 4, $valore, $border, 'left'); 
                 $this->Ln();
             }
         }
         
     }
     
+    /**
+     * La funzione ricevuto in ingresso un array di foto, stampa sul pdf le immagini
+     * @param type $arrayFoto
+     */
+    public function printFoto($arrayFoto){
+        
+        foreach($arrayFoto as $item){
+            $foto = new Foto();
+            $foto = $item;
+            
+            //stampo una linea a separazione
+            $this->AddPage();           
+            $this->Image(preg_replace('/ /', '%20', $foto->getUrlFoto()), $this->GetX(), $this->GetY(), 180);
+            
+        }        
+        
+    }
     
     public function createFooter(){
         $this->SetY(-10);

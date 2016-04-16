@@ -101,7 +101,6 @@ and open the template in the editor.
 .table-misure td,
 .table-misure td input,
 #container-infissi input[name=conferma-misure],
-#container-infissi .selezione-apertura p,
 .box p,
 .box-2 {
     font-family: 'Open Sans Condensed', sans-serif;
@@ -274,8 +273,7 @@ and open the template in the editor.
     width:75%;
 }
 
-.selezione-infissi {
-    display:none;
+.selezione-infissi {    
     clear:both;
     float:none;
     width:100%;
@@ -416,12 +414,12 @@ and open the template in the editor.
 }
 
 .ricerca, .selezione-misure, .selezione-apertura, .particolari-costruttivi, .maggiorazioni, .numero-infissi{
-    display:none;
+   
     clear:both;
 }
 
 .container-serratura, .container-nodo, .selezione-colore, .selezione-cerniera{
-    display:none;
+    
 }
 
 .message-box{
@@ -481,7 +479,7 @@ and open the template in the editor.
 }
 
 #container-infissi .selezione-apertura .separator{
-    height: 116px;
+    height: 135px;
     width:1px;
     background:#000;
     float:left;
@@ -503,7 +501,23 @@ and open the template in the editor.
 }
 #container-infissi .selezione-apertura .box.fx{
     background:url('../images/apertura-fissa.png') center 21px no-repeat;
+    height: 135px;
 }
+
+
+#container-infissi .selezione-apertura .box.box-lungo{
+    width:340px;
+    height: 135px;
+    background-repeat:no-repeat !important;
+}
+
+#container-infissi .selezione-apertura .box.box-lungo.interna{
+    background:url('../images/apertura-interna.png') center 40px;
+}
+#container-infissi .selezione-apertura .box.box-lungo.esterna{
+    background:url('../images/apertura-esterna.png') center 21px;
+}
+
 
 #container-infissi .clear.last{
     height: 30px;
@@ -568,6 +582,44 @@ and open the template in the editor.
 }
 #container-infissi .container-nodo .box.nodo-altro{
     background:url('../images/nodo-no.png');
+}
+
+.hidden{
+    display: none;
+}
+
+.seleziona-anta.F{
+    float:left;
+    width:85px;
+    height:150px;
+    margin:0;
+    padding:0;
+    background:url('../images/finestra-anta.png') no-repeat center center;
+    cursor: pointer;
+}
+.seleziona-anta.F.selected{
+    background:url('../images/finestra-anta-selezionata.png') no-repeat center center;
+}
+.seleziona-anta.P{
+    float:left;
+    width:76px;
+    height:200px;
+    margin:0;
+    padding:0;
+    background:url('../images/portafinestra-anta.png') no-repeat center center;
+    cursor: pointer;
+}
+.seleziona-anta.P.selected{
+    background:url('../images/portafinestra-anta-selezionata.png') no-repeat center center;
+}
+
+.container-seleziona-anta {
+    margin:auto;
+}
+
+#progress .bar {
+    height: 18px;
+    background: green;
 }
 
 /** TABLET **/

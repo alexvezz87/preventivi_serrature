@@ -20,13 +20,29 @@ require_once 'install_db.php';
 require_once 'classi/classes.php';
 require_once 'functions.php';
 
+//definizione dei percorsi da utilizzare
+//NB. bisogna cambiare il senso degli slash quando si passa da locale a web server
 global $DIR_PDF;
 global $URL_PDF;
 global $URL_IMG;
+global $URL_IMG_PREVENTIVI;
+global $URL_IMG_PREVENTIVI_THUMB;
+global $DIR_IMG_PREVENTIVI; 
+global $DIR_IMG_PREVENTIVI_THUMB;
+global $DIR_TEMP_IMG_PREVENTIVI;
+global $DIR_TEMP_IMG_PREVENTIVI_THUMB;
 
 $DIR_PDF = plugin_dir_path(__FILE__).'\\preventivi_pdf\\';
+$DIR_IMG_PREVENTIVI = plugin_dir_path(__FILE__).'\\preventivi_immagini\\';
+$DIR_IMG_PREVENTIVI_THUMB = $DIR_IMG_PREVENTIVI.'thumbnail\\';
+$DIR_TEMP_IMG_PREVENTIVI = plugin_dir_path(__FILE__).'\\files\\';
+$DIR_TEMP_IMG_PREVENTIVI_THUMB = $DIR_TEMP_IMG_PREVENTIVI.'thumbnail\\';
+
+
 $URL_PDF = plugins_url().'/preventivi_serrature/preventivi_pdf/';
 $URL_IMG = plugins_url().'/preventivi_serrature/images/';
+$URL_IMG_PREVENTIVI = plugins_url().'/preventivi_serrature/preventivi_immagini/';
+$URL_IMG_PREVENTIVI_THUMB = $URL_IMG_PREVENTIVI.'thumbnail/';
 
 //indico la cartella dove è contenuto il plugin
 require_once (dirname(__FILE__) . '/preventivi_serrature.php');
@@ -48,6 +64,7 @@ function remove_DB(){
 //Aggiungo il menu di Plugin
 function add_admin_menu(){
     add_menu_page('Gestione Preventivi', 'Gestione Preventivi', 'administrator', 'gestione_preventivi', 'add_gestione_preventivi', plugins_url('images/ico_plugin.png', __FILE__), 9 );
+    add_submenu_page('gestione_preventivi', 'Gestione Ordini', 'Gestione ordini', 'administrator', 'gestione_ordini', 'add_gestione_ordini');
     add_submenu_page('gestione_preventivi', 'Gestione Prezzi', 'Gestione prezzi', 'administrator', 'gestione_prezzi', 'add_gestione_prezzi');
     add_submenu_page('gestione_preventivi', 'Maggiorazioni', 'Maggiorazioni', 'administrator', 'gestione_maggiorazioni', 'add_gestione_maggiorazioni');
 }
@@ -55,6 +72,10 @@ function add_admin_menu(){
 
 function add_gestione_preventivi(){
     include 'pages/admin/gestione_preventivi.php';
+}
+
+function add_gestione_ordini(){
+    include 'pages/admin/gestione_ordini.php';
 }
 
 function add_gestione_prezzi(){
@@ -92,9 +113,17 @@ add_action( 'wp_enqueue_scripts', 'register_js_script' );
 
 function register_js_script(){
      wp_register_script('functions-js', plugins_url('preventivi_serrature/js/script.js'), array('jquery'), '1.0', false);          
-     wp_register_script('json-js', plugins_url('preventivi_serrature/js/jquery.json.min.js'), array('jquery'), '1.0', false);     
+     wp_register_script('json-js', plugins_url('preventivi_serrature/js/jquery.json.min.js'), array('jquery'), '1.0', false);
+     wp_register_script('widget', plugins_url('preventivi_serrature/js/jquery.ui.widget.js'), array('jquery'), '1.0', false);
+     wp_register_script('transport', plugins_url('preventivi_serrature/js/jquery.iframe-transport.js'), array('jquery'), '1.0', false);
+     wp_register_script('file-upload', plugins_url('preventivi_serrature/js/jquery.fileupload.js'), array('jquery'), '1.0', false);
+    
      wp_enqueue_script('json-js');   
-     wp_enqueue_script('functions-js');   
+     wp_enqueue_script('functions-js');
+     wp_enqueue_script('widget');
+     wp_enqueue_script('transport');
+     wp_enqueue_script('file-upload');  
+
 } 
 
 

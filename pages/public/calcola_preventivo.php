@@ -56,19 +56,32 @@ $current_user = wp_get_current_user();
             </div>
         </div>
         <br><br>
+        
+        <input class="clear" type="button" name="aggiungi-copia-infisso" value="Aggiungi copia primo infisso" disabled />
         <input class="clear" type="button" name="aggiungi-infisso" value="Aggiungi nuovo infisso" disabled />
         
-        
-        <div class="totale-preventivo">
-        <h3>Totale preventivo</h3>
-        
-            <div class="prezzo-preventivo">0</div>
+        <div class="upload-immagini">
+            <p class="step">12. Aggiungi eventuali foto</p>
+            <input id="fileupload" type="file" name="files[]" data-url="<?php echo plugins_url().'/preventivi_serrature/upload_index.php' ?>" multiple>
+            
+            <div id="description"></div>
+            <div id="progress">
+                <div class="bar" style="width: 0%;"></div>
+            </div>
+            <input class="input-immagine" data-img="1" type="hidden" name="immagine-01" value="" />
+            <input class="input-immagine" data-img="2" type="hidden" name="immagine-02" value="" />
+            <input class="input-immagine" data-img="3" type="hidden" name="immagine-03" value="" />
         </div>
-        
         <div class="note clear">
             <label>Note</label>
             <textarea name="note" cols="10" rows="5"></textarea>
         </div>
+        
+        <div class="totale-preventivo">        
+            <h3>Totale preventivo</h3>        
+            <div class="prezzo-preventivo">0</div>
+        </div>
+        
         <input type="button" name="invia-preventivo" value="Invia Preventivo" /> 
     </form>
     

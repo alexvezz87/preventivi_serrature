@@ -9,12 +9,14 @@ require_once 'model/Tabella.php';
 require_once 'model/Maggiorazione.php';
 require_once 'model/Preventivo.php';
 require_once 'model/Infisso.php';
+require_once 'model/Foto.php';
 
 require_once 'DAO/TabellaPrezziDAO.php';
 require_once 'DAO/MaggiorazioneDAO.php';
 require_once 'DAO/PreventivoDAO.php';
 require_once 'DAO/InfissoDAO.php';
 require_once 'DAO/InfissoMaggiorazioneDAO.php';
+require_once 'DAO/FotoDAO.php';
 
 require_once 'controller/TabellaPrezziController.php';
 require_once 'controller/MaggiorazioneController.php';

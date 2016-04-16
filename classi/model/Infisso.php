@@ -28,6 +28,8 @@ class Infisso {
     private $nInfisso;
     private $spesaInfisso;
     private $maggiorazioni;
+    private $antaPrincipale;
+    private $posizioneSerratura;
     
     function __construct() {
         //costruttore vuoto
@@ -160,6 +162,23 @@ class Infisso {
     function setMaggiorazioni($maggiorazioni) {
         $this->maggiorazioni = $maggiorazioni;
     }
+    
+    function getAntaPrincipale() {
+        return $this->antaPrincipale;
+    }
+
+    function getPosizioneSerratura() {
+        return $this->posizioneSerratura;
+    }
+
+    function setAntaPrincipale($antaPrincipale) {
+        $this->antaPrincipale = $antaPrincipale;
+    }
+
+    function setPosizioneSerratura($posizioneSerratura) {
+        $this->posizioneSerratura = $posizioneSerratura;
+    }
+
 
     
 }

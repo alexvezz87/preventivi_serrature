@@ -101,6 +101,23 @@ class PreventivoDAO {
         }
     }
     
+    public function setPreventivoToOrdine($id){
+        try{           
+            
+            $this->wpdb->update(
+                    $this->table,
+                    array('tipo' => 1),
+                    array('ID' => $id),
+                    array('%d'),
+                    array('%d')
+                );
+            return true;
+        } catch (Exception $ex) {
+            _e($ex);
+            return false;
+        }
+    }
+    
     /**
      * La funzione aggiorna il campo pdf nel database
      * @param type $id

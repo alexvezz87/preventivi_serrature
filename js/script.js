@@ -5,6 +5,8 @@
  */
 
 
+/* global z */
+
 jQuery(document).ready(function($){
     
     $urlAjax = $('input[name=ajax-url]').val();    
@@ -13,34 +15,94 @@ jQuery(document).ready(function($){
       
     //gestione evento sui .box
     function checkSelected() {
-       $(document).on('click', '.box', function(){
+        $(document).on('click', '.box', function(){
             //console.log('clicked');
             $(this).siblings().each(function(){
                 $(this).removeClass('selected');
             });
-            $(this).addClass('selected');
+            $(this).addClass('selected');            
         });
+        
+        //ascoltatore dell'anta principale
+        $(document).on('click', '.seleziona-anta', function(){            
+            $(this).siblings().each(function(){
+                $(this).removeClass('selected');
+            });
+            $(this).addClass('selected');   
+            
+            //aggiorno l'input
+            $(this).siblings('input[name=anta-principale]').val($(this).data('anta'));            
+            
+//            //rendo visibile lo step successivo
+//            var order = parseInt($(this).parent('.container-seleziona-anta').parent('.container-order').data('order'));
+//            $(this).parent('.container-seleziona-anta').parent('.container-order').siblings('.container-order').each(function(){
+//                
+//            });
+        });
+        
+        //ascoltatore posizione serratura
+        $(document).on('click', 'input[name=radio-posizione-serratura]', function(){    
+            //aggiorno l'input
+            $(this).parent('.tipo').siblings('input[name=posizione-serratura]').val($(this).val());
+        });
+         
+         
+    }
+    
+    //gestione evento ordine
+    function checkOrder(){
+        $(document).on('click', '.order', function(){
+            //gli elementi compaiono in ordine di visualizzazione
+            //è importante mantenere questo ordine e non visualizzare altre cose
+            
+            
+            //se si stratta di un container-box visualizzo quello successivo
+            var $container = $(this).parent('.container-order');
+            var order = parseInt($container.data('order'));
+            //alert(order);
+            var next = order + 1;
+            
+            //resetto tutto quello che ha valore superiore a order
+            $container.siblings('.container-order').each(function(){
+                if(parseInt($(this).data('order')) > order ){
+                    $(this).addClass('hidden');
+                }
+            });            
+            
+            $container.siblings('.hidden[data-order="'+next+'"]').removeClass('hidden');
+            //alert($container.siblings(".hidden[data-order='" + next + "']").size();
+        });
+            
     }
         
     
     //Evento su selezione infisso
     function selectInfisso(){
-        $('.porta, .finestra').click(function(){           
+        //$('.porta, .finestra').click(function(){
+        $(document).on('click', '.porta, .finestra', function(){    
             
-            var $button = $(this).siblings('.ricerca');
-            var $infissi = $(this).siblings('.selezione-infissi');
-            var $boxMisure = $(this).siblings('.selezione-misure');
+            var $button = $(this).parent('.tipo-infisso').siblings('.ricerca');
+            var $infissi = $(this).parent('.tipo-infisso').siblings('.selezione-infissi');
+            var $boxMisure = $(this).parent('.tipo-infisso').siblings('.selezione-misure');
 
-            $infissi.hide();
-            $button.hide();
-            $boxMisure.hide();
-            $boxMisure.siblings('.selezione-apertura').hide();
+            //$infissi.hide();
+            //$button.hide();
+            //$boxMisure.hide();
+            //$boxMisure.siblings('.selezione-apertura').hide();
+
+            //azzero il parziale infisso e aggiorno il totale preventivo
+            var $container = $(this).parent('.tipo-infisso');
+            $container.siblings('input[name=totale-infisso]').val("");
+            $container.siblings('.spesa-parziale-infisso').find('input[name=spesa-parziale-infisso]').val("");
+            $container.siblings('.spesa-parziale-infisso').find('span.spesa-infisso').text('0');
+            aggiornoTotalePreventivo();
+
 
             //gestione selezioni
             //checkSelected();
 
-            $(this).siblings('.selezione-ante').html('');        
-            var $element = $(this).siblings('.selezione-ante');
+            $(this).parent('.tipo-infisso').siblings('.selezione-ante').html('');        
+            var $element = $(this).parent('.tipo-infisso').siblings('.selezione-ante');
 
 
             var type;
@@ -66,13 +128,28 @@ jQuery(document).ready(function($){
     
     //Evento su ricerca infisso con ante
     function searchInfisso(){
-        $('input[name=ricerca-infissi').click('.selezione-infissi', function(){
+        //$('input[name=ricerca-infissi').click(/*'.selezione-infissi',*/ function(){
+        $(document).on('click', 'input[name=ricerca-infissi]', function(){ 
             var $infissi = $(this).siblings('.selezione-infissi');
-            $infissi.hide();
+            
+            //nascondo tutti gli order superiori a questo
+            var order = 2;
+            $(this).siblings('.container-order').each(function(){
+                if(parseInt($(this).data('order')) > order){
+                    $(this).addClass('hidden');
+                }
+            });
+            //azzero il parziale infisso e aggiorno il totale preventivo
+            $(this).siblings('input[name=totale-infisso]').val("");
+            $(this).siblings('.spesa-parziale-infisso').find('input[name=spesa-parziale-infisso]').val("");
+            $(this).siblings('.spesa-parziale-infisso').find('span.spesa-infisso').text('0');
+            aggiornoTotalePreventivo();
+            
+            //$infissi.addClass('hidden');
 
             //Ottengo il type
             var type = 'N';
-            if($(this).siblings('.selected').attr('class').indexOf('porta') >= 0){
+            if($(this).siblings('.tipo-infisso').find('.selected').attr('class').indexOf('porta') >= 0){
                 type = 'P';
             }
             else{
@@ -80,6 +157,10 @@ jQuery(document).ready(function($){
             }
             //Ottengo il numero di ante
             var ante = $(this).siblings('.selezione-ante').find('select').val();
+            var $antaPrincipale = $(this).siblings('.seleziona-anta-principale');
+            
+            //Una volta ottenuti tipo e numero ante, vado a comporre l'html per la sezione 'seleziona-anta-principale'
+            printAntaPrincipale(type, ante, $antaPrincipale);    
 
             $.ajax({
                 type:'POST',
@@ -90,12 +171,21 @@ jQuery(document).ready(function($){
                     printInfissi(data, $infissi, type, ante);
 
                     //Evento click su un infisso
-                    $('.infisso').click(function(){                        
+                    //$('.infisso').click(function(){
+                    $(document).on('click', '.infisso', function(){     
                         //$(this).addClass('selected');
                         var $boxMisure = $(this).parent('.selezione-infissi').siblings('.selezione-misure');
-                        $boxMisure.hide();
-                        $boxMisure.siblings('.selezione-apertura').hide();
+                        
+                        //$boxMisure.addClass('hidden');
+                        //$boxMisure.siblings('.selezione-apertura').addClass('hidden');
                         $boxMisure.html('');
+                        
+                        //azzero il parziale e il totale preventivo
+                        var $container = $(this).parent('.selezione-infissi');
+                        $container.siblings('input[name=totale-infisso]').val("");
+                        $container.siblings('.spesa-parziale-infisso').find('input[name=spesa-parziale-infisso]').val("");
+                        $container.siblings('.spesa-parziale-infisso').find('span.spesa-infisso').text('0');
+                        aggiornoTotalePreventivo();
 
                         //gestione selezioni
                         //checkSelected();
@@ -110,7 +200,8 @@ jQuery(document).ready(function($){
                             success: function(data){
                                 printMisure(data, $boxMisure);
                                 //listener sulla modifica delle misure ed inserimento del prezzo
-                                $('input[name=conferma-misure]').click(function(){
+                                $(document).on('click', 'input[name=conferma-misure]', function(){
+                                //$('input[name=conferma-misure]').click(function(){
                                     
                                     //ottengo il valore del prezzo
                                     var row = $(this).siblings('.table-misure').find('input[name=infisso-altezza]').val();
@@ -125,7 +216,8 @@ jQuery(document).ready(function($){
                                             url: $urlAjax,
                                             data: {id_tabella_2 : idTabella, row : row, col : col },
                                             success: function(data){
-                                                var totale = printPrezzo(data);
+                                                //var totale = printPrezzo(data);
+                                                var totale = parseFloat(data).toFixed(2); 
                                                 //inserisco il prezzo nel parziale
                                                 $boxMisure.siblings('.spesa-parziale-infisso').find('input[name=spesa-parziale-infisso]').val(totale);
                                                 //aggiorno il prezzo totale dell'infisso                                            
@@ -134,14 +226,26 @@ jQuery(document).ready(function($){
                                                 //inserisco il prezzo dell'infisso senza maggiorazioni
                                                 $boxMisure.siblings('input[name=totale-infisso]').val(totale);
 
-
-
                                                 //aggiorno il preventivo totale
                                                 aggiornoTotalePreventivo();                                            
                                             }
                                         });
-
-                                        $boxMisure.siblings('.selezione-apertura').show();
+                                        
+                                        //dal seleziona apertura devo capire se si stratta di inferriata fissa o no                                       
+                                        var nAnte = $boxMisure.siblings('.selezione-ante').find('select').val();   
+                                        $boxMisure.siblings('.selezione-apertura').find('.box').addClass('hidden'); 
+                                        $boxMisure.siblings('.selezione-apertura').find('.separator').addClass('hidden'); 
+                                        if(nAnte !== '0'){                                           
+                                            $boxMisure.siblings('.selezione-apertura').find('.interna').removeClass('hidden');
+                                            $boxMisure.siblings('.selezione-apertura').find('.esterna').removeClass('hidden');
+                                            $boxMisure.siblings('.selezione-apertura').find('.separator').removeClass('hidden'); 
+                                        }
+                                        else{
+                                            
+                                            $boxMisure.siblings('.selezione-apertura').find('.fx').removeClass('hidden');                                            
+                                        }
+                                        
+                                        $boxMisure.siblings('.selezione-apertura').removeClass('hidden');
                                     }
                                     else{
                                         alert('Le misure da inserire sono obbligatorie!');
@@ -200,14 +304,95 @@ jQuery(document).ready(function($){
         return totale;
     }
     
+    function printAntaPrincipale(type, ante, $box){
+        var html = '';
+        ante = parseInt(ante);
+        var antaPrincipale = '';
+        var posizioneSerratura = '';        
+        var widthAnta = 0;
+        if(type==='F'){
+            widthAnta = 85;
+        }
+        else{
+            widthAnta = 76;
+        }
+        
+        var widthContainer = widthAnta*ante;        
+        var serratura = '<p class="descrizione">Indica dove posizionare la serratura sull\'anta di apertura</p><div class="tipo radio clear"><input type="radio" name="radio-posizione-serratura" value="S" checked /><label>SINISTRA</label><input type="radio" name="radio-posizione-serratura" value="D" /><label>DESTRA</label></div>';
+        var descrizione1 = '<p class="descrizone">Fai click sull\'anta di apertura</p>';
+        
+        //Dai valore di type (se porta o finestra) e il numero di ante si ottiene un diverso scenario
+        if(ante === 0){
+            //non ho bisogno di sapere quale sia l'anta principale
+            antaPrincipale = 'C';
+            html += '<p class="step">6. Seleziona l\'anta principale</p>';
+            html+= descrizione1;
+            html+='<div class="order seleziona-anta '+type+'" data-anta="C"></div>';
+            html+='<div class="clear"></div>';
+            posizioneSerratura = 'N';
+        }
+        else if(ante === 1){
+            //se il numero di ante è uguale a 1, devo sapere se la serratura va a destra o sinistra
+            antaPrincipale = 'C';
+            html += '<p class="step">6. Seleziona la posizione della serratura</p>';
+            html+= descrizione1;
+            html+='<div class="order seleziona-anta '+type+'" data-anta="C"></div>';
+            html+='<div class="clear"></div>';
+            html += serratura;
+            posizioneSerratura = 'S';
+        }
+        else if(ante === 2){
+            //se il numero di ante è uguale a 2, devo poter indicare quale delle due è la principale
+            html += '<p class="step">6. Seleziona l\'anta principale</p>';
+            html+= descrizione1;
+            //html+='<div class="container-seleziona-anta" style="width:'+widthContainer+'px">';
+            html+='<div class="order seleziona-anta '+type+'" data-anta="S"></div>';
+            html+='<div class="order seleziona-anta '+type+'" data-anta="D"></div>';
+            html+='<div class="clear"></div>';
+            html += serratura;
+            posizioneSerratura = 'S';
+        }
+        else if(ante === 3){
+            //se il numero di ante è uguale a 3, devo poter indicare quale è l'anta principale e la posizione della serratura
+            html += '<p class="step">6. Seleziona l\'anta principale e indica la posizione della serratura</p>';
+            html+= descrizione1;
+            //html+='<div class="container-seleziona-anta" style="width:'+widthContainer+'px">';
+            html+='<div class="order seleziona-anta '+type+'" data-anta="S"></div>';
+            html+='<div class="order seleziona-anta '+type+'" data-anta="C"></div>';
+            html+='<div class="order seleziona-anta '+type+'" data-anta="D"></div>';
+            html+='<div class="clear"></div>';
+            html += serratura;
+            posizioneSerratura = 'S';
+        }
+        else if(ante === 4){
+            html += '<p class="step">6. Seleziona l\'anta principale e indica la posizione della serratura</p>';
+            html+= descrizione1;
+            //html+='<div class="container-seleziona-anta" style="width:'+widthContainer+'px">';
+            html+='<div class="order seleziona-anta '+type+'" data-anta="S"></div>';
+            html+='<div class="order seleziona-anta '+type+'" data-anta="SC"></div>';
+            html+='<div class="order seleziona-anta '+type+'" data-anta="DC"></div>';
+            html+='<div class="order seleziona-anta '+type+'" data-anta="D"></div>';
+            html+='<div class="clear"></div>';
+            html += serratura;
+            posizioneSerratura = 'S';
+        }
+                
+        
+        html += '<input type="hidden" name="anta-principale" value="'+antaPrincipale+'" />';
+        html += '<input type="hidden" name="posizione-serratura" value="'+posizioneSerratura+'" />';
+        
+        $box.html(html);
+    }
+    
+    
     function printMisure(data, $boxMisure){
         
         var minH = parseInt(data.start_rows);
-        var maxH = parseInt(data.end_rows);
-        var stepH = parseInt(data.step_rows);
+        //var maxH = parseInt(data.end_rows);
+        //var stepH = parseInt(data.step_rows);
         var minL = parseInt(data.start_cols);
-        var maxL = parseInt(data.end_cols);
-        var stepL = parseInt(data.step_cols);
+        //var maxL = parseInt(data.end_cols);
+        //var stepL = parseInt(data.step_cols);
         
         var html = '<p class="step">4. Indica le misure in millimetri</p>';
         html += '<table class="table-misure"><tr><td><label>Altezza (mm) </label></td>';
@@ -221,7 +406,7 @@ jQuery(document).ready(function($){
         html+= '<input type="button" name="conferma-misure" value="conferma misure" /><br><br>';       
         
         $boxMisure.html(html);
-        $boxMisure.show();        
+        $boxMisure.removeClass('hidden');        
         
     }
     
@@ -248,14 +433,14 @@ jQuery(document).ready(function($){
             }              
             html+='<div class="clear"></div>';            
             $element.html(html);
-            $button.show();
+            $button.removeClass('hidden');
            
         });
     }
     
     function printInfissi(data, $infissi, type, ante){
         $infissi.html('');
-        $infissi.show();        
+        $infissi.removeClass('hidden');        
         var html = '<p class="step">3. Selezione l\'articolo desiderato</p>';
         for(var i=0; i < data.length; i++){
             var nuovaClasse = type+ante;
@@ -263,7 +448,7 @@ jQuery(document).ready(function($){
                 nuovaClasse+='L';
             }
             
-            html+='<div class="box infisso '+nuovaClasse+'" data-type="infisso" data-name="'+data[i].ID+'" >';
+            html+='<div class="box order infisso '+nuovaClasse+'" data-type="infisso" data-name="'+data[i].ID+'" >';
             html+='<input type="hidden" name="infisso-id" value="'+data[i].ID+'" />';
             html+='<p>'+data[i].nome+'</p>';           
             html+='</div>';
@@ -312,10 +497,10 @@ jQuery(document).ready(function($){
             //mostro il punto successivo se ho effettuato una scelta diversa da none           
             if($(this).data('name')!== 'none'){        
                 $colore.val($(this).data('name'));
-                $select.parent('.selezione-colore').siblings('.selezione-cerniera').show();                
+                $select.parent('.selezione-colore').siblings('.selezione-cerniera').removeClass('hidden');                
             }
             else{
-                $select.parent('.selezione-colore').siblings('.selezione-cerniera').hide();
+                $select.parent('.selezione-colore').siblings('.selezione-cerniera').addClass('hidden');
                 $select.parent('.selezione-colore').siblings('.selezione-cerniera').find('.box').removeClass('selected');
             }
             
@@ -332,6 +517,11 @@ jQuery(document).ready(function($){
            
            //aggiorno il colore
            $colore.val($(this).data('name'));
+           
+           //tolgo la classe hidden alla cerniera
+           $(this).parent('.micacei').parent('.selezione-colore').siblings('.selezione-cerniera').removeClass('hidden');
+           
+           
         });
         //3. Se il selettore è puntato su ZINCATURA, RAL e MICACEI devono essere deselezionati
         $('.box-zincatura div').click(function(){
@@ -344,22 +534,25 @@ jQuery(document).ready(function($){
             $micacei.find('.box').removeClass('selected');
             
             //aggiorno il colore
-            $colore.val($(this).data('name'));            
+            $colore.val($(this).data('name'));     
+            
+            //tolgo la classe hidden alla cerniera
+            $(this).parent('.box-zincatura').parent('.selezione-colore').siblings('.selezione-cerniera').removeClass('hidden');
+           
         });
         
         
     }    
-        
-        
+
     //gestione del selettore dei ral
-    function selettoreRAL(){        
-       gestoreSelettoreColori('ral');    
-    }
-    
-    //gestione del selettore dei micacei
-    function selettoreMICACEI(){
-        gestoreSelettoreColori('micacei');
-    }
+//    function selettoreRAL(){        
+//       gestoreSelettoreColori('ral');    
+//    }
+//    
+//    //gestione del selettore dei micacei
+//    function selettoreMICACEI(){
+//        gestoreSelettoreColori('micacei');
+//    }
         
     //Gestione selettore delle maggiorazioni
     function selettoreMaggiorazioni(){
@@ -401,9 +594,12 @@ jQuery(document).ready(function($){
     
     function aggiornoTotalePreventivo(){        
         //aggiorno il prezzo totale del preventivo
-        var totalePreventivo = 0;
+        var totalePreventivo = 0;        
         $('input[name=spesa-parziale-infisso]').each(function(){
-            var parziale = $(this).val();
+            var parziale = 0;
+            if($(this).val() !== ''){
+                parziale = $(this).val();
+            }
             //vado a prendere il numero di infissi
             var nInfissi = $(this).parent('.spesa-parziale-infisso').siblings('.numero-infissi').find('input').val();
             
@@ -417,12 +613,16 @@ jQuery(document).ready(function($){
     //Inizalizzo tutte le funzioni in una funzione init
     function init(){
         checkSelected();
+        checkOrder();
         selettoreMaggiorazioni();
         selectInfisso();
         searchInfisso();
         gestoreSelettoreColori();
         changeNumeroInfissi();
         
+        uploadFoto();
+        
+        /*
         $('.selezione-apertura .box').click(function(){
             $('.particolari-costruttivi').show();
         });
@@ -442,11 +642,13 @@ jQuery(document).ready(function($){
         $('.selezione-colore .box').click(function(){
             $('.selezione-cerniera').show();
         });
+        */
         
         $('.selezione-cerniera .box').click(function(){
-            $('.maggiorazioni').show();
-            $('.numero-infissi').show();
+            //$('.maggiorazioni').show();
+            //$('.numero-infissi').show();
             $('input[name=aggiungi-infisso]').removeAttr('disabled');
+            $('input[name=aggiungi-copia-infisso]').removeAttr('disabled');
         });
         
         //LISTENER SU SELEZIONA NUMERO ANTE        
@@ -460,7 +662,88 @@ jQuery(document).ready(function($){
             $(this).parent('.message-box').hide();
         });
         
-    }    
+    }  
+        
+    function uploadFoto(){
+        $(function () {
+            $('#fileupload').fileupload({
+                dataType: 'json',
+                acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+                /*add: function (e, data) {
+                    data.context = $('<button/>').text('Upload')
+                        .appendTo($('div#description'))
+                        .click(function () {
+                            data.context = $('<p/>').text('Uploading...').replaceAll($(this));
+                            data.submit();
+                        });
+                },*/
+                done: function (e, data) {
+                    $.each(data.result.files, function (index, file) {                        
+                        if(typeof(file.error) !== 'undefined'){
+                            alert(file.error);
+                        }else{
+                            var counter = 0;
+                            $('.upload-immagini input.input-immagine').each(function(){
+                               if($(this).val() === ''){
+                                   counter = $(this).data('img');
+                                   return false;
+                               } 
+                            });                            
+                            
+                            if(counter !== 0){
+                                var html = '<div id="img-'+counter+'"><label>'+file.name+'</label><input type="button" class="delete" data-img="'+counter+'" data-name="'+file.name+'" value="CANCELLA"></div>';
+                                $(html).appendTo($('div#description'));
+                                //$('<p/>').text(file.name).appendTo($('div#description'));
+                                $('.upload-immagini input.input-immagine').each(function(){
+                                    //alert($(this).val());
+                                    if($(this).val() === ''){
+                                        $(this).val(file.name);
+                                        return false;
+                                    }
+                                });
+                            }
+                            else{
+                                alert('qualcosa è andato storto');
+                            }
+                            
+                        }
+                    });
+                    
+                },
+                error: function (e, data){
+                    alert(data.error);
+                },
+                progressall: function (e, data) {
+                    var progress = parseInt(data.loaded / data.total * 100, 10);
+                    $('#progress .bar').css(
+                        'width',
+                        progress + '%'
+                    );
+                }
+            });
+            
+            $(document).on('click', 'input.delete', function(){
+                var idImg = $(this).data('img'); 
+                $.ajax({
+                    type:'POST',
+                    dataType: 'json',
+                    url: $urlAjax,
+                    data: {nomeFile: $(this).data('name')},
+                    success: function(data){                  
+                        //rimuovo il div dell'immagine
+                        
+                    }
+                });
+                $('div#img-'+idImg).remove();
+                        $('#progress .bar').css('width', '0');
+                        //pulisco l'input hidden
+                        $('input[data-img="'+idImg+'"]').val('');
+            });
+            
+        });
+        
+       
+    }
     
     /**
      * Listner che se in etinere della composizione di un infisso vengono modificati
@@ -487,30 +770,47 @@ jQuery(document).ready(function($){
         });
     }
     
-    function reset(){
-        //resetto le selezioni
-        $('.nuovo-infisso .selected').removeClass('selected');
+    function reset(copia, ante){
         
-        //resetto i contenuti
-        $('.nuovo-infisso .selezione-ante').html('');
-        $('.nuovo-infisso .ricerca').hide();
-        $('.nuovo-infisso .selezione-infissi').html('');
-        $('.nuovo-infisso .selezione-misure').html('');
-        $('.nuovo-infisso .selezione-apertura').hide();
-        $('.nuovo-infisso .particolari-costruttivi').hide();
-        $('.nuovo-infisso .container-serratura').hide();
-        $('.nuovo-infisso .container-nodo').hide();
-        $('.nuovo-infisso .selezione-colore').hide();
-        $('.nuovo-infisso .selezione-colore .ral-box .selettore-show').html('<div class="none" data-type="colore" data-name="none">seleziona RAL</div>');
-        $('.nuovo-infisso .selezione-colore .micacei-box .selettore-show').html('<div class="none" data-type="colore" data-name="none">selezione Micacei</div>');
-        $('.nuovo-infisso .selezione-cerniera').hide();
-        $('.nuovo-infisso input[name=totale-infisso]').val('');
-        $('.nuovo-infisso .maggiorazioni').hide();
-        $('.nuovo-infisso .numero-infissi').hide();
-        $('.nuovo-infisso input[name=numero-infissi]').val(1);
-        $('input[name=aggiungi-infisso]').prop('disabled', true);
-        $('.nuovo-infisso .spesa-parziale-infisso span').text('0');
-        $('.nuovo-infisso input[spesa-parziale-infisso]').val('');
+        if(copia === false){
+            //resetto le selezioni
+            $('.nuovo-infisso .selected').removeClass('selected');
+
+            //resetto i contenuti
+            $('.nuovo-infisso .container-order').addClass('hidden');
+            $('.nuovo-infisso .tipo-infisso').removeClass('hidden');
+            
+            $('.nuovo-infisso .selezione-ante').html('');
+            //$('.nuovo-infisso .selezione-ante').addClass('hidden');
+            $('.nuovo-infisso .ricerca').addClass('hidden');
+            $('.nuovo-infisso .selezione-infissi').html('');
+            //$('.nuovo-infisso .selezione-infissi').addClass('hidden');
+            $('.nuovo-infisso .selezione-misure').html('');
+            //$('.nuovo-infisso .selezione-misure').addClass('hidden');
+            //$('.nuovo-infisso .selezione-apertura').addClass('hidden');
+            //$('.nuovo-infisso .particolari-costruttivi').addClass('hidden');
+            //$('.nuovo-infisso .container-serratura').addClass('hidden');
+            //$('.nuovo-infisso .container-nodo').addClass('hidden');
+            //$('.nuovo-infisso .selezione-colore').addClass('hidden');
+            $('.nuovo-infisso .selezione-colore .ral-box .selettore-show').html('<div class="none" data-type="colore" data-name="none">seleziona RAL</div>');
+            $('.nuovo-infisso .selezione-colore .micacei-box .selettore-show').html('<div class="none" data-type="colore" data-name="none">selezione Micacei</div>');
+            //$('.nuovo-infisso .selezione-cerniera').addClass('hidden');
+            $('.nuovo-infisso input[name=totale-infisso]').val('');
+            //$('.nuovo-infisso .maggiorazioni').addClass('hidden');
+            $('.nuovo-infisso .numero-infissi').addClass('hidden');
+            $('.nuovo-infisso input[name=numero-infissi]').val(1);
+            $('input[name=aggiungi-infisso]').prop('disabled', true);
+            $('input[name=aggiungi-copia-infisso]').prop('disabled', true);
+
+            $('.nuovo-infisso .spesa-parziale-infisso span').text('0');
+            $('.nuovo-infisso input[spesa-parziale-infisso]').val('');
+            
+            $('.nuovo-infisso .selezione-anta-principale').html('');
+        }
+        else{            
+            $('.nuovo-infisso .selezione-ante select').val(ante);    
+            
+        }
         
         var nInfisso = $('.selezione-container').size();
         $('.nuovo-infisso').find('h3 span').text(nInfisso);
@@ -522,15 +822,29 @@ jQuery(document).ready(function($){
     //Gestione aggiungi infisso
     function aggiungiInfisso(){
         $('input[name=aggiungi-infisso]').click(function(){
-           $('.selezione-container').first().clone(true, true).addClass('nuovo-infisso').appendTo('#container-infissi');
-           //aggiungo un pulsante di elimina infisso
-           var html = '<input type="button" name="cancella-infisso" value="cancella infisso" />';
-           $(html).appendTo('.nuovo-infisso');
-
-           //resetto 
-           reset();  
+            $('.selezione-container').first().clone(true, true).addClass('nuovo-infisso').appendTo('#container-infissi');
+            //aggiungo un pulsante di elimina infisso
+            var html = '<input type="button" name="cancella-infisso" value="cancella infisso" />';
+            $(html).appendTo('.nuovo-infisso');
+            //resetto 
+            reset(false, null);              
         });
-    }
+        $('input[name=aggiungi-copia-infisso]').click(function(){
+            //devo replicare il numero di ante nel select nuovo
+            var nAnte = $('.selezione-container').first().find('.selezione-ante select').val();            
+            
+            $('.selezione-container').first().clone(true, true).addClass('nuovo-infisso').appendTo('#container-infissi');
+            //aggiungo un pulsante di elimina infisso
+            var html = '<input type="button" name="cancella-infisso" value="cancella infisso" />';
+            $(html).appendTo('.nuovo-infisso');  
+            //resetto 
+            reset(true, nAnte);  
+            //essendo una copia, devo aggiornare anche il totale del preventivo
+            aggiornoTotalePreventivo();
+        });
+        
+        
+    } 
     
     //Gestione elimina infisso
     function eliminaInfisso(){
@@ -542,6 +856,7 @@ jQuery(document).ready(function($){
            $(this).parent('.selezione-container').remove();
            aggiornoTotalePreventivo();    
            $('input[name=aggiungi-infisso]').removeAttr('disabled');
+           $('input[name=aggiungi-copia-infisso]').removeAttr('disabled');
         });
     }
     
@@ -560,6 +875,7 @@ jQuery(document).ready(function($){
             * 5c. Tipo cliente
             * 5d. Email cliente
             * 5e. CF cliente
+            * 5f. Foto
             * ciclo su tutti div selezione-container
             * controllo se sono stati compilati i diversi campi:
             * 6. Selezione su tipo di infisso (finestra o porta)
@@ -568,6 +884,8 @@ jQuery(document).ready(function($){
             * 9. Selezione della misura di altezza
             * 10. Selezione della misura di lunghezza
             * 11. Selezione sul tipo di apertura 
+            * 11a. anta principale
+            * 11b. posizione serratura
             * 12. Selezione sul tipo di barra
             * 13. Selezione sul tipo di serratura
             * 14. Selezione sul tipo di nodo
@@ -576,7 +894,8 @@ jQuery(document).ready(function($){
             * 16. Selezione sul tipo di cerniera
             * 17. Selezione sulle maggiorazioni
             * 18. Selezione sul numero di infissi
-            * 19. Spesa parziale infisso            * 
+            * 19. Spesa parziale infisso           
+            * 
             */
            
             //1. Data odierna
@@ -600,6 +919,18 @@ jQuery(document).ready(function($){
             preventivo.clienteEmail = $('input[name=mail-cliente]').val();
             //5e. CF cliente
             preventivo.clienteCF = $('input[name=cf]').val();
+            //5f. Foto
+            var foto = new Array();
+            var countFoto = 0;
+            $('input.input-immagine').each(function(){
+                if($(this).val() !== ''){                    
+                    foto[countFoto] = $(this).val();
+                    countFoto++;
+                }
+            });
+            
+            preventivo.foto = foto;
+            
             
             //creo l'array che conterrà i dati            
             var infissi = new Array($('.selezione-container').size());
@@ -652,6 +983,16 @@ jQuery(document).ready(function($){
                 if(typeof($(this).find('input[name=infisso-lunghezza]').val()) !== 'undefined'){
                     infisso['lunghezza'] = $(this).find('input[name=infisso-lunghezza]').val();
                 }
+                
+                //11a. Seleziono anta principale
+                if(typeof($(this).find('input[name=anta-principale]').val()) !== 'undefined'){
+                    infisso['anta-principale'] = $(this).find('input[name=anta-principale]').val();
+                }                
+                //11b. Seleziono posizione serratura
+                if(typeof($(this).find('input[name=posizione-serratura]').val()) !== 'undefined'){
+                    infisso['posizione-serratura'] = $(this).find('input[name=posizione-serratura]').val();
+                }
+                
                 //15. Selezione sul colore
                 // 15.ral --> controllo i RAL
                 if($(this).find('.ral-box .selettore-show div').data('name') !== 'none'){                    
@@ -840,6 +1181,12 @@ jQuery(document).ready(function($){
                     } 
                     if(!('tipo-infisso' in infissi[i])){
                         mancanti.push('Indicare il tipo di infisso');
+                    }
+                    if(!('anta-principale' in infissi[i])){
+                        mancanti.push('Indicare l\'anta principale');
+                    } 
+                    if(!('posizione-serratura' in infissi[i])){
+                        mancanti.push('Indicare la posizione serratura');
                     } 
                     
                     //return mancanti;
@@ -866,7 +1213,7 @@ jQuery(document).ready(function($){
 
     //funzione che cambia l'immagine dell'infisso a seconda delle ante selezionate
     $(document).on('change', 'select[name=seleziona-ante]', function(){    
-        var tipo = $(this).parent('.selezione-ante').siblings('.selected[data-type]').data('name');
+        var tipo = $(this).parent('.selezione-ante').siblings('.tipo-infisso').find('.selected[data-type]').data('name');
         var ante = $(this).val();
         var newclass = "";
         

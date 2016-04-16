@@ -60,7 +60,7 @@ class GestionePreventivoView {
         $preventivi = $this->pController->getPreventivi($parameters);
         
               
-        $this->printTable($preventivi, 1);
+        $this->printTable($preventivi, 1, true);
     }
     
     public function printOrdiniNonVisionati(){       
@@ -90,11 +90,11 @@ class GestionePreventivoView {
         $preventivi = $this->pController->getPreventivi($parameters);
         
               
-        $this->printTable($preventivi, 1);
+        $this->printTable($preventivi, 1, false, true);
     }
     
     
-    private function printTable($preventivi, $visionato){
+    private function printTable($preventivi, $visionato, $preventivo = false, $pdfSchema = false){
         global $URL_IMG;    
         
         //se visionato == 0 --> tabella dei non visionati
@@ -112,6 +112,7 @@ class GestionePreventivoView {
                     <td>Telefono Cliente</td>
                     <td>Prezzo Totale</td>
                     <td>PDF</td>
+                    <td>FOTO</td>
                     <td>AZIONE</td>    
                 </tr>
     <?php    
@@ -146,12 +147,38 @@ class GestionePreventivoView {
     ?>
                     </td>
                     <td>
-                        <form action="<?php echo admin_url().'admin.php?page=gestione_preventivi'; ?>" method="POST" >
+    <?php
+                    //prendo le immagini
+                    $foto = $this->pController->getFotoPreventivo($p->getId());
+                    if($foto != null){
+                        foreach($foto as $item){
+                            $f = new Foto();
+                            $f = $item;
+    ?>
+                        <a target="_blank" href="<?php echo $f->getUrlFoto() ?>"><img src="<?php echo $f->getUrlThumbFoto() ?>" /></a>
+    <?php
+                        }
+                    }
+                    else{
+                        echo 'nessuna foto disponibile';
+                    }
+    ?>
+                    </td>
+                    <td>
+                        <form action="<?php echo curPageURL(); ?>" method="POST" >
                              <input type="hidden" name="idPreventivo" value="<?php echo $p->getId() ?>" />
     <?php
                 if($visionato == 0){
     ?>                  
                             <input type="submit" name="visionato" value="VISIONATO" />                    
+    <?php
+                }else if($visionato == 1 && $preventivo == true){
+    ?>
+                            <input type="submit" name="ordine" value="APPROVA ORDINE" />
+    <?php
+                }else if($visionato == 1 && $pdfSchema == true){
+    ?>
+                            <input type="submit" name="pdfSchema" value="PDF SCHEMA" />
     <?php
                 }
     ?>                  
@@ -183,6 +210,11 @@ class GestionePreventivoView {
          if(!$this->pController->deletePreventivo($idPreventivo)){
              echo '<p class="error">Errore nella cancellazione del preventivo</p>';
          }
+    }
+    
+    public function listenerPreventivo(){
+        $idPreventivo = isset($_POST['idPreventivo']) ? stripslashes($_POST['idPreventivo']) : null;
+        $this->pController->setPreventivoToOrdine($idPreventivo);
     }
     
 }
