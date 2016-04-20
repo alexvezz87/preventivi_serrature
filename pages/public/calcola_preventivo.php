@@ -29,7 +29,7 @@ $current_user = wp_get_current_user();
                 <input type="text" placeholder="CLIENTE/RAGIONE SOCIALE" value="" name="nome-cliente" />
                 
                 <div class="tipo-cliente radio">
-                    <input type="radio" name="tipo-cliente" value="privato"><label>PRIVATO</label>
+                    <input type="radio" name="tipo-cliente" value="privato" checked><label>PRIVATO</label>
                     <input type="radio" name="tipo-cliente" value="societa"><label>SOCIET&Agrave;</label>
                     <div class="clear"></div>
                 </div>
@@ -49,22 +49,23 @@ $current_user = wp_get_current_user();
             <div class="clear"></div>
         </div>
         <div id="container-infissi">
-            <div class="selezione-container">
+            <div class="selezione-container" data-infisso="1">
             <?php
                 $writer->printSelezioneInfisso();
             ?>
             </div>
         </div>
-        <br><br>
         
-        <input class="clear" type="button" name="aggiungi-copia-infisso" value="Aggiungi copia primo infisso" disabled />
-        <input class="clear" type="button" name="aggiungi-infisso" value="Aggiungi nuovo infisso" disabled />
-        
+        <div class="clear clear-max"></div>
+        <input type="button" name="aggiungi-copia-infisso" value="Aggiungi una copia dell'ultimo infisso" disabled />
+        <input type="button" name="aggiungi-infisso" value="Aggiungi nuovo infisso" disabled />
+        <div class="clear"></div>
+        <hr>
         <div class="upload-immagini">
-            <p class="step">12. Aggiungi eventuali foto</p>
+            <p class="step">Aggiungi eventuali foto (inserisci al massimo 3 foto)</p>
             <input id="fileupload" type="file" name="files[]" data-url="<?php echo plugins_url().'/preventivi_serrature/upload_index.php' ?>" multiple>
             
-            <div id="description"></div>
+            <div class="clear" id="description"></div>
             <div id="progress">
                 <div class="bar" style="width: 0%;"></div>
             </div>
@@ -73,25 +74,26 @@ $current_user = wp_get_current_user();
             <input class="input-immagine" data-img="3" type="hidden" name="immagine-03" value="" />
         </div>
         <div class="note clear">
-            <label>Note</label>
+            <p class="step">Note</p>
             <textarea name="note" cols="10" rows="5"></textarea>
         </div>
         
-        <div class="totale-preventivo">        
-            <h3>Totale preventivo</h3>        
-            <div class="prezzo-preventivo">0</div>
+        <div class="step totale-preventivo">
+            <div class="prezzo-preventivo">0.00</div>
+            <div>Totale preventivo: € </div>
+            <div class="clear" style="float:none"></div>
         </div>
         
         <input type="button" name="invia-preventivo" value="Invia Preventivo" /> 
     </form>
     
     <div class="error-box message-box">
-        <h4>Preventivo non compilato correttamente</h4>
+        <h4>Preventivo compilato non correttamente</h4>
         <p></p>
         <input type="button" name="close-box" value="OK" />
     </div>
     <div class="ok-box message-box">
-        <p></p>
+        <div class="message"></div>
         <input type="button" name="close-box" value="OK" />
     </div>
     

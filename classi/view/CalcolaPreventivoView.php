@@ -122,7 +122,10 @@ class CalcolaPreventivoView {
             <div data-order="10" class="clear selezione-colore container-order hidden">
                 <p class="step">10. PARTICOLARI COSTRUTTIVI: COLORE</p>
                 <!-- SELEZIONE RAL -->
-                <p>RAL<br>Colori preferenziali disponibili in tonalità lucida o opaca</p>
+                <p class="descrizione">
+                    <span class="title">RAL</span>
+                    Colori preferenziali disponibili in tonalità lucida o opaca
+                </p>
                 <div class="ral-box selettore-box order">
                     <div class="selettore-show">
                         <div class="none" data-type="colore" data-name="none">seleziona RAL</div>
@@ -149,12 +152,12 @@ class CalcolaPreventivoView {
                     <div class="ral-9005 text-white" data-type="colore" data-name="ral-9005">RAL 9005</div>
                 </div>
                 <div class="tipo-ral">
-                    <input type="radio" name="tipo-ral" value="lucido" checked /><label>Lucido</label>
-                    <input type="radio" name="tipo-ral" value="opaco" /><label>Opaco</label>
+                    <input type="radio" name="tipo-ral-1" value="lucido" checked /><label>Lucido</label>
+                    <input type="radio" name="tipo-ral-1" value="opaco" /><label>Opaco</label>
                 </div>
                 <div class="clear last"></div>
                 <!-- SELEZIONE MICACEI -->
-                <p>MICACEI</p>
+                <p class="descrizione"><span class="title">MICACEI</span></p>
 
                 <!--
                 <div class="micacei-box selettore-box">
@@ -193,12 +196,15 @@ class CalcolaPreventivoView {
                     <div class="box asfalto" data-type="colore" data-name="Grigio raggrinzato asfalto">
                         <p>Grigio raggrinzato asfalto</p>
                     </div>
+                    <div class="clear"></div>
                 </div>
-
+                
+                <p class="descrizione clear"><span class="title">ALTRO</span></p>
                 <div class="box-zincatura clear container-order">
                     <div class="box zincatura" data-type="colore" data-name="solo zincatura">
                         <p>Solo zincatura</p>
                     </div>
+                    <div class="clear"></div>
                 </div>
 
                 <input type="hidden" name="colore-scelto" value="" />
@@ -215,8 +221,11 @@ class CalcolaPreventivoView {
                     <p>Collo standard 3 cm</p>
                 </div>
                 <div class="box collo-allungato order" data-type="cerniera" data-name="collo-allungato">
-                    <p>Collo allungato<br>X = <input type="text" name="collo-allungato" value="0" /> cm</p>
+                    <p>Collo allungato X = <input type="number" name="collo-allungato" step="0.1" min="0" value="0" /> cm</p>                   
+                    <span class="help" title="Info"></span>
+                    <div class="help-window help-cerniera hidden"><span class="close"></span></div>
                 </div>
+                <div class="clear"></div>
             </div>
             
             
@@ -255,7 +264,7 @@ class CalcolaPreventivoView {
                     }
                     else{
                     ?>
-                        <p>Maggiorazioni non presenti</p>
+                        <p class="descrizione">Maggiorazioni non presenti</p>
                     <?php
                     }
                 ?>

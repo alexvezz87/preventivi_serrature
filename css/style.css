@@ -15,7 +15,7 @@ and open the template in the editor.
     background:#e2001a;
     padding:25px;
     width:100%;
-    margin-bottom:40px;
+    margin-bottom:40px;   
 }
 
 .intestazione .field{
@@ -61,6 +61,10 @@ and open the template in the editor.
 }
 
 
+.selezione-container {
+    margin-top:40px;
+}
+
 #container-infissi h3.title-infisso{
     font-family:'Open Sans';
     font-size:24px;
@@ -70,11 +74,13 @@ and open the template in the editor.
     padding-left: 25px;
 }
 
-#container-infissi .step{
+#container-infissi .step, .numero-infissi, .upload-immagini .step,
+.note .step, .totale-preventivo.step{
     width:100%;
     display: block;
     background:#f2f2f2;
-    height: 30px;
+    height: auto;
+    min-height: 30px;
     font-family: 'Open Sans Condensed', sans-serif;
     font-size:16px;
     font-weight: bold;
@@ -361,12 +367,50 @@ and open the template in the editor.
 
 .none {background: #fff}
 
-.scuro-gr {background: #fff}
-.marmo {background: #fff}
-.opaco {background: #fff}
-.antracite {background: #fff}
+.micacei .box, .box-zincatura .box{
+    width:150px;
+    border:0px;
+    display: table;
+    height: 90px;
+    background-size: cover !important;
+}
+
+.box-zincatura .box{
+    border:1px solid #000;
+    background:#fff;
+}
+
+.micacei .box p, .box-zincatura .box p{
+    padding:10px;
+    color:#fff;
+    display: table-cell;
+    vertical-align: middle;    
+}
+
+.box-zincatura .box p{
+    color:#000;
+}
+
+#container-infissi .micacei .box.selected {
+    border: 3px solid #e2001a !important;    
+}
+
+.scuro-gr {
+    background:url('../images/grigio-micaceo.jpg') top center;     
+}
+.marmo {
+    background:url('../images/verde.jpg') top center;
+}
+.nero-opaco {
+    background:url('../images/nero.jpg') top center;
+}
+.nero-antracite {
+    background:url('../images/nero-antracite.jpg') top center;
+}
 .brown {background: #fff}
-.asfalto {background: #fff}
+.asfalto {
+    background:url('../images/grigio-asfalto.jpg') top center;
+}
 
 
 .select-ral div.text-white, .text-white{ color:#999 ; }
@@ -379,18 +423,19 @@ and open the template in the editor.
 }
 
 .tipo-ral{
-    margin-top:-50px;    
-    float:right;
+    display:block;
+    clear:none;
 }
 
-.tipo-ral > input, .tipo-ral > label{
+.tipo-ral > input, .tipo-ral > label, 
+.tipo.radio > input, .tipo.radio > label{
     float: left;
     width: auto;
     margin-right: 10px;
     height: 50px;
     line-height: 50px;
     font-family: 'Open sans Condensed';
-    font-size: 14px;
+    font-size: 16px;
     font-weight: bold;
     text-transform: uppercase;
     color:#000;
@@ -423,17 +468,20 @@ and open the template in the editor.
 }
 
 .message-box{
-    width:75%;
+    width:auto;
     min-height: 200px;
-    position:fixed;
-    border:1px solid black;
-    padding:20px;    
+    position:fixed;    
+    padding:20px 50px;    
     top:0px;
-    left:0px;
+    left:-275px;
     margin-top:15%;
-    margin-left:12.5%;
-    background:#999;
+    margin-left:50%;
+    background:rgba(242,242,242,0.9);
     display:none;
+}
+
+.error-box {
+    border:2px solid #e2001a;
 }
 
 .error-box h4{
@@ -588,29 +636,51 @@ and open the template in the editor.
     display: none;
 }
 
-.seleziona-anta.F{
+
+.seleziona-anta{
     float:left;
-    width:85px;
-    height:150px;
     margin:0;
     padding:0;
-    background:url('../images/finestra-anta.png') no-repeat center center;
+    margin-bottom: 20px;
     cursor: pointer;
+}
+
+.seleziona-anta.F{    
+    width:85px;
+    height:150px;    
+    background:url('../images/finestra-anta.png') no-repeat center center;    
 }
 .seleziona-anta.F.selected{
     background:url('../images/finestra-anta-selezionata.png') no-repeat center center;
 }
-.seleziona-anta.P{
-    float:left;
+.seleziona-anta.P{    
     width:76px;
-    height:200px;
-    margin:0;
-    padding:0;
-    background:url('../images/portafinestra-anta.png') no-repeat center center;
-    cursor: pointer;
+    height:200px;   
+    background:url('../images/portafinestra-anta.png') no-repeat center center;    
 }
 .seleziona-anta.P.selected{
     background:url('../images/portafinestra-anta-selezionata.png') no-repeat center center;
+}
+
+.descrizione, .seleziona-anta-principale .tipo.radio{
+    margin-left:45px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 13px;
+    font-weight: normal;
+    color: #000;
+}
+
+.descrizione .title{
+    display: block;
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    color: #000;
+    text-transform: uppercase;
+}
+
+.seleziona-anta-principale .tipo.radio{
+    margin-bottom:20px;
 }
 
 .container-seleziona-anta {
@@ -620,6 +690,213 @@ and open the template in the editor.
 #progress .bar {
     height: 18px;
     background: green;
+}
+
+.selezione-cerniera .box{
+    width:270px;
+    height: 100px;      
+    background-repeat: no-repeat !important;
+    display:table;
+}
+
+.selezione-cerniera .box p{
+    margin:0px;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.selezione-cerniera .box p.descrizione{
+    font-family: 'Open Sans';
+    font-size: 12px;
+    text-transform: none;
+    font-weight: normal;
+}
+
+.selezione-cerniera .normale{
+   
+}
+.selezione-cerniera .collo-standard{
+   
+}
+.selezione-cerniera .collo-allungato{
+    
+}
+
+input[name=collo-allungato]{
+    height: 15px;
+    padding: 5px;
+    width: 50px;
+}
+
+span.help{
+    display:block;
+    float:right;
+    background:url('../images/ico_help.png') no-repeat center center;
+    width:20px;
+    height: 20px;
+    margin-top:5px;
+    margin-right: 5px;
+    z-index:100;
+}
+
+.help-cerniera{
+    width:510px;
+    height: 510px;
+    border:1px solid #000;
+    background: #fff url('../images/help_cerniera.png') center center no-repeat;
+    position: absolute;
+    left: -255px;
+    margin-left: 50%;
+    z-index:9999;
+    margin-top: -50px;
+}
+
+.help-cerniera .close{
+    width:20px;
+    height: 20px;
+    background:url('../images/ico_close.png') center center no-repeat;
+    margin-top:5px;
+    margin-right: 5px;
+    display:block;
+    float:right;
+}
+
+input[name=numero-infissi]{
+    width: 50px;   
+    margin-left: 20px;
+}
+
+#container-infissi .spesa-parziale-infisso .step, 
+.totale-preventivo.step{
+    background:#999;
+    font-size: 20px;
+    padding-top:10px;
+    padding-bottom:10px;
+}
+
+#container-infissi .spesa-parziale-infisso .step{
+    text-align: right;
+    width: 98%;
+    padding-right: 2%;
+    padding-left: 0px;
+}
+
+input[name=aggiungi-copia-infisso], 
+input[name=aggiungi-infisso],
+input[name=cancella-infisso], 
+input[name=invia-preventivo]{    
+    width:100%;   
+    height:50px;   
+    background: #e2001a;
+    font-family: 'Open Sans Condensed';
+    text-transform: uppercase;
+    font-size:16px;       
+    font-weight: bold;
+    color:#fff;
+    border:0px;
+    margin-bottom:20px;
+}
+
+input[name=invia-preventivo]{
+    width:100%;    
+    margin:0;
+    margin-top:40px;
+    font-size:20px;
+}
+
+input[name=aggiungi-copia-infisso]:disabled, input[name=aggiungi-infisso]:disabled{
+    
+    color:#999;
+    background:#f2f2f2;
+}
+#description{
+    width:95%;
+}
+
+#description > div{
+    height: 50px;
+    line-height: 50px;
+    border-bottom: 1px solid #999;
+    font-family: 'Open Sans';
+    color: #000;
+}
+
+#description > div input{
+    float: right;
+    height: 30px;
+    font-family: "Open Sans Condensed";
+    font-size: 16px;
+    font-weight: bold;
+    border: 0px none;
+    background: rgb(153, 153, 153) none repeat scroll 0% 0%;
+    width: 100px;
+    margin-top:10px;
+}
+
+textarea[name=note]{
+    width:100%;
+}
+
+.totale-preventivo.step{
+    height: auto;
+    padding-top:20px;
+    padding-bottom:20px;
+    font-size:24px;
+}
+
+.totale-preventivo.step .prezzo-preventivo{
+    margin-left:5px;
+    margin-right: 20px;
+}
+
+.totale-preventivo.step > div {
+    float:right;
+}
+
+hr {
+    margin-top:40px;
+    margin-bottom:40px;
+}
+
+.message-box{
+    
+    padding-left: 50px;
+}
+.message-box h4, .message-box .punto.infisso{
+    font-family: 'Open Sans Condensed';
+    text-transform: uppercase;  
+    color:#000 !important;
+}
+
+.message-box .punto{
+    font-family: 'Open Sans';
+    color:#000;
+}
+
+.message-box .punto.infisso{
+    font-size:18px;
+    font-weight: bold;
+    margin-top:10px;
+}
+
+input[name=close-box]{
+    height: 30px;
+    width: 50px;
+    border: 0px none;
+    background: rgb(153, 153, 153) none repeat scroll 0% 0%;
+    font-family: "Open Sans Condensed";
+    font-weight: bold;
+    font-size: 18px;
+    margin: auto;
+    display: block;
+}
+
+.clear-max{
+    height: 40px;
+}
+
+.ok-box{
+    border: 2px solid green;
 }
 
 /** TABLET **/
@@ -691,4 +968,41 @@ and open the template in the editor.
         padding:10px;    
         margin-left:45px;
     }
+    
+    .select-ral, .select-micacei, .ral-box.selettore-box {
+        margin-left:45px;
+    }
+    
+    textarea[name=note]{
+        width:90%;
+    }
+    
+    .tipo-ral, .selezione-cerniera .normale, #container-infissi .container-nodo .box.nodo-b,
+    #fileupload, #description, textarea[name=note]{
+      margin-left: 45px;
+    }
+    
+    .micacei, .box-zincatura{
+        padding-left:45px;
+    }
+    
+    input[name=aggiungi-copia-infisso], 
+    input[name=aggiungi-infisso],
+    input[name=cancella-infisso], 
+    input[name=invia-preventivo]{
+        float:left;
+        width:48%;
+        margin-left:1%;
+        margin-right:1%;
+    }
+    
+    input[name="invia-preventivo"]{
+         width:100%;
+         margin:0;
+    }
+    
+    .intestazione{      
+        max-height: 285px;
+    }
+    
 }

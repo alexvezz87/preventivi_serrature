@@ -1055,8 +1055,29 @@ class UploadHandler
     protected function handle_file_upload($uploaded_file, $name, $size, $type, $error,
             $index = null, $content_range = null) {
         $file = new \stdClass();
+        
+        //modifico aggiungendo il timestamp
+        $temp = explode('.', $name);
+        $newName = "";
+        for($i=0; $i < count($temp); $i++){
+            if($i == count($temp)-2){
+               $newName.=$temp[$i].'_'.time().'.'; 
+            }
+            else{
+                if($i == count($temp) - 1){
+                    $newName.=$temp[$i];
+                }
+                else{
+                    $newName.=$temp[$i].'.';
+                }
+            }
+        }
+        
+        $name = $newName;
+        
         $file->name = $this->get_file_name($uploaded_file, $name, $size, $type, $error,
             $index, $content_range);
+        
         $file->size = $this->fix_integer_overflow((int)$size);
         $file->type = $type;
         if ($this->validate($uploaded_file, $file, $error, $index)) {

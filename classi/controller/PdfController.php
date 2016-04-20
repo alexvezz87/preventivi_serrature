@@ -155,6 +155,12 @@ class PdfController extends FPDF {
             $array['Spesa'] = EURO.' '.$i->getSpesaInfisso();
             $array['Copie infisso'] = $i->getNInfisso();            
             
+            
+            if($count % 2 == 0){
+                $this->AddPage();
+            }
+            
+            
             $this->printPdfTable($array);            
             
             //stampo una linea
@@ -198,15 +204,18 @@ class PdfController extends FPDF {
      * @param type $arrayFoto
      */
     public function printFoto($arrayFoto){
-        
+        $count = 1;
         foreach($arrayFoto as $item){
             $foto = new Foto();
             $foto = $item;
             
             //stampo una linea a separazione
-            $this->AddPage();           
+            $this->AddPage();
+            $this->SetFont('Arial','B',18);          
+            $this->Cell(60,10, 'Foto '.$count,0,0,'L');
+            $this->Ln(20);
             $this->Image(preg_replace('/ /', '%20', $foto->getUrlFoto()), $this->GetX(), $this->GetY(), 180);
-            
+            $count++;
         }        
         
     }
