@@ -353,6 +353,8 @@ class PreventivoController {
      * @return type
      */
     public function sendEmailtoAdmin($idPreventivo, $dir){
+        global $SENT_EMAIL;
+        
         //creo un oggetto preventivo
         $p = new Preventivo();
         $p = $this->getPreventivo($idPreventivo);
@@ -360,7 +362,7 @@ class PreventivoController {
         //ottengo il nome del rivenditore/agente
         $user_info = get_userdata($p->getIdUtente());
         
-        $to = 'info@alexsoluzioniweb.it';
+        $to = $SENT_EMAIL;
         $subject = "Ricevuto Preventivo online da ".$user_info->display_name;
         $message = "Un nuovo preventivo online è stato ricevuto!";
         $attachments = array($dir);

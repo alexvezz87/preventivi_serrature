@@ -26,8 +26,10 @@ class GestionePrezziView {
      */
     public function printHeader(){
     ?>
-        <h2>Gestione Prezzi</h2>
-        <p>Questa sezione è dedicata alla compilazione dinamica dei prezzi per i vari articoli</p>
+        <div class="header">
+            <h2>Gestione Prezzi</h2>
+            <p>Questa sezione è dedicata alla compilazione dinamica dei prezzi per i vari articoli</p>
+        </div> 
     <?php
        
     
@@ -39,44 +41,72 @@ class GestionePrezziView {
     public function printFormGenerazioneTabella(){
      
     ?>
-        <form action="<?php echo admin_url().'admin.php?page=gestione_prezzi'; ?>" method="POST">
-            <div>
-                <label>Nome Articolo</label>
-                <input type="text" value="" name="nameTable" required />
-                <label> Numero ante</label>
-                <select name="ante" >
-                    <option value="0">0</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                </select>
+
+        <div class="form-container">
+            <div class="fascia-titolo form">
+                <h3>Inserisci infisso</h3>  
             </div>
-            <div>
-                <label>Altezza iniziale</label>
-                <input type="text" value="" name="startRows" required />
-                <label>Altezza Finale</label>
-                <input type="text" value="" name="endRows" required />
-                <label>Altezza step</label>
-                <input type="text" value="" name="stepRows" required />
-            </div>
-            <div>
-                <label>Lunghezza iniziale</label>
-                <input type="text" value="" name="startCols" required />
-                <label>Lunghezza Finale</label>
-                <input type="text" value="" name="endCols" required />
-                <label>Lunghezza step</label>
-                <input type="text" value="" name="stepCols" required />
-            </div>
-            <div>
-                <label>Prezzo iniziale</label>
-                <input type="text" value="" name="prezzo-iniziale" required />
-                <label>Tasso di incremento (%)</label>
-                <input type="text" value="" name="incremento" required />
-            <div>
-                <input type="submit" value="Genera Tabella" name="genera-tabella-articolo" />
-            </div>
-        </form>
+            <form class="inserisci-infisso" action="<?php echo admin_url().'admin.php?page=gestione_prezzi'; ?>" method="POST">
+
+                <div class="row">
+                    <div class="field nome">
+                        <label>Nome Articolo</label>
+                        <input type="text" value="" name="nameTable" required />
+                    </div>
+                    <div class="field">
+                        <label> Numero ante</label>
+                        <select name="ante" >
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="field">
+                        <label>Altezza iniziale (mm)</label>
+                        <input type="text" value="" name="startRows" required />
+                    </div>
+                    <div class="field">
+                        <label>Altezza Finale (mm)</label>
+                        <input type="text" value="" name="endRows" required />
+                    </div>
+                    <div class="field">
+                        <label>Altezza step (mm)</label>
+                        <input type="text" value="" name="stepRows" required />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="field">
+                        <label>Lunghezza iniziale (mm)</label>
+                        <input type="text" value="" name="startCols" required />
+                    </div>
+                    <div class="field">
+                        <label>Lunghezza Finale (mm)</label>
+                        <input type="text" value="" name="endCols" required />
+                    </div>
+                    <div class="field">
+                        <label>Lunghezza step (mm)</label>
+                        <input type="text" value="" name="stepCols" required />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="field">
+                        <label>Prezzo iniziale</label>
+                        <input type="text" value="" name="prezzo-iniziale" required />
+                    </div>
+                    <div class="field">
+                        <label>Tasso di incremento (%)</label>
+                        <input type="text" value="" name="incremento" required />
+                    </div>            
+                </div>
+                <div class="clear">
+                    <input type="submit" value="Genera Tabella" name="genera-tabella-articolo" />
+                </div>
+            </form>
+        </div>
     <?php
     }
     
@@ -148,46 +178,50 @@ class GestionePrezziView {
             $colspan = intval(($tabella->getEndCols() - $tabella->getStartCols()) / $tabella->getStepCols()) + 1;
             $rowspan = intval(($tabella->getEndRows() - $tabella->getStartRows()) / $tabella->getStepRows()) + 1;
         ?>
-            <form action="<?php echo admin_url().'admin.php?page=gestione_prezzi'; ?>" method="POST">
+            <form class="form-modifica-infisso" action="<?php echo admin_url().'admin.php?page=gestione_prezzi'; ?>" method="POST">
                 <input type="hidden" name="id-tabella" value="<?php echo $tabella->getId() ?>" />
-                <h3><?php echo $tabella->getNomeTabella() ?></h3>
-                <p>Numero Ante: <?php echo $tabella->getAnte() ?></p>
-                <table class="tabella-articolo">
-                    <!-- prima riga -->
-                    <tr>
-                        <td>
-                            H / L
-                        </td>
-                        <?php for($i=$tabella->getStartCols(); $i <= $tabella->getEndCols(); $i+=$tabella->getStepCols()){ ?>
-                        <td class="title-cols">
-                            <?php echo $i ?>
-                        </td>
+                <div class="fascia-titolo">
+                    <h3><?php echo $tabella->getNomeTabella() ?></h3>
+                </div>
+                <div class="container-dati-infisso">
+                    <p>Numero Ante: <?php echo $tabella->getAnte() ?></p>
+                    <table class="tabella-articolo">
+                        <!-- prima riga -->
+                        <tr class="prima-riga">
+                            <td class="title-rows">
+                                H / L
+                            </td>
+                            <?php for($i=$tabella->getStartCols(); $i <= $tabella->getEndCols(); $i+=$tabella->getStepCols()){ ?>
+                            <td class="title-cols">
+                                <?php echo $i ?>
+                            </td>
+                            <?php } ?>
+                        </tr>
+                        <!-- fine prima riga -->
+                        <!-- seconda riga -->
+                        <tr>
+                            <td class="title-rows">
+                                <?php echo $tabella->getStartRows() ?>
+                            </td>
+                            <td colspan='<?php echo $colspan ?>' rowspan="<?php echo $rowspan ?>">
+                                <?php echo $this->printTabellaPrezzi($tabella->getPrezzi(), $rowspan, $colspan) ?>
+                            </td>
+                        </tr>
+                        <!-- fine seconda riga -->
+                        <!-- altre righe -->
+                        <?php for($j=($tabella->getStartRows() + $tabella->getStepRows()); $j <= $tabella->getEndRows(); $j+=$tabella->getStepRows()) { ?>
+                        <tr>
+                            <td class="title-rows">
+                                <?php echo $j ?>
+                            </td>
+                        </tr>
                         <?php } ?>
-                    </tr>
-                    <!-- fine prima riga -->
-                    <!-- seconda riga -->
-                    <tr>
-                        <td class="title-rows">
-                            <?php echo $tabella->getStartRows() ?>
-                        </td>
-                        <td colspan='<?php echo $colspan ?>' rowspan="<?php echo $rowspan ?>">
-                            <?php echo $this->printTabellaPrezzi($tabella->getPrezzi(), $rowspan, $colspan) ?>
-                        </td>
-                    </tr>
-                    <!-- fine seconda riga -->
-                    <!-- altre righe -->
-                    <?php for($j=($tabella->getStartRows() + $tabella->getStepRows()); $j <= $tabella->getEndRows(); $j+=$tabella->getStepRows()) { ?>
-                    <tr>
-                        <td class="title-rows">
-                            <?php echo $j ?>
-                        </td>
-                    </tr>
-                    <?php } ?>
-                    <!-- fine altre righe -->
-                </table>
-                <div>
-                    <input type="submit" value="AGGIORNA PREZZI" name="aggiorna-prezzi" />
-                    <input type="submit" value="CANCELLA TABELLA" name="cancella-tabella" />
+                        <!-- fine altre righe -->
+                    </table>
+                    <div class="azioni">
+                        <input type="submit" value="AGGIORNA PREZZI" name="aggiorna-prezzi" />
+                        <input type="submit" value="CANCELLA TABELLA" name="cancella-tabella" />
+                    </div>
                 </div>
             </form>
         <?php    

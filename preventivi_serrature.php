@@ -31,6 +31,7 @@ global $DIR_IMG_PREVENTIVI;
 global $DIR_IMG_PREVENTIVI_THUMB;
 global $DIR_TEMP_IMG_PREVENTIVI;
 global $DIR_TEMP_IMG_PREVENTIVI_THUMB;
+global $SENT_EMAIL;
 
 $DIR_PDF = plugin_dir_path(__FILE__).'\\preventivi_pdf\\';
 $DIR_IMG_PREVENTIVI = plugin_dir_path(__FILE__).'\\preventivi_immagini\\';
@@ -43,6 +44,8 @@ $URL_PDF = plugins_url().'/preventivi_serrature/preventivi_pdf/';
 $URL_IMG = plugins_url().'/preventivi_serrature/images/';
 $URL_IMG_PREVENTIVI = plugins_url().'/preventivi_serrature/preventivi_immagini/';
 $URL_IMG_PREVENTIVI_THUMB = $URL_IMG_PREVENTIVI.'thumbnail/';
+
+$SENT_EMAIL = 'info@alexsoluzioniweb.it';
 
 //indico la cartella dove è contenuto il plugin
 require_once (dirname(__FILE__) . '/preventivi_serrature.php');
@@ -101,12 +104,20 @@ function add_calcola_preventivo(){
     }
 }
 
-//registro lo stile
+//registro gli stili
 add_action( 'wp_enqueue_scripts', 'register_style' );
+add_action( 'admin_enqueue_scripts', 'register_admin_style' );
+
 function register_style(){
     wp_register_style('style_css', plugins_url('preventivi_serrature/css/style.css'));
     wp_enqueue_style('style_css');
 }
+
+function register_admin_style() {
+    wp_register_style('admin-style', plugins_url('preventivi_serrature/css/admin-style.css') );
+    wp_enqueue_style('admin-style');
+}
+
 
 //Aggiungo il file di Javascript al plugin
 add_action( 'wp_enqueue_scripts', 'register_js_script' );

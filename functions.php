@@ -25,5 +25,6 @@ function getTime($time){
     $time1 = explode('-', $temp[0]);
     $time2 = explode(':', $temp[1]);
 
-    return $time1[2].'/'.$time1[1].'/'.$time1[0].' - '.$time2[0].':'.$time2[1];
+    return $time1[2].'/'.$time1[1].'/'.$time1[0];
+    //return $time1[2].'/'.$time1[1].'/'.$time1[0].' - '.$time2[0].':'.$time2[1];
 }

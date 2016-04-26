@@ -252,12 +252,12 @@ jQuery(document).ready(function($){
                                                 totale = parseFloat(totale).toFixed(2);
                                                 
                                                 //inserisco il prezzo nel parziale
-                                                $container.siblings('.spesa-parziale-infisso').find('input[name=spesa-parziale-infisso]').val(totale);
+                                                $container.siblings('.spesa-parziale-infisso').find('input[name=spesa-parziale-infisso]').val(totaleParziale);
                                                 //aggiorno il prezzo totale dell'infisso                                            
                                                 $container.siblings('.spesa-parziale-infisso').find('span.spesa-infisso').text(totale);
 
                                                 //inserisco il prezzo dell'infisso senza maggiorazioni
-                                                $container.siblings('input[name=totale-infisso]').val(totale);
+                                                $container.siblings('input[name=totale-infisso]').val(totaleParziale);
 
                                                 //aggiorno il preventivo totale
                                                 aggiornoTotalePreventivo();                                            
@@ -778,9 +778,9 @@ jQuery(document).ready(function($){
                     }
                 });
                 $('div#img-'+idImg).remove();
-                        $('#progress .bar').css('width', '0');
-                        //pulisco l'input hidden
-                        $('input[data-img="'+idImg+'"]').val('');
+                $('#progress .bar').css('width', '0');
+                //pulisco l'input hidden
+                $('input[data-img="'+idImg+'"]').val('');
             });
             
         });
@@ -865,6 +865,60 @@ jQuery(document).ready(function($){
         
         //rimuovo il nuovo infisso
         $('.nuovo-infisso').removeClass('nuovo-infisso');
+    }
+        
+    function cleanPreventivatore(){
+        //La funzione elimina tutti gli infissi eccetto il primo
+        $('.selezione-container').each(function(){
+            if($(this).data('infisso') !== 1){
+                //elimino tutti gli altri infissi
+                $(this).remove();
+            }
+            else{
+                //resetto il primo infisso
+                $(this).find('.selected').removeClass('selected');
+
+                //resetto i contenuti
+                $(this).find('.container-order').addClass('hidden');
+                $(this).find('.tipo-infisso').removeClass('hidden');
+                $(this).find('.micacei').removeClass('hidden');
+                $(this).find('.box-zincatura').removeClass('hidden');
+
+                $(this).find('.selezione-ante').html('');
+                
+                $(this).find('.ricerca').addClass('hidden');
+                $(this).find('.selezione-infissi').html('');               
+                $(this).find('.selezione-misure').html('');
+               
+                $(this).find('.selezione-colore .ral-box .selettore-show').html('<div class="none" data-type="colore" data-name="none">seleziona RAL</div>');
+                
+                $(this).find('input[name=totale-infisso]').val('');
+                
+                $(this).find('.numero-infissi').addClass('hidden');
+                $(this).find('input[name=numero-infissi]').val(1);
+                $('input[name=aggiungi-infisso]').prop('disabled', true);
+                $('input[name=aggiungi-copia-infisso]').prop('disabled', true);
+
+                $(this).find('.spesa-parziale-infisso span').text('0');
+                $(this).find('input[spesa-parziale-infisso]').val('');
+
+                $(this).find('.selezione-anta-principale').html('');
+                
+                //pulisco i campi del preventivo
+                $('input[name=nome-cliente]').val('');
+                $('input[name=via-cliente]').val('');
+                $('input[name=telefono-cliente]').val('');
+                $('input[name=mail-cliente]').val('');
+                $('input[name=cf]').val('');
+                $('textarea[name=note]').val('');
+                $('textarea[name=note]').text('');
+                
+                //pulisco le immagini caricate
+                $('.upload-immagini #description > div').remove();
+                $('#progress .bar').css('width', '0');
+                $('.upload-immagini input.input-immagine').val('');
+            }
+        });
     }
     
     //Gestione aggiungi infisso
@@ -1013,6 +1067,8 @@ jQuery(document).ready(function($){
     
     function inviaPreventivo(){
         $('input[name=invia-preventivo]').click(function(){
+            
+            $('.loading-container').removeClass('hidden');
             /*
             * Quando viene inviato un preventivo devo effettuare un controllo dei dati compilati:
             * 1. Data odierna
@@ -1246,8 +1302,11 @@ jQuery(document).ready(function($){
                             //il preventivo non è stato salvato correttamente nel database
                             html+='<div class="punto">Ci sono stati dei problemi nella registrazione del preventivo!</div>';
                         }
+                        $('.loading-container').addClass('hidden');
                         $('.ok-box .message').html(html);
                         $('.ok-box').show();
+                        //Pulisco il preventivatore;
+                        cleanPreventivatore();
                     }
                 });
                 
@@ -1379,6 +1438,9 @@ jQuery(document).ready(function($){
             }
             else if(ante == 3){
                 newclass = "f3";
+            }
+            else if(ante == 4){
+                newclass = "f4";
             }
         }
         else if(tipo === 'Portafinestra'){

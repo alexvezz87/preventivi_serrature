@@ -27,8 +27,10 @@ class GestioneMaggiorazioneView {
      */
     public function printHeader(){
     ?>
-        <h2>Gestione Maggiorazioni</h2>
-        <p>Questa sezione è dedicata alla gestione delle Maggiorazioni</p>
+        <div class="header">
+            <h2>Gestione Maggiorazioni</h2>
+            <p>Questa sezione è dedicata alla gestione delle Maggiorazioni</p>
+        </div>
     <?php
     }
     
@@ -37,30 +39,35 @@ class GestioneMaggiorazioneView {
      */
     public function printFormGenerazioneMaggiorazione(){
     ?>
-        <form action="<?php echo admin_url().'admin.php?page=gestione_maggiorazioni'; ?>" method="POST">
-            <div>
-                <table>
-                    <tr>
-                        <td style="width:70%">
-                            <label>Nome Maggiorazione</label><br>
-                            <input type="text" name="nome" value="" style="width:100%" required />
-                        </td>
-                        <td>
-                            <label>Quantità</label><br>
-                            <input type="text" name="quantita" value="" style="text-align: right" required />
-                        </td>
-                        <td>
-                            <label>Unità di misura</label><br>
-                            <select name="unita">
-                                <option value="%">%</option>
-                                <option value="€">€</option>
-                            </select>
-                        </td>
-                        <td>
-                            <br><input type="submit" name="aggiungi-maggiorazione" value="Aggiungi" />
-                        </td>
-                    </tr>
-                </table>
+        
+
+        <form class="inserisci-maggiorazione" action="<?php echo admin_url().'admin.php?page=gestione_maggiorazioni'; ?>" method="POST">
+            <div class="fascia-titolo form">
+                <h3>Inserisci maggiorazione</h3>  
+            </div>
+            <div class="container-dati-maggiorazione">
+                <div class="row">
+                    <div class="field nome">                        
+                        <label>Nome Maggiorazione</label><br>
+                        <input type="text" name="nome" value="" style="width:100%" required />
+                    </div>
+                    <div class="field">  
+                        <label>Quantità</label><br>
+                        <input type="text" name="quantita" value="" style="text-align: right" required />
+                    </div>  
+                    <div class="field">                         
+                        <label>Unità di misura</label><br>
+                        <select name="unita">
+                            <option value="%">%</option>
+                            <option value="€">€</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="clear">
+                    <div class="field">
+                        <input type="submit" name="aggiungi-maggiorazione" value="Aggiungi" />
+                    </div>
+                </div>                
             </div>
         </form>
     <?php        
@@ -103,9 +110,9 @@ class GestioneMaggiorazioneView {
         }
         
     ?>  
-        
-        <table class="table-maggiorazioni">
-            <tr class="table-header">
+        <div class="container-tabella maggiorazioni">
+        <table class="table">
+            <tr class="row-title">
                 <td>Nome maggiorazione</td>
                 <td>Quantità</td>
                 <td>Azione</td>
@@ -115,7 +122,7 @@ class GestioneMaggiorazioneView {
             $m = new Maggiorazione();
             $m = $maggiorazione;
     ?>
-            <tr>
+            <tr class="row-data">
                 <td>
                     <?php echo $m->getNome(); ?>
                 </td>
@@ -133,6 +140,7 @@ class GestioneMaggiorazioneView {
         }
     ?>
         </table>   
+        </div>
         
     <?php     
     }

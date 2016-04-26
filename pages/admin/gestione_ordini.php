@@ -6,7 +6,7 @@
 $writer = new GestionePreventivoView();
 
 //stampo il titolo
-$writer->printHeader();
+$writer->printHeaderOrdini();
 
 //listeners
 if(isset($_POST['visionato'])){
@@ -20,9 +20,15 @@ if(isset($_POST['cancella-preventivo'])){
 
 ?>
 
-
-<h3>Ordini da visionare</h3>
-<?php echo $writer->printOrdiniNonVisionati() ?>
-
-<h3>Ordini visionati</h3>
-<?php echo $writer->printOrdiniVisionati() ?>
+<div class="fascia-titolo">
+    <h3>Ordini da visionare</h3>
+</div>
+<div class="container-tabella">
+    <?php echo $writer->printOrdiniNonVisionati() ?>
+</div>
+<div class="fascia-titolo">
+    <h3>Ordini visionati</h3>
+</div>
+<div class="container-tabella">    
+    <?php echo $writer->printOrdiniVisionati() ?>
+</div>

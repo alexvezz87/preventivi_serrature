@@ -24,12 +24,18 @@ if(isset($_POST['ordine'])){
 
 ?>
 
-<h3>Preventivi da visionare</h3>
+<div class="fascia-titolo">
+    <h3>Preventivi da visionare</h3>
+</div>
 
-<?php echo $writer->printPreventiviNonVisionati() ?>
+<div class="container-tabella">
+    <?php echo $writer->printPreventiviNonVisionati() ?>
+</div>
 
+<div class="fascia-titolo">
+    <h3>Preventivi visionati</h3>
+</div>
 
-<h3>Preventivi visionati</h3>
-
-<?php echo $writer->printPreventiviVisionati() ?>
-
+<div class="container-tabella">    
+    <?php echo $writer->printPreventiviVisionati() ?>
+</div>

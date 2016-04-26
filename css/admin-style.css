@@ -1,0 +1,234 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 21-apr-2016, 16.23.25
+    Author     : Alex
+*/
+
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800);
+@import url(https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,300italic,700);
+
+body.toplevel_page_gestione_preventivi, 
+body.gestione-preventivi_page_gestione_ordini,
+body.gestione-preventivi_page_gestione_prezzi,
+body.gestione-preventivi_page_gestione_maggiorazioni{
+    background:#fff;
+    height: 100%;
+    min-height: 100vh;
+}
+
+body.toplevel_page_gestione_preventivi #wpbody-content, 
+body.gestione-preventivi_page_gestione_ordini #wpbody-content,
+body.gestione-preventivi_page_gestione_prezzi #wpbody-content,
+body.gestione-preventivi_page_gestione_maggiorazioni #wpbody-content,
+body.toplevel_page_gestione_preventivi #wpwrap, 
+body.gestione-preventivi_page_gestione_ordini #wpwrap,
+body.gestione-preventivi_page_gestione_prezzi #wpwrap,
+body.gestione-preventivi_page_gestione_maggiorazioni #wpwrap{
+    background:#fff;
+}
+
+.fascia-titolo{
+    width:100%;
+    background:#E2001A;    
+    padding-top:10px;
+    padding-bottom:10px;
+    margin-bottom:30px;
+}
+
+.fascia-titolo h3{
+    margin:0;
+    font-size:26px;
+    font-family: 'Open Sans';
+    text-transform: uppercase;
+    font-weight: bold;
+    color:#fff;
+    padding-left:50px;  
+}
+
+.header {
+    width:100%;
+    text-align: center;   
+    font-family: 'Open Sans';
+    margin-top:40px;
+}
+
+.header h2{
+    font-size:28px;
+    color:#000;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin:0;
+    margin-bottom:10px;
+}
+
+.header p{
+    font-size:14px;
+}
+
+.container-tabella{
+    margin-bottom:30px;
+}
+
+.container-tabella .table{
+    border-collapse: collapse;
+    border-spacing: 0;
+    width:98%;
+}
+
+.container-tabella .row-title{
+    background: #CCCCCC;
+    
+}
+
+.container-tabella .row-title td{
+    text-align: center;
+    text-transform: uppercase;
+    color:#000;
+    font-family: 'Open Sans Condensed';
+    font-size:18px;
+    font-weight: bold;
+    padding:5px 10px;
+    height: 40px;
+}
+
+
+.container-tabella .row-data td{
+    text-align: center;
+    font-family: 'Open Sans';
+    font-size: 14px;
+    padding:5px 5px;
+}
+
+.container-tabella .row-data:nth-child(even) {background: #FFF}
+.container-tabella .row-data:nth-child(odd) {background: #F2F2F2}
+
+.container-tabella .row-data td input{
+    font-size: 12px;
+    font-family: "Open Sans Condensed";
+    border: 1px solid rgb(0, 0, 0);
+    background: transparent none repeat scroll 0% 0%;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+form.inserisci-infisso{
+    width:auto;
+    padding:30px;
+    background:#f2f2f2;
+}
+
+div.row{
+    clear:both;
+    display: block;
+}
+
+div.row .field{
+    float:left;
+    margin-right: 10px;
+    margin-bottom:10px;
+}
+
+div.row .field.nome{
+    width:546px;
+}
+
+div.row .field > * {
+    display: block;
+}
+
+input[name=nameTable]{
+    width:100%;
+}
+
+.fascia-titolo.form{
+    margin-bottom:0;
+}
+
+.form-container{
+    width:70%;
+    min-width: 740px;
+}
+
+form.inserisci-infisso input[type=submit], 
+.azioni input, .inserisci-maggiorazione input[type=submit]{
+    font-family: "Open Sans Condensed";
+    font-weight: bold;
+    text-transform: uppercase;
+    border: 0px none;
+    background: rgb(226, 0, 26) none repeat scroll 0% 0%;
+    color: rgb(255, 255, 255);
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.form-modifica-infisso{
+    margin-top:30px;
+    background:#f2f2f2;
+    width:100%;
+    max-width:1045px;
+}
+
+.form-modifica-infisso .fascia-titolo{
+    padding-top: 5px;
+    padding-bottom: 5px;    
+    margin-bottom: 0;
+    width: 100%;
+    padding-left: 0;
+ }
+
+.form-modifica-infisso h3{
+    font-size: 16px;
+    padding-left:5px;
+}
+
+.form-modifica-infisso .container-dati-infisso, .container-dati-maggiorazione{
+    padding:20px;
+    font-family:'Open Sans';
+    color:#000;
+}
+
+.form-modifica-infisso .container-dati-infisso p{
+    padding:0;
+    margin:0;
+    font-weight: bold;
+    font-size:14px;
+}
+
+.form-modifica-infisso .container-dati-infisso input[type=text]{
+    width:100px;
+    margin-left:5px;
+}
+
+.form-modifica-infisso .tabella-articolo td{
+    width:120px;
+}
+
+.form-modifica-infisso .tabella-articolo td.title-rows{
+    width:50px;
+    font-weight: bold;
+}
+
+.form-modifica-infisso .tabella-articolo tr.prima-riga td{
+    text-align: center;
+    font-weight: bold;
+}
+
+.azioni{
+    margin-top:20px;
+    text-align: center;
+}
+
+.inserisci-maggiorazione{
+    background:#f2f2f2;
+    width:95%;
+    margin-bottom:30px;
+}
+
+.container-tabella.maggiorazioni td {
+    text-align: left;
+}

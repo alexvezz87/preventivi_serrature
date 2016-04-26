@@ -25,9 +25,20 @@ class GestionePreventivoView {
      */
     public function printHeader(){
     ?>
-        <h2>Gestione Preventivi</h2>
-        <p>Questa sezione è dedicata alla gestione dei preventivi</p>
+        <div class="header">
+            <h2>Gestione Preventivi</h2>
+            <p>Questa sezione è dedicata alla gestione dei preventivi</p>
+        </div>
     <?php
+    }
+    
+    public function printHeaderOrdini(){
+    ?>
+        <div class="header">
+            <h2>Gestione Ordini</h2>
+            <p>Questa sezione è dedicata alla gestione degli ordini ricevuti</p>
+        </div>
+    <?php    
     }
     
     /**
@@ -102,14 +113,14 @@ class GestionePreventivoView {
         
         if(count($preventivi) > 0 && $preventivi != false){
     ?>
-            <table border="1" >
+            <table class="table" >
                 <tr class="row-title">
-                    <td>ID</td>
+                    <td>Codice</td>
                     <td>Data</td>
                     <td>Rivenditore/Agente</td>
-                    <td>Nome Cliente</td>
-                    <td>Indirizzo Cliente</td>
-                    <td>Telefono Cliente</td>
+                    <td>Nome</td>
+                    <!--<td>Indirizzo</td>-->
+                    <td>Telefono</td>
                     <td>Prezzo Totale</td>
                     <td>PDF</td>
                     <td>FOTO</td>
@@ -132,7 +143,7 @@ class GestionePreventivoView {
                     <td><?php echo getTime($p->getData()) ?></td>
                     <td><?php echo $nomeRivenditore ?></td>                    
                     <td><?php echo $p->getClienteNome() ?></td>
-                    <td><?php echo $p->getClienteVia() ?></td>
+                    <!-- <td><?php echo $p->getClienteVia() ?></td> -->
                     <td><?php echo $p->getClienteTel() ?></td>
                     <td>&euro; <?php echo $p->getSpesaTotale() ?></td>
                     <td>

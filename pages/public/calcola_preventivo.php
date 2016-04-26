@@ -3,6 +3,8 @@
 //Autore: Alex Vezzelli - Alex Soluzioni Web
 //url: http://www.alexsoluzioniweb.it/
 
+global $URL_IMG;
+
 //istanzio il writer
 $writer = new CalcolaPreventivoView();
 
@@ -96,5 +98,7 @@ $current_user = wp_get_current_user();
         <div class="message"></div>
         <input type="button" name="close-box" value="OK" />
     </div>
-    
+    <div class="loading-container hidden">
+        <img src="<?php echo $URL_IMG ?>loading.gif" alt="loading"/>
+    </div>
 </div>
