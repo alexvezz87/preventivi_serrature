@@ -59,7 +59,7 @@ class GestioneMaggiorazioneView {
                         <label>Unità di misura</label><br>
                         <select name="unita">
                             <option value="%">%</option>
-                            <option value="€">€</option>
+                            <option value="E">€</option>
                         </select>
                     </div>
                 </div>
@@ -127,7 +127,7 @@ class GestioneMaggiorazioneView {
                     <?php echo $m->getNome(); ?>
                 </td>
                 <td>
-                    <?php echo $m->getQuantita().' '.$m->getUnitaMisura() ?>
+                    <?php echo $m->getQuantita().' '.str_replace('E', '€', $m->getUnitaMisura()) ?>
                 </td>
                 <td>
                     <form action="<?php echo admin_url().'admin.php?page=gestione_maggiorazioni'; ?>" method="POST">  

@@ -29,6 +29,7 @@ class Preventivo {
     private $clienteCF;
     private $clienteEmail;
     private $foto;
+    private $nomeRivenditore;
         
     function __construct() {
         //costruttore vuoto
@@ -160,6 +161,14 @@ class Preventivo {
 
     function setFoto($foto) {
         $this->foto = $foto;
+    }
+
+    function getNomeRivenditore() {
+        return $this->nomeRivenditore;
+    }
+
+    function setNomeRivenditore($nomeRivenditore) {
+        $this->nomeRivenditore = $nomeRivenditore;
     }
 
 

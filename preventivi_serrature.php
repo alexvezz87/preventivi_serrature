@@ -8,7 +8,7 @@
 /*
 Plugin Name: Preventivi Serrature
 Plugin URI: 
-Description: Plugin personalizzato per la visione di preventivi per Praddelli Serrature in modo dinamico
+Description: Plugin personalizzato per la visione di preventivi per Pradelli Serrature in modo dinamico
 Version: 1.0
 Author: Alex Vezzelli - Alex Soluzioni Web
 Author URI: http://www.alexsoluzioniweb.it/
@@ -66,10 +66,10 @@ function remove_DB(){
 
 //Aggiungo il menu di Plugin
 function add_admin_menu(){
-    add_menu_page('Gestione Preventivi', 'Gestione Preventivi', 'administrator', 'gestione_preventivi', 'add_gestione_preventivi', plugins_url('images/ico_plugin.png', __FILE__), 9 );
-    add_submenu_page('gestione_preventivi', 'Gestione Ordini', 'Gestione ordini', 'administrator', 'gestione_ordini', 'add_gestione_ordini');
-    add_submenu_page('gestione_preventivi', 'Gestione Prezzi', 'Gestione prezzi', 'administrator', 'gestione_prezzi', 'add_gestione_prezzi');
-    add_submenu_page('gestione_preventivi', 'Maggiorazioni', 'Maggiorazioni', 'administrator', 'gestione_maggiorazioni', 'add_gestione_maggiorazioni');
+    add_menu_page('Gestione Preventivi', 'Gestione Preventivi', 'edit_plugins', 'gestione_preventivi', 'add_gestione_preventivi', plugins_url('images/ico_plugin.png', __FILE__), 9 );
+    add_submenu_page('gestione_preventivi', 'Gestione Ordini', 'Gestione ordini', 'edit_plugins', 'gestione_ordini', 'add_gestione_ordini');
+    add_submenu_page('gestione_preventivi', 'Gestione Prezzi', 'Gestione prezzi', 'edit_plugins', 'gestione_prezzi', 'add_gestione_prezzi');
+    add_submenu_page('gestione_preventivi', 'Maggiorazioni', 'Maggiorazioni', 'edit_plugins', 'gestione_maggiorazioni', 'add_gestione_maggiorazioni');
 }
 
 

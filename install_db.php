@@ -175,6 +175,7 @@ function install_tabella_preventivo($wpdb, $charset_collate){
                 data TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
                 data_visionato TIMESTAMP,
                 id_utente INT NOT NULL,
+                nome_rivenditore TEXT NOT NULL,
                 cliente_tipo VARCHAR(20) NOT NULL,
                 cliente_nome VARCHAR(100) NOT NULL,
                 cliente_via TEXT NOT NULL,

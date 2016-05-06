@@ -344,6 +344,7 @@ jQuery(document).ready(function($){
         ante = parseInt(ante);
         var antaPrincipale = '';
         var posizioneSerratura = '';        
+        /*
         var widthAnta = 0;
         if(type==='F'){
             widthAnta = 85;
@@ -353,6 +354,7 @@ jQuery(document).ready(function($){
         }
         
         var widthContainer = widthAnta*ante;  
+        */
         var radioName = 'radio-posizione-serratura-'+numInfisso;
         var serratura = '<p class="descrizione">Indica dove posizionare la serratura sull\'anta di apertura</p><div class="tipo radio clear"><input type="radio" name="'+radioName+'" value="S" checked /><label>SINISTRA</label><input type="radio" name="'+radioName+'" value="D" /><label>DESTRA</label><div class="clear"></div></div>';
         var descrizione1 = '<p class="descrizione" style="margin-left:45px;">Per procedere, fai click sull\'anta di apertura</p>';
@@ -412,7 +414,8 @@ jQuery(document).ready(function($){
             html += serratura;
             posizioneSerratura = 'S';
         }
-                
+        
+        html+='<p class="descrizione"><strong>NOTA BENE:</strong> Vista interna.</p>';
         
         html += '<input type="hidden" name="anta-principale" value="'+antaPrincipale+'" />';
         html += '<input type="hidden" name="posizione-serratura" value="'+posizioneSerratura+'" />';
@@ -431,13 +434,15 @@ jQuery(document).ready(function($){
         //var stepL = parseInt(data.step_cols);
         
         var html = '<p class="step">4. Indica le misure in millimetri</p>';
-        html += '<table class="table-misure"><tr><td><label>Altezza (mm) </label></td>';
-        html+= '<td><input type="number" value="'+minH+'" min="'+minH+'" name="infisso-altezza" /></td></tr>';       
-        html+= '<tr><td><label>Lunghezza (mm)</label></td>';
-        html+= '<td><input type="number" value="'+minL+'" min="'+minL+'" name="infisso-lunghezza" />';        
-        html+= '</td></tr></table>';
+        html += '<table class="table-misure">';
+              
+        html+= '<tr><td><label>Larghezza (mm)</label></td>';
+        html+= '<td><input type="number" value="'+minL+'"  name="infisso-lunghezza" /></td></tr>';
+        html += '<tr><td><label>Altezza (mm) </label></td>';
+        html+= '<td><input type="number" value="'+minH+'"  name="infisso-altezza" /></td></tr>'; 
+        html+='</table>';
         
-        html+= '<p class="istruzioni">Come prendere le misure correttamente?<br><a target="_blank" href="#">Leggi le istruzioni</a></p>';
+        html+= '<p class="istruzioni">Le misure vanno prese da FORO MURO</p>';
         
         html+= '<input type="button" name="conferma-misure" value="conferma misure" /><br><br>';       
         
@@ -872,6 +877,7 @@ jQuery(document).ready(function($){
         $('.selezione-container').each(function(){
             if($(this).data('infisso') !== 1){
                 //elimino tutti gli altri infissi
+                $(this).hide();
                 $(this).remove();
             }
             else{
@@ -900,7 +906,8 @@ jQuery(document).ready(function($){
                 $('input[name=aggiungi-copia-infisso]').prop('disabled', true);
 
                 $(this).find('.spesa-parziale-infisso span').text('0');
-                $(this).find('input[spesa-parziale-infisso]').val('');
+                $(this).find('input[name=spesa-parziale-infisso]').val('');
+                
 
                 $(this).find('.selezione-anta-principale').html('');
                 
@@ -918,6 +925,8 @@ jQuery(document).ready(function($){
                 $('#progress .bar').css('width', '0');
                 $('.upload-immagini input.input-immagine').val('');
             }
+            
+            aggiornoTotalePreventivo();
         });
     }
     
@@ -1109,6 +1118,7 @@ jQuery(document).ready(function($){
             preventivo.data = $('input[name=data-odierna]').val();
             //2. Nome rivenditore/agente
             preventivo.rivenditore = $('input[name=rivenditore-agente]').val();
+            preventivo.idUser = $('input[name=id-user]').val();
             //3. Nome cliente
             preventivo.clienteNome = $('input[name=nome-cliente]').val();
             //4. Via cliente
@@ -1235,6 +1245,7 @@ jQuery(document).ready(function($){
             //controllo i campi
             var check = checkFields(infissi, preventivo);
             if(check !== true){
+                $('.loading-container').addClass('hidden');
                 //I campi non sono stati compilati nel modo corretto
                 
                 //console.log('campi non soddisfatti');

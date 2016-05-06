@@ -63,6 +63,7 @@ and open the template in the editor.
 
 .selezione-container {
     margin-top:40px;
+    clear:both;
 }
 
 #container-infissi h3.title-infisso{
@@ -88,6 +89,7 @@ and open the template in the editor.
     text-transform: uppercase;
     padding-left:25px;
     margin-bottom:10px;
+    padding-top:10px;
 }
 
 #container-infissi .porta, #container-infissi .finestra{
@@ -407,7 +409,9 @@ and open the template in the editor.
 .nero-antracite {
     background:url('../images/nero-antracite.jpg') top center;
 }
-.brown {background: #fff}
+.marrone {
+    background:url('../images/marrone.jpg') top center;
+}
 .asfalto {
     background:url('../images/grigio-asfalto.jpg') top center;
 }
@@ -478,6 +482,7 @@ and open the template in the editor.
     margin-left:50%;
     background:rgba(242,242,242,0.9);
     display:none;
+    z-index: 9999999;
 }
 
 .error-box {
@@ -740,15 +745,15 @@ span.help{
 }
 
 .help-cerniera{
-    width:510px;
-    height: 510px;
+    width:604px;
+    height: 507px;
     border:1px solid #000;
     background: #fff url('../images/help_cerniera.png') center center no-repeat;
     position: absolute;
-    left: -255px;
+    left: -302px;
     margin-left: 50%;
     z-index:9999;
-    margin-top: -50px;
+    margin-top: -150px;
 }
 
 .help-cerniera .close{
@@ -771,7 +776,7 @@ input[name=numero-infissi]{
     background:#999;
     font-size: 20px;
     padding-top:10px;
-    padding-bottom:10px;
+    /*padding-bottom:10px;*/
 }
 
 #container-infissi .spesa-parziale-infisso .step{
@@ -914,9 +919,10 @@ input[name=close-box]{
     height: 120px;
     position: fixed;
     top:-60px;
-    margin-top:35%;
+    margin-top:15%;
     left:-60px;
     margin-left:50%;
+    z-index: 9999999;
 }
 
 /** TABLET **/

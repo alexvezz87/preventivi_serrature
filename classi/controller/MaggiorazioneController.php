@@ -24,7 +24,8 @@ class MaggiorazioneController {
      * @param Maggiorazione $m
      * @return type
      */
-    public function saveMaggiorazione(Maggiorazione $m){        
+    public function saveMaggiorazione(Maggiorazione $m){ 
+        //print_r($m);
         return $this->DAO->saveMaggiorazione($m);
     }
     

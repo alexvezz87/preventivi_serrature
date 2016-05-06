@@ -10,7 +10,6 @@ $writer = new CalcolaPreventivoView();
 
 $current_user = wp_get_current_user();
 
-
 ?>
 
 <div class="calcola-preventivo">
@@ -19,9 +18,15 @@ $current_user = wp_get_current_user();
         
         <div class="intestazione">
             
-            <div class="rivenditore field">               
-                <input disabled type="text" value="<?php echo $current_user->display_name ?>" />
-                <input type="hidden" name="rivenditore-agente" value="<?php echo $current_user->ID ?>" />
+            <div class="rivenditore field">
+                <?php if(!current_user_can('edit_plugins')){ ?>
+                    <input disabled type="text" name="rivenditore-agente" value="<?php echo $current_user->display_name ?>" />
+                   
+                <?php } else { ?>
+                    <input name="rivenditore-agente" placeholder="RIVENDITORE/AGENTE" type="text" value="" />
+                    
+                <?php } ?>
+                    <input type="hidden" name="id-user" value="<?php echo $current_user->ID ?>" />
             </div>
             <div class="data-odierna field">                
                 <input type="text" value="<?php echo date('d/m/Y') ?>" disabled />

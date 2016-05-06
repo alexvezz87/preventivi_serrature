@@ -55,6 +55,7 @@ class PreventivoDAO {
                     array(
                         'data' => $timestamp,
                         'id_utente' => $p->getIdUtente(),
+                        'nome_rivenditore' => $p->getNomeRivenditore(),
                         'cliente_nome' => $p->getClienteNome(),
                         'cliente_via' => $p->getClienteVia(),
                         'cliente_tel' => $p->getClienteTel(),
@@ -66,7 +67,7 @@ class PreventivoDAO {
                         'cliente_email' => $p->getClienteEmail(),
                         'cliente_cf' => $p->getClienteCF()
                     ),
-                    array('%s', '%d', '%s', '%s', '%s', '%f', '%d', '%s', '%d', '%s', '%s', '%s')
+                    array('%s', '%d', '%s', '%s', '%s', '%s', '%f', '%d', '%s', '%d', '%s', '%s', '%s')
                 );
             //restituisco l'id del record di preventivo inserito
             return $this->wpdb->insert_id;  

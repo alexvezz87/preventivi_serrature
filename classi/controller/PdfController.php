@@ -53,12 +53,8 @@ class PdfController extends FPDF {
         //creo l'array associativo
         $info_preventivo = array();
         $info_preventivo['Data'] = getTime($p->getData());
-        $nomeRivenditore = "";
-        if($p->getIdUtente() != 0){
-            $user_info = get_userdata($p->getIdUtente());
-            $nomeRivenditore = $user_info->display_name; 
-        }
-        $info_preventivo['Rivenditore/Agente'] = $nomeRivenditore;
+        
+        $info_preventivo['Rivenditore/Agente'] = $p->getNomeRivenditore();
         $info_preventivo['Tipo Cliente'] = $p->getClienteTipo();
         $info_preventivo['Cliente'] = $p->getClienteNome();
         $info_preventivo['CF/PIVA'] = $p->getClienteCF();
@@ -93,12 +89,19 @@ class PdfController extends FPDF {
     }
     
     private function printTableInfissi($infissi){
+        global $URL_IMG;
         
         $tPrezzi = new TabellaPrezziController();   
         $cMaggiorazione = new MaggiorazioneController();
         $startLine = 85;
         $count = 1;
         foreach($infissi as $item){
+            //L'infisso viene pubblicato in una pagina nuova in quanto oltre ai dati 
+            //c'è anche l'immagine delle quote
+            
+            $this->AddPage();
+            
+            
             $array = array();
             $i = new Infisso();
             $i = $item;
@@ -113,8 +116,8 @@ class PdfController extends FPDF {
             }
                        
             $array['Infisso'] = $tPrezzi->getNomeInfisso($i->getIdInfisso());
-            $array['Altezza'] = $i->getAltezza().' mm';
-            $array['Lunghezza'] = $i->getLunghezza().' mm';
+            $array['Larghezza'] = $i->getLunghezza().' mm';
+            $array['Altezza'] = $i->getAltezza().' mm';            
             $array['Apertura (vista interna)'] = str_replace('-', ' ', $i->getApertura());
             
             $antaPrincipale = "";
@@ -157,16 +160,121 @@ class PdfController extends FPDF {
             
             
             if($count % 2 == 0){
-                $this->AddPage();
+               
             }
-            
-            
+                        
             $this->printPdfTable($array);            
             
             //stampo una linea
             $this->Ln(3);
             $this->Cell(180,0,'',1);
             $this->Ln(3);
+            
+            
+            $x = $this->GetX()+15;
+            $y = $this->GetY()+15;
+            
+            //STAMPO L'IMMAGINE DELLE QUOTE
+            //modifica: struttura più complessa
+            $width = 0;
+            $height = 0;
+            $urlInfisso = "";
+            
+            //indico le dimensioni e il tipo di infisso
+            if($i->getTipo() == 'Finestra'){
+                $width = 104;
+                //$height = 150;
+                
+                $urlInfisso.='F';
+                
+                //stampo la larghezza
+                $this->Text(($x+40), ($y + 60), $i->getLunghezza().' mm');            
+                //stampo l'altezza
+                $this->Text(($x-15), ($y+25), $i->getAltezza().' mm');
+                
+            }else{
+                //è una portafinestra
+                $width = 104;
+                //$height = 70;
+                
+                $urlInfisso.='P';
+                
+                //stampo la larghezza
+                $this->Text(($x+40), ($y + 80), $i->getLunghezza().' mm');            
+                //stampo l'altezza
+                $this->Text(($x-15), ($y+35), $i->getAltezza().' mm');
+            }
+            
+            //indico il numero di ante
+            $urlInfisso.= $i->getNAnte();
+            
+            //indico l'anta principale
+            switch ($i->getAntaPrincipale()){
+                case 'D': $urlInfisso.= 'D'; break;
+                case 'DC': $urlInfisso.= 'DC'; break;
+                case 'S' : $urlInfisso.= 'S'; break;
+                case 'SC' : $urlInfisso.= 'SC'; break;
+                default : $urlInfisso.= 'C'; break;
+            }             
+            
+            //indico la posizione della serratura
+            switch($i->getPosizioneSerratura()){
+                case 'S': $urlInfisso.= 'S'; break;
+                case 'D': $urlInfisso.= 'D'; break;
+                default : break;                
+            }         
+            
+            $urlInfisso = strtoupper($urlInfisso).'.png';
+            
+            $this->Image($URL_IMG.'pdf/'.$urlInfisso, $x, $y, $width);
+            
+            
+            
+            //Inserisco il colore     
+            $x2 = $this->GetX()+130;
+            $y2 = $this->GetY()+25;
+                
+            if (strpos($i->getColore(), 'ral') !== false) {
+                //RAL
+                $temp = explode(' ', $i->getColore());
+                if(count($temp) > 0){
+                    $ral = str_replace('ral-', '', $temp[0]);
+                    $r = 255;
+                    $g = 255;
+                    $b = 255;
+                    
+                    switch ($ral){
+                        case '9016': $r = 241; $g = 240; $b = 234; break;
+                        case '9010': $r = 241; $g = 236; $b = 225; break;
+                        case '7035': $r = 197; $g = 199; $b = 196; break;
+                        case '7040': $r = 152; $g = 158; $b = 161; break;
+                        case '9007': $r = 135; $g = 133; $b = 129; break;
+                        case '9006': $r = 161; $g = 161; $b = 160; break;
+                        case '7016': $r = 56; $g = 62; $b = 66; break;
+                        case '7030': $r = 146; $g = 142; $b = 133; break;
+                        case '8028': $r = 81; $g = 58; $b = 42; break;
+                        case '6009': $r = 39; $g = 53; $b = 42; break;
+                        case '8003': $r = 126; $g = 75; $b = 38; break;
+                        case '8001': $r = 157; $g = 98; $b = 43; break;
+                        case '6005': $r = 17; $g = 66; $b = 50; break;
+                        case '3003': $r = 134; $g = 26; $b = 34; break;
+                        case '1013': $r = 227; $g = 217; $b = 198; break;
+                        case '9005': $r = 14; $g = 14; $b = 16; break;                        
+                    }
+                    //$this->Text(($x2-10), ($y2+25), $r.' '.$g.' '.$b);
+                    $this->SetFillColor($r, $g, $b);
+                    $this->Rect($x2, $y2, 50, 30, 'DF');
+                }
+            }
+            else if($i->getColore() == 'solo zincatura'){
+                //solo zincatura
+            }
+            else{
+                //micaceo
+                $urlColore = str_replace(' ','-',strtolower($i->getColore()));                
+                $this->Image($URL_IMG.'pdf/'.$urlColore.'.jpg', $x2, $y2, 50);
+            }
+
             
             $count++;
         }

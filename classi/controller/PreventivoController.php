@@ -88,6 +88,7 @@ class PreventivoController {
             $p->setId($item->ID);
             $p->setData($item->data);
             $p->setIdUtente($item->id_utente);
+            $p->setNomeRivenditore($item->nome_rivenditore);
             $p->setClienteNome($item->cliente_nome);
             $p->setClienteVia($item->cliente_via);
             $p->setClienteTel($item->cliente_tel);
@@ -127,6 +128,7 @@ class PreventivoController {
         $p->setId($item->ID);
         $p->setData($item->data);
         $p->setIdUtente($item->id_utente);
+        $p->setNomeRivenditore($item->nome_rivenditore);
         $p->setClienteNome($item->cliente_nome);
         $p->setClienteVia($item->cliente_via);
         $p->setClienteTel($item->cliente_tel);
@@ -157,9 +159,11 @@ class PreventivoController {
      * @return \Preventivo
      */
     public function convertToPreventivo($item){
+        //print_r($item);
         $p = new Preventivo();
         $p->setData($item['data']);
-        $p->setIdUtente($item['rivenditore']);
+        $p->setIdUtente($item['idUser']);
+        $p->setNomeRivenditore($item['rivenditore']);
         $p->setClienteNome($item['clienteNome']);
         $p->setClienteVia($item['clienteVia']);
         $p->setClienteTel($item['clienteTel']);
@@ -355,20 +359,42 @@ class PreventivoController {
     public function sendEmailtoAdmin($idPreventivo, $dir){
         global $SENT_EMAIL;
         
+             
         //creo un oggetto preventivo
         $p = new Preventivo();
         $p = $this->getPreventivo($idPreventivo);
         
         //ottengo il nome del rivenditore/agente
-        $user_info = get_userdata($p->getIdUtente());
+        $user_info = get_userdata($p->getIdUtente());        
         
         $to = $SENT_EMAIL;
         $subject = "Ricevuto Preventivo online da ".$user_info->display_name;
         $message = "Un nuovo preventivo online è stato ricevuto!";
         $attachments = array($dir);
         
+        $subject_2 = "Preventivo ricevuto con successo!";
+        $message_2 = "Il preventivo che hai compilato è stato ricevuto con successo";
+        
         add_filter('wp_mail_content_type',create_function('', 'return "text/html"; '));
-        return wp_mail($to, $subject, $message, $headers = '', $attachments );                
+        
+        $result = true;
+        
+               
+        //invio email ad amministratore
+        if(!wp_mail($to, $subject, $message, $headers = '', $attachments )){
+            $result = false;
+        }
+        
+        
+        //invio email a rivenditore
+        if($user_info->user_email != $SENT_EMAIL){
+            //la invio se i due indirizzi email non coincidono
+            if(!wp_mail($user_info->user_email, $subject_2, $message_2, $headers = '', $attachments )){
+                $result = false;
+            }
+        }
+        
+        return $result;                
         
     }
     
@@ -407,13 +433,10 @@ class PreventivoController {
         }
         
         
-        
         //elimino il preventivo
         if(!$this->pDAO->deletePreventivo($idPreventivo)){
             return false;
         }
-        
-        
         
         return true;
         

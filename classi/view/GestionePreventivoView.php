@@ -28,6 +28,7 @@ class GestionePreventivoView {
         <div class="header">
             <h2>Gestione Preventivi</h2>
             <p>Questa sezione è dedicata alla gestione dei preventivi</p>
+            <p><a href="<?php echo home_url() ?>/calcola-preventivo">Crea un nuovo preventivo</a></p>
         </div>
     <?php
     }
@@ -37,6 +38,7 @@ class GestionePreventivoView {
         <div class="header">
             <h2>Gestione Ordini</h2>
             <p>Questa sezione è dedicata alla gestione degli ordini ricevuti</p>
+            <p><a href="<?php echo home_url() ?>/calcola-preventivo">Crea un nuovo preventivo</a></p>
         </div>
     <?php    
     }
@@ -130,18 +132,12 @@ class GestionePreventivoView {
             foreach($preventivi as $item){                
                 $p = new Preventivo();
                 $p = $item;
-                //ottengo i dati del rivenditore/agente
-                $nomeRivenditore = "";
-                if($p->getIdUtente() != 0){
-                    $user_info = get_userdata($p->getIdUtente());
-                    $nomeRivenditore = $user_info->display_name; 
-                }
                 
     ?>
                 <tr class="row-data">
                     <td><?php echo $p->getId() ?></td>
                     <td><?php echo getTime($p->getData()) ?></td>
-                    <td><?php echo $nomeRivenditore ?></td>                    
+                    <td><?php echo $p->getNomeRivenditore() ?></td>                    
                     <td><?php echo $p->getClienteNome() ?></td>
                     <!-- <td><?php echo $p->getClienteVia() ?></td> -->
                     <td><?php echo $p->getClienteTel() ?></td>
@@ -205,7 +201,7 @@ class GestionePreventivoView {
         }
         else{
     ?>
-            <p> Non ci sono preventivi da visualizzare </p>
+            <p> Non ci sono elementi da visualizzare </p>
     <?php
         }
     }

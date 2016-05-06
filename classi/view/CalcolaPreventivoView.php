@@ -68,17 +68,22 @@ class CalcolaPreventivoView {
                 <div class="box barra-tonda order" data-type="barra" data-name="barra-tonda">
                     <p>Barra tonda con &#248; 
                         <select name="barra-tonda">
+                            <option value=" ">0</option>
+                            <option value="14">14 mm</option>
                             <option value="16">16 mm</option>
-                            <option value="18">18 mm</option>
-                        </select>                    
+                            <!-- <option value="18">18 mm</option> -->
+                        </select>     
+                        Per indicare il diametro 18mm selezionarlo nella voce maggiorazioni.
                     </p>
                 </div>
                 <div class="box barra-quadrata order" data-type="barra" data-name="barra-quadrata">
                     <p>Barra quadrata con &#248; 
                         <select name="barra-quadrata">
+                            <option value=" ">0</option>
                             <option value="14">14 mm</option>
-                            <option value="16">16 mm</option>
-                        </select>                    
+                            <!-- <option value="16">16 mm</option> -->
+                        </select>      
+                        Per indicare il diametro 16mm selezionarlo nella voce maggiorazioni.
                     </p>
                 </div>
                 <div class="clear last"></div>
@@ -124,7 +129,8 @@ class CalcolaPreventivoView {
                 <!-- SELEZIONE RAL -->
                 <p class="descrizione">
                     <span class="title">RAL</span>
-                    Colori preferenziali disponibili in tonalità lucida o opaca
+                    Colori preferenziali disponibili in tonalità lucida o opaca<br>
+                    <strong>Se il RAL desiderato non è presente nel box sottostante, è necessario:<br>- Selezionare nel box sottostante "RAL PERSONALIZZATO"<br>- Fare click sulla voce corrispondete nelle maggiorazioni<br>- Indicare il codice del RAL nelle note a fine preventivo.</strong>
                 </p>
                 <div class="ral-box selettore-box order">
                     <div class="selettore-show">
@@ -134,6 +140,7 @@ class CalcolaPreventivoView {
                 </div>
                 <div class="select-ral">
                     <div class="none" data-type="colore" data-name="none">seleziona RAL</div>
+                    <div class="none" data-type="colore" data-name="ral personalizzato">RAL PERSONALIZZATO</div>
                     <div class="ral-9016" data-type="colore" data-name="ral-9016">RAL 9016</div>
                     <div class="ral-9010" data-type="colore" data-name="ral-9010">RAL 9010</div>
                     <div class="ral-7035" data-type="colore" data-name="ral-7035">RAL 7035</div>
@@ -241,19 +248,21 @@ class CalcolaPreventivoView {
                         foreach($maggiorazioni as $item){
                             $m = new Maggiorazione();
                             $m = $item;
+                            
+                            $uMisura = str_replace('E', '€', $m->getUnitaMisura());
                     ?>
                             <div class="box-2 order" data-type="maggiorazione" data-name="<?php echo $m->getID() ?>">
                                 <div class="nome">
                                     <?php echo $m->getNome() ?>
                                 </div>
                                 <div class="valore">
-                                    + <?php echo $m->getQuantita() ?> <?php echo $m->getUnitaMisura() ?>
-                                    <?php if($m->getUnitaMisura() == '€'){echo ' netti a pezzo ';} ?>
+                                    + <?php echo $m->getQuantita() ?> <?php echo $uMisura ?>
+                                    <?php if($uMisura == '€'){echo ' netti a pezzo ';} ?>
                                     da listino
                                 </div>
                                 <div style="float:none; clear:both; width:100%;"></div>
                                 <input type="hidden" name="maggiorazione-qt" value="<?php echo $m->getQuantita() ?>"/>
-                                <input type="hidden" name="maggiorazione-um" value="<?php echo $m->getUnitaMisura() ?> " />
+                                <input type="hidden" name="maggiorazione-um" value="<?php echo $uMisura ?> " />
                             </div>
                               
                     <?php
