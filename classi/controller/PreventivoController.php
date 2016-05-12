@@ -190,6 +190,7 @@ class PreventivoController {
         
         $infissi = array();
         foreach($item['infissi'] as $item){
+            
             array_push($infissi, $this->convertToInfisso($item));
         }        
         $p->setInfissi($infissi);
@@ -221,11 +222,11 @@ class PreventivoController {
         $i->setNInfisso($item['num-infissi']);
         $i->setSpesaInfisso($item['spesa-parziale']);      
         $i->setAntaPrincipale($item['anta-principale']);
-        $i->setPosizioneSerratura($item['posizione-serratura']);
-
+        $i->setPosizioneSerratura($item['posizione-serratura']);        
+        $i->setVerniciatura($item['verniciatura']);
+        
         //ottengo le maggiorazioni        
-        
-        
+                
         $maggiorazioni = array();
         if(isset($item['maggiorazione']) && count($item['maggiorazione']) > 0){
             foreach($item['maggiorazione'] as $m){
@@ -258,6 +259,7 @@ class PreventivoController {
         $i->setSpesaInfisso($item2->spesa_infisso);     
         $i->setAntaPrincipale($item2->anta_principale);
         $i->setPosizioneSerratura($item2->posizione_serratura);
+        $i->setVerniciatura($item2->verniciatura);
 
         //ottengo le maggiorazioni
         $array3 = $this->imDAO->getIdMaggiorazione($i->getId());
@@ -380,14 +382,16 @@ class PreventivoController {
         $result = true;
         
                
-        //invio email ad amministratore
-        if(!wp_mail($to, $subject, $message, $headers = '', $attachments )){
-            $result = false;
-        }
+           
         
-        
-        //invio email a rivenditore
+        //invio email 
         if($user_info->user_email != $SENT_EMAIL){
+            
+            //invio email ad amministratore
+            if(!wp_mail($to, $subject, $message, $headers = '', $attachments )){
+                $result = false;
+            }     
+            
             //la invio se i due indirizzi email non coincidono
             if(!wp_mail($user_info->user_email, $subject_2, $message_2, $headers = '', $attachments )){
                 $result = false;

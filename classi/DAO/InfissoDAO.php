@@ -65,9 +65,10 @@ class InfissoDAO {
                         'n_infisso' => $i->getNInfisso(),
                         'spesa_infisso' => $i->getSpesaInfisso(),
                         'anta_principale' => $i->getAntaPrincipale(),
-                        'posizione_serratura' => $i->getPosizioneSerratura()
+                        'posizione_serratura' => $i->getPosizioneSerratura(), 
+                        'verniciatura' => $i->getVerniciatura()
                     ),
-                    array('%d', '%s', '%d', '%d', '%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%f', '%s', '%s')
+                    array('%d', '%s', '%d', '%d', '%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%f', '%s', '%s', '%s')
                 );
             return $this->wpdb->insert_id;
         } catch (Exception $ex) {

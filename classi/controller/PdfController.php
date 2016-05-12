@@ -147,6 +147,8 @@ class PdfController extends FPDF {
             }
             $array['Nodo'] = 'Nodo '.$i->getNodo();
             $array['Colore'] = str_replace('-', ' ', $i->getColore());
+            
+            $array['Verniciatura'] = $i->getVerniciatura();
             $array['Cerniera'] = str_replace('-', ' ', $i->getCerniera());
             //maggiorazioni
             $maggiorazioni = $i->getMaggiorazioni();
@@ -187,10 +189,7 @@ class PdfController extends FPDF {
                 
                 $urlInfisso.='F';
                 
-                //stampo la larghezza
-                $this->Text(($x+40), ($y + 60), $i->getLunghezza().' mm');            
-                //stampo l'altezza
-                $this->Text(($x-15), ($y+25), $i->getAltezza().' mm');
+                
                 
             }else{
                 //è una portafinestra
@@ -199,10 +198,7 @@ class PdfController extends FPDF {
                 
                 $urlInfisso.='P';
                 
-                //stampo la larghezza
-                $this->Text(($x+40), ($y + 80), $i->getLunghezza().' mm');            
-                //stampo l'altezza
-                $this->Text(($x-15), ($y+35), $i->getAltezza().' mm');
+                
             }
             
             //indico il numero di ante
@@ -273,6 +269,19 @@ class PdfController extends FPDF {
                 //micaceo
                 $urlColore = str_replace(' ','-',strtolower($i->getColore()));                
                 $this->Image($URL_IMG.'pdf/'.$urlColore.'.jpg', $x2, $y2, 50);
+            }
+            
+            if($i->getTipo() == 'Finestra'){
+                //stampo la larghezza
+                $this->Text(($x+40), ($y + 60), 'L: '.$i->getLunghezza().' mm');            
+                //stampo l'altezza
+                $this->Text(($x-15), ($y+25), 'H: '.$i->getAltezza().' mm');
+            }
+            else{
+                //stampo la larghezza
+                $this->Text(($x+40), ($y + 80), 'L: '.$i->getLunghezza().' mm');            
+                //stampo l'altezza
+                $this->Text(($x-15), ($y+35), 'H: '.$i->getAltezza().' mm');
             }
 
             

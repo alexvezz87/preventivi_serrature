@@ -135,7 +135,8 @@ function install_tabella_infissi($wpdb, $charset_collate){
                 n_infisso INT NOT NULL,
                 spesa_infisso DECIMAL(15,2),
                 anta_principale VARCHAR(2) NOT NULL,
-                posizione_serratura VARCHAR(1) NOT NULL
+                posizione_serratura VARCHAR(1) NOT NULL,
+                verniciatura VARCHAR(20)
               );{$charset_collate}";
     
     try{

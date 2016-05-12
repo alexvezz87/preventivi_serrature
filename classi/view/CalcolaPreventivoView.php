@@ -41,25 +41,14 @@ class CalcolaPreventivoView {
             <div data-order="5" class="selezione-apertura container-order hidden">
                 <p class="step">5. Seleziona il tipo di apertura</p>
                 
-                <div class="box box-lungo interna order" data-type="apertura" data-name="interna"><p>Interna</p></div>
+                <div class="box box-lungo interna order" data-type="apertura" data-name="interna"><p>Interna (10% in più da listino)</p></div>
                 <div class="separator"></div>
                 <div class="box box-lungo esterna order" data-type="apertura" data-name="esterna"><p>Esterna</p></div>
                 <div class="separator"></div>
                 <div class="box fx order" data-type="apertura" data-name="fissa"><p>Fissa</p></div>
-                <!--
-                    <div class="box si" data-type="apertura" data-name="sinistra-interna"><p>Sinistra Interna</p></div>
-                    <div class="box se" data-type="apertura" data-name="sinistra-esterna"><p>Sinistra Esterna</p></div>
-                    
-                    <div class="separator"></div>
-                    
-                    <div class="box di" data-type="apertura" data-name="destra-interna"><p>Destra Interna</p></div>
-                    <div class="box de" data-type="apertura" data-name="destra-esterna"><p>Destra Esterna</p></div>
-                    
-                    <div class="separator"></div>
-                  
-                    <div class="box fx" data-type="apertura" data-name="fissa"><p>Fissa</p></div>
-                -->
-                    <div class="clear last"></div>
+                
+                <div class="clear last"></div>
+                <p class="description">Nel caso venga selezionata "APERTURA INTERNA", fare click sulla voce corrispondente anche nelle maggiorazioni</p>
             </div>
             <div data-order="6" class="seleziona-anta-principale container-order hidden"></div>
                             
@@ -90,13 +79,18 @@ class CalcolaPreventivoView {
             </div>
             <div data-order="8" class="clear container-serratura container-order hidden">
                 <p class="step">8. PARTICOLARI COSTRUTTIVI: SERRATURA</p>
-                <div class="box serratura-leva order" data-type="serratura" data-name="leva">
+                <div class="box nessuna order fissa" data-type="serratura" data-name="nessuna">
+                    <p>
+                       Nessuna
+                    </p>
+                </div>                
+                <div class="box serratura-leva order no-fissa" data-type="serratura" data-name="leva">
                     <p>
                         A leva con maniglia
                         <span>a leva con maniglia standard in pvc nera</span>
                     </p>
                 </div>
-                <div class="box serratura-cilindro order" data-type="serratura" data-name="cilindro">
+                <div class="box serratura-cilindro order no-fissa" data-type="serratura" data-name="cilindro">
                     <p>
                         Solo cilindro
                         <span>tipo cilindro europeo</span>
@@ -130,7 +124,7 @@ class CalcolaPreventivoView {
                 <p class="descrizione">
                     <span class="title">RAL</span>
                     Colori preferenziali disponibili in tonalità lucida o opaca<br>
-                    <strong>Se il RAL desiderato non è presente nel box sottostante, è necessario:<br>- Selezionare nel box sottostante "RAL PERSONALIZZATO"<br>- Fare click sulla voce corrispondete nelle maggiorazioni<br>- Indicare il codice del RAL nelle note a fine preventivo.</strong>
+                    <strong>Se il RAL desiderato non è presente nel box sottostante, è necessario:<br>- Selezionare nel box sottostante "RAL PERSONALIZZATO".<br>- Scrivere il RAL voluto nella casella di testo che apparirà a fianco. <br>- Fare click sulla voce corrispondete nelle maggiorazioni.</strong>
                 </p>
                 <div class="ral-box selettore-box order">
                     <div class="selettore-show">
@@ -140,7 +134,7 @@ class CalcolaPreventivoView {
                 </div>
                 <div class="select-ral">
                     <div class="none" data-type="colore" data-name="none">seleziona RAL</div>
-                    <div class="none" data-type="colore" data-name="ral personalizzato">RAL PERSONALIZZATO</div>
+                    <div class="none personalizzato" data-type="colore" data-name="ral personalizzato">RAL PERSONALIZZATO</div>
                     <div class="ral-9016" data-type="colore" data-name="ral-9016">RAL 9016</div>
                     <div class="ral-9010" data-type="colore" data-name="ral-9010">RAL 9010</div>
                     <div class="ral-7035" data-type="colore" data-name="ral-7035">RAL 7035</div>
@@ -158,31 +152,24 @@ class CalcolaPreventivoView {
                     <div class="ral-1013" data-type="colore" data-name="ral-1013">RAL 1013</div>
                     <div class="ral-9005 text-white" data-type="colore" data-name="ral-9005">RAL 9005</div>
                 </div>
+                <div class="ral-personalizzato hidden">
+                    <input type="text" name="ral-personalizzato" placeholder="RAL PERSONALIZZATO" value="" />
+                </div>
                 <div class="tipo-ral">
                     <input type="radio" name="tipo-ral-1" value="lucido" checked /><label>Lucido</label>
                     <input type="radio" name="tipo-ral-1" value="opaco" /><label>Opaco</label>
                 </div>
+                <div class="tipo-verniciatura tipo-verniciatura-ral">
+                    <p class="descrizione"><span class="subtitle">Verniciatura</span></p>
+                    <input type="radio" name="verniciatura-ral-1" value="cataforesi" checked /><label>Cataforesi (compresa nel prezzo)</label>
+                    <div class="clear"></div>
+                    <input type="radio" name="verniciatura-ral-1" value="zincatura" /><label>Zincatura (15% in più da listino)</label>
+                    <div class="clear"></div>
+                </div>
                 <div class="clear last"></div>
+                
                 <!-- SELEZIONE MICACEI -->
                 <p class="descrizione"><span class="title">MICACEI</span></p>
-
-                <!--
-                <div class="micacei-box selettore-box">
-                    <div class="selettore-show">
-                        <div class="none" data-type="colore" data-name="none">selezione Micacei</div>
-                    </div>
-                    <div class="selettore-arrow"></div>
-                </div>
-                <div class="select-micacei">
-                    <div class="none" data-type="colore" data-name="none">selezione Micacei</div>
-                    <div class="scuro-gr" data-type="colore" data-name="micaceo-scuro-gr">Grigio micaceo scuro gr</div>
-                    <div class="marmo" data-type="colore" data-name="micaceo-marmo">Verde rangrizzato marmo</div>
-                    <div class="opaco" data-type="colore" data-name="micaceo-opaco">Nero raggrinzato opaco</div>
-                    <div class="antracite" data-type="colore" data-name="micaceo-antracite">Nero raggrinzato antracite</div>
-                    <div class="brown" data-type="colore" data-name="micaceo-brown">Marrone raggrinzato brown</div>
-                    <div class="asfalto" data-type="colore" data-name="micaceo-asfalto">Grigio raggrinzato asfalto</div>
-                </div>
-                -->
 
                 <div class="micacei clear container-order">
                     <div class="box scuro-gr" data-type="colore" data-name="Grigio micaceo scuro gr">
@@ -205,6 +192,13 @@ class CalcolaPreventivoView {
                     </div>
                     <div class="clear"></div>
                 </div>
+                <div class="tipo-verniciatura tipo-verniciatura-micaceo">
+                    <p class="descrizione"><span class="subtitle">Verniciatura</span></p>
+                    <input type="radio" name="verniciatura-micaceo-1" value="cataforesi" checked /><label>Cataforesi (compresa nel prezzo)</label>
+                    <div class="clear"></div>
+                    <input type="radio" name="verniciatura-micaceo-1" value="zincatura" /><label>Zincatura (15% in più da listino)</label>
+                    <div class="clear"></div>
+                </div>
                 
                 <p class="descrizione clear"><span class="title">ALTRO</span></p>
                 <div class="box-zincatura clear container-order">
@@ -221,13 +215,16 @@ class CalcolaPreventivoView {
 
             <div  data-order="11" class="clear selezione-cerniera container-order hidden">
                 <p class="step">11. CERNIERA</p>
-                <div class="box normale order" data-type="cerniera" data-name="normale">
+                <div class="box normale order fissa" data-type="cerniera" data-name="nessuna">
+                    <p>Nessuna</p>
+                </div>
+                <div class="box normale order no-fissa" data-type="cerniera" data-name="normale">
                     <p>Normale</p>
                 </div>
-                <div class="box collo-standard order" data-type="cerniera" data-name="collo-standard-3cm">
+                <div class="box collo-standard order no-fissa" data-type="cerniera" data-name="collo-standard-3cm">
                     <p>Collo standard 3 cm</p>
                 </div>
-                <div class="box collo-allungato order" data-type="cerniera" data-name="collo-allungato">
+                <div class="box collo-allungato order no-fissa" data-type="cerniera" data-name="collo-allungato">
                     <p>Collo allungato X = <input type="number" name="collo-allungato" step="0.1" min="0" value="0" /> cm</p>                   
                     <span class="help" title="Info"></span>
                     <div class="help-window help-cerniera hidden"><span class="close"></span></div>
@@ -240,7 +237,7 @@ class CalcolaPreventivoView {
             <input type="hidden" name="totale-infisso" value="" />
             
             <div  data-order="12" class="clear maggiorazioni container-order hidden">
-                <p class="step">13. Aggiungi eventuali maggiorazioni</p>
+                <p class="step">12. Aggiungi eventuali maggiorazioni</p>
                 <?php
                     //trovo le maggiorazioni
                     $maggiorazioni = $this->tMaggiorazioni->getMaggiorazioni();

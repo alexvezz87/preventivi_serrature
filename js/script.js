@@ -27,8 +27,17 @@ jQuery(document).ready(function($){
         $(document).on('click', '.seleziona-anta', function(){            
             $(this).siblings().each(function(){
                 $(this).removeClass('selected');
+                $(this).removeClass('SX');
+                $(this).removeClass('DX');
             });
+            
             $(this).addClass('selected');   
+            if($(this).siblings('input[name=posizione-serratura]').val() === 'S'){
+                $(this).addClass('SX');
+            }
+            else if($(this).siblings('input[name=posizione-serratura]').val() === 'D'){
+                $(this).addClass('DX');
+            }
             
             //aggiorno l'input
             $(this).siblings('input[name=anta-principale]').val($(this).data('anta'));            
@@ -39,11 +48,22 @@ jQuery(document).ready(function($){
 //                
 //            });
         });
-        
+       
         //ascoltatore posizione serratura
         $(document).on('click', '.tipo.radio input', function(){    
             //aggiorno l'input
-            $(this).parent('.tipo').siblings('input[name=posizione-serratura]').val($(this).val());
+            var valore = $(this).val();
+            $(this).parent('.tipo').siblings('input[name=posizione-serratura]').val(valore);
+            
+            $(this).parent('.tipo').siblings('.selected').removeClass('SX');
+            $(this).parent('.tipo').siblings('.selected').removeClass('DX');
+            if(valore === 'S'){
+                $(this).parent('.tipo').siblings('.selected').addClass('SX');
+            }
+            else if(valore === 'D'){
+                $(this).parent('.tipo').siblings('.selected').addClass('DX');
+            }
+            
         });         
          
     }
@@ -170,6 +190,17 @@ jQuery(document).ready(function($){
             }
             //Ottengo il numero di ante
             var ante = $(this).siblings('.selezione-ante').find('select').val();
+            
+            //sapendo il numero di ante posso visualizzare o meno le cerniere e serrature
+            var $cerniera = $(this).siblings('.selezione-cerniera');
+            var $serratura = $(this).siblings('.container-serratura');
+            
+            checkInferriataFissa($cerniera, ante); 
+            checkInferriataFissa($serratura, ante); 
+            
+            
+            //sapendo il numero di ante posso visualizzare o meno le serrature
+            
             var $antaPrincipale = $(this).siblings('.seleziona-anta-principale');
             
             var numInfisso = $(this).parent('.selezione-container').data('infisso');
@@ -358,13 +389,14 @@ jQuery(document).ready(function($){
         var radioName = 'radio-posizione-serratura-'+numInfisso;
         var serratura = '<p class="descrizione">Indica dove posizionare la serratura sull\'anta di apertura</p><div class="tipo radio clear"><input type="radio" name="'+radioName+'" value="S" checked /><label>SINISTRA</label><input type="radio" name="'+radioName+'" value="D" /><label>DESTRA</label><div class="clear"></div></div>';
         var descrizione1 = '<p class="descrizione" style="margin-left:45px;">Per procedere, fai click sull\'anta di apertura</p>';
+        var descrizione2 = '<p class="descrizione" style="margin-left:45px;">Per procedere, fai click sull\'anta principale</p>';
         
         //Dai valore di type (se porta o finestra) e il numero di ante si ottiene un diverso scenario
         if(ante === 0){
             //non ho bisogno di sapere quale sia l'anta principale
             antaPrincipale = 'C';
             html += '<p class="step">6. Seleziona l\'anta principale</p>';
-            html+= descrizione1;
+            html+= descrizione2;
             html+='<div style="margin-left:45px;" class="order seleziona-anta '+type+'" data-anta="C"></div>';
             html+='<div class="clear"></div>';
             posizioneSerratura = 'N';
@@ -485,7 +517,7 @@ jQuery(document).ready(function($){
         var html = '<p class="step">3. Selezione l\'articolo desiderato</p>';
         for(var i=0; i < data.length; i++){
             var nuovaClasse = type+ante;
-            if (data[i].nome.indexOf("libro") >= 0){
+            if (data[i].nome.toLowerCase().indexOf("libro") >= 0){
                 nuovaClasse+='L';
             }
             
@@ -534,6 +566,16 @@ jQuery(document).ready(function($){
             $(this).clone().appendTo($box.find('.selettore-show'));
             $select.hide();    
             
+            
+            //se il selettore è il RAL personalizzato, mostro l'input per inserirlo
+            if($(this).hasClass('personalizzato')){
+                $box.siblings('.ral-personalizzato').removeClass('hidden');
+            }
+            else{
+                $box.siblings('.ral-personalizzato').addClass('hidden');
+                $box.siblings('.ral-personalizzato').find('input').val('');
+            }
+            
             //deseleziono i micacei e zincatura            
             $micacei.find('.box').removeClass('selected');
             $zincatura.find('.box').removeClass('selected');           
@@ -558,7 +600,11 @@ jQuery(document).ready(function($){
            
            //deseleziono il ral e zincatura
            $ral.find('.selettore-show').html('<div class="none" data-type="colore" data-name="none">selezione RAL</div>');
-           $zincatura.find('.box').removeClass('selected');
+           $ral.siblings('.ral-personalizzato').addClass('hidden');
+           $ral.siblings('.ral-personalizzato').find('input').val('');
+            
+            $zincatura.find('.box').removeClass('selected');
+           
            
            //aggiorno il colore
            $colore.val($(this).data('name'));
@@ -577,6 +623,8 @@ jQuery(document).ready(function($){
             
             //deselziono il ral e micacei
             $ral.find('.selettore-show').html('<div class="none" data-type="colore" data-name="none">selezione RAL</div>');
+            $ral.siblings('.ral-personalizzato').addClass('hidden');
+            $ral.siblings('.ral-personalizzato').find('input').val('');
             $micacei.find('.box').removeClass('selected');
             
             //aggiorno il colore
@@ -827,6 +875,7 @@ jQuery(document).ready(function($){
             //resetto i contenuti
             $('.nuovo-infisso .container-order').addClass('hidden');
             $('.nuovo-infisso .tipo-infisso').removeClass('hidden');
+            $('.nuovo-infisso input[name=ral-personalizzato]').val('');
             $('.nuovo-infisso .micacei').removeClass('hidden');
             $('.nuovo-infisso .box-zincatura').removeClass('hidden');
             
@@ -887,6 +936,8 @@ jQuery(document).ready(function($){
                 //resetto i contenuti
                 $(this).find('.container-order').addClass('hidden');
                 $(this).find('.tipo-infisso').removeClass('hidden');
+                
+                $(this).find('input[name=ral-personalizzato]').val('');
                 $(this).find('.micacei').removeClass('hidden');
                 $(this).find('.box-zincatura').removeClass('hidden');
 
@@ -938,10 +989,12 @@ jQuery(document).ready(function($){
             //memorizzo l'ultimo infisso
             var $lastInfisso =  $('.selezione-container').last();      
             var valueSerratura = $lastInfisso.find('input[name=posizione-serratura]').val(); 
-            var tipoRal = $lastInfisso.find('.tipo-ral input:checked').val();
+            var tipoRal = $lastInfisso.find('.tipo-ral input:checked').val();    
+            var tipoVerniciaturaRal = $lastInfisso.find('.tipo-verniciatura-ral input:checked').val();
+            var tipoVerniciaturaMicaeo = $lastInfisso.find('.tipo-verniciatura-micaceo input:checked').val();
             var numInfisso = parseInt($lastInfisso.data('infisso')) + 1;
             
-            console.log(numInfisso);
+            //console.log(numInfisso);
             
             //ho un problema nel mantenere la selezione nel input radio della posizione della serratura
             //faccio un work-around per cercare di tenere la selezione
@@ -965,21 +1018,11 @@ jQuery(document).ready(function($){
              });
              
             //sistemo l'input radio del tipo di RAL
-            $lastInfisso.find('.tipo-ral input').removeAttr('checked');
-            $('.nuovo-infisso').find('.tipo-ral input').removeAttr('checked');
-            $('.nuovo-infisso').find('.tipo-ral input').attr('name', 'tipo-ral-'+numInfisso);
-            
-            $lastInfisso.find('.tipo-ral input').each(function(){
-                 if($(this).val() === tipoRal){
-                     $(this).prop('checked', true);
-                 }
-             });
-             
-             $('.nuovo-infisso').find('.tipo-ral input').each(function(){
-                 if($(this).val() === tipoRal){
-                     $(this).prop('checked', true);
-                 }
-            });
+            fixRadioInput($lastInfisso, 'ral', numInfisso, tipoRal);
+            //sistemo l'input radio del tipo Verniciatura RAL
+            fixRadioInput($lastInfisso, 'verniciatura-ral', numInfisso, tipoVerniciaturaRal);
+            //sistemo l'input radio del tipo Verniciatura Micaceo
+            fixRadioInput($lastInfisso, 'verniciatura-micaceo', numInfisso, tipoVerniciaturaMicaeo);
             
             //aggiungo un pulsante di elimina infisso
             var html = '<input type="button" name="cancella-infisso" value="cancella infisso" />';
@@ -995,7 +1038,9 @@ jQuery(document).ready(function($){
             //devo replicare il numero di ante nel select nuovo
             var nAnte = $lastInfisso.find('.selezione-ante select').val(); 
             var nInfissi = $lastInfisso.find('input[name=numero-infissi]').val();
-            var tipoRal = $lastInfisso.find('.tipo-ral input:checked').val();
+            var tipoRal = $lastInfisso.find('.tipo-ral input:checked').val();   
+            var tipoVerniciaturaRal = $lastInfisso.find('.tipo-verniciatura-ral input:checked').val();
+            var tipoVerniciaturaMicaeo = $lastInfisso.find('.tipo-verniciatura-micaceo input:checked').val();
             var numInfisso = parseInt($lastInfisso.data('infisso')) + 1;
             var valueSerratura = $lastInfisso.find('input[name=posizione-serratura]').val(); 
             
@@ -1027,22 +1072,11 @@ jQuery(document).ready(function($){
             });
             
             //sistemo l'input radio del tipo di RAL
-            $lastInfisso.find('.tipo-ral input').removeAttr('checked');
-            $('.nuovo-infisso').find('.tipo-ral input').removeAttr('checked');
-            $('.nuovo-infisso').find('.tipo-ral input').attr('name', 'tipo-ral-'+numInfisso);
-            
-            $lastInfisso.find('.tipo-ral input').each(function(){
-                 if($(this).val() === tipoRal){
-                     $(this).prop('checked', true);
-                 }
-             });
-             
-             $('.nuovo-infisso').find('.tipo-ral input').each(function(){
-                 if($(this).val() === tipoRal){
-                     $(this).prop('checked', true);
-                 }
-            });
-            
+            fixRadioInput($lastInfisso, 'ral', numInfisso, tipoRal);                        
+            //sistemo l'input radio del tipo Verniciatura RAL
+            fixRadioInput($lastInfisso, 'verniciatura-ral', numInfisso, tipoVerniciaturaRal);
+            //sistemo l'input radio del tipo Verniciatura Micaceo
+            fixRadioInput($lastInfisso, 'verniciatura-micaceo', numInfisso, tipoVerniciaturaMicaeo);
             
             //aggiungo un pulsante di elimina infisso
             var html = '<input type="button" name="cancella-infisso" value="cancella infisso" />';
@@ -1058,6 +1092,28 @@ jQuery(document).ready(function($){
         
         
     } 
+    
+    //La funzione serve a gestire le copie degli input radio
+    function fixRadioInput($lastInfisso, tipoValore, numInfisso, valore){
+        
+        //var valore = $lastInfisso.find('.tipo-'+tipoValore+' input:checked').val();
+        $lastInfisso.find('.tipo-'+tipoValore+' input').removeAttr('checked');
+        $('.nuovo-infisso').find('.tipo-'+tipoValore+' input').removeAttr('checked');
+        $('.nuovo-infisso').find('.tipo-'+tipoValore+' input').attr('name', 'tipo-'+tipoValore+'-'+numInfisso);
+
+        $lastInfisso.find('.tipo-'+tipoValore+' input').each(function(){
+             if($(this).val() === valore){
+                 $(this).prop('checked', true);
+             }
+         });
+
+         $('.nuovo-infisso').find('.tipo-'+tipoValore+' input').each(function(){
+             if($(this).val() === valore){
+                 $(this).prop('checked', true);
+             }
+        });
+    }
+    
     
     //Gestione elimina infisso
     function eliminaInfisso(){
@@ -1201,7 +1257,7 @@ jQuery(document).ready(function($){
                 }
                 
                 //11a. Seleziono anta principale
-                if(typeof($(this).find('input[name=anta-principale]').val()) !== 'undefined'){
+                if(typeof($(this).find('input[name=anta-principale]').val()) !== 'undefined' && $(this).find('input[name=anta-principale]').val() !== '' ){
                     infisso['anta-principale'] = $(this).find('input[name=anta-principale]').val();
                 }                
                 //11b. Seleziono posizione serratura
@@ -1211,14 +1267,35 @@ jQuery(document).ready(function($){
                 
                 //15. Selezione sul colore
                 // 15.ral --> controllo i RAL
-                if($(this).find('.ral-box .selettore-show div').data('name') !== 'none'){                    
-                    //15b --> se il RAL è selezionato, considero anche il tipo                    
-                    infisso['colore'] = $(this).find('input[name=colore-scelto]').val()+' '+$(this).find('.tipo-ral input:checked').val();                   
-                }
-                else{
-                    //se il valore del RAL non è indicato allora si tratta di un micaceo o solo zincatura
-                    infisso['colore'] = $(this).find('input[name=colore-scelto]').val();
-                }                
+                if($(this).find('input[name=colore-scelto]').val() !== ''){
+                    if($(this).find('.ral-box .selettore-show div').data('name') !== 'none'){                    
+                        //15b --> se il RAL è selezionato, considero anche il tipo 
+                        //di default inserisco anche il possibile valore di ral personalizzato che potrebbe esserci o meno
+                        var ralPersonalizzato = $(this).find('input[name=ral-personalizzato]').val();
+
+                        infisso['colore'] = $(this).find('input[name=colore-scelto]').val()+' '+ralPersonalizzato+' '+$(this).find('.tipo-ral input:checked').val();                   
+                        infisso['verniciatura'] = $(this).find('.tipo-verniciatura-ral input:checked').val();
+                    }
+                    else{
+                        //se il valore del RAL non è indicato allora si tratta di un micaceo o solo zincatura
+
+                        var micaceo = false;
+                        $(this).find('.micacei div').each(function(){
+                            if($(this).hasClass('selected')){
+                                //il colore è micaceo
+                                micaceo = true;
+                            }
+                        });
+                        if(micaceo){
+                           infisso['verniciatura'] = $(this).find('.tipo-verniciatura-micaceo input:checked').val();
+                        } 
+                        else{
+                            infisso['verniciatura'] = '';
+                        }
+
+                        infisso['colore'] = $(this).find('input[name=colore-scelto]').val();
+                    }  
+                }   
                 
                 //18. Selezione sul numero di infissi   
                 if(typeof($(this).find('input[name=numero-infissi]').val()) !== 'undefined'){
@@ -1229,6 +1306,14 @@ jQuery(document).ready(function($){
                 infisso['spesa-parziale'] = $(this).find('input[name=spesa-parziale-infisso]').val();
                                 
                 //console.log(Object.size(infisso));
+                for (var i in infisso) {
+                    if (infisso[i] === null || infisso[i] === undefined) {
+                    // test[i] === undefined is probably not very useful here
+                      delete infisso[i];
+                    }
+}
+                
+                console.log(infisso);
                 
                 infissi.push(infisso);
                 count++;
@@ -1360,65 +1445,86 @@ jQuery(document).ready(function($){
                 //console.log(infissi[i]);
                 //controllo la dimensione dell'array
                 //se è minore di 12, non sono stati compilati tutti i campi
-                if(Object.size(infissi[i]) < 12){
+                if(Object.size(infissi[i]) < 16){
                     
                     //il campo numero zero indica a quale infisso mancano i valori
                     mancanti[6] = i+1;                    
                     
                     //controllo i valori mancanti
+                    if(!('tipo-infisso' in infissi[i])){
+                        mancanti.push('Indicare il tipo di infisso');
+                    }
+                    if(!('numero-ante' in infissi[i])){
+                        mancanti.push('Indicare il numero di ante dell\'infisso');
+                    } 
+                    if(!('infisso' in infissi[i])){
+                        mancanti.push('Indicare l\'inifisso specifico');
+                    } 
                     if(!('altezza' in infissi[i])){
-                        mancanti.push('Indicare l\'altezza dell\'infisso');
+                        mancanti.push('Indicare l\'altezza');
+                    } 
+                    if(!('lunghezza' in infissi[i])){
+                        mancanti.push('Indicare la larghezza');
                     } 
                     if(!('apertura' in infissi[i])){
                         mancanti.push('Specifcare il tipo di apertura');
                     } 
-                    if(!('barra' in infissi[i])){
-                        mancanti.push('Indicare il tipo di barra');
-                    } 
-                    if(!('cerniera' in infissi[i])){
-                        mancanti.push('Indicare il tipo di cerniera');
-                    } 
-                    if(!('colore' in infissi[i])){
-                        mancanti.push('Selezionare il colore');
-                    } 
-                    if(!('infisso' in infissi[i])){
-                        mancanti.push('Indicare l\'inifsso specifico');
-                    } 
-                    if(!('lunghezza' in infissi[i])){
-                        mancanti.push('Indicare la lunghezza');
-                    } 
-                    if(!('num-infissi' in infissi[i])){
-                        mancanti.push('Indicare il numero di infissi');
-                    } 
-                    if(!('nodo' in infissi[i])){
-                        mancanti.push('Indicare il tipo di nodo');
-                    }                     
-                    if(!('numero-ante' in infissi[i])){
-                        mancanti.push('Indicare il numero di ante dell\'infisso');
-                    } 
-                    if(!('serratura' in infissi[i])){
-                        mancanti.push('Indicare il tipo di serratura');
-                    } 
-                    if(!('tipo-infisso' in infissi[i])){
-                        mancanti.push('Indicare il tipo di infisso');
-                    }
                     if(!('anta-principale' in infissi[i])){
                         mancanti.push('Indicare l\'anta principale');
                     } 
                     if(!('posizione-serratura' in infissi[i])){
                         mancanti.push('Indicare la posizione serratura');
                     } 
+                    if(!('barra' in infissi[i])){
+                        mancanti.push('Indicare il tipo di barra');
+                    }
+                    if(!('serratura' in infissi[i])){
+                        mancanti.push('Indicare il tipo di serratura');
+                    } 
+                    if(!('nodo' in infissi[i])){
+                        mancanti.push('Indicare il tipo di nodo');
+                    }  
+                    if(!('colore' in infissi[i])){
+                        mancanti.push('Selezionare il colore');
+                    } 
+                    if(!('cerniera' in infissi[i])){
+                        mancanti.push('Indicare il tipo di cerniera');
+                    }                    
+                    if(!('num-infissi' in infissi[i])){
+                        mancanti.push('Indicare il numero di infissi');
+                    } 
                     
                     //return mancanti;
                 }               
             }
+           
+           
+            
         }
+        
+        
         
         if(mancanti.length > 0){
             return mancanti;
         }
         
         return true;
+    }
+    
+    
+      
+    
+    //La funzione corregge le opzioni di visualizzazione nel caso venga scelta un'inferriata fissa o meno
+    function checkInferriataFissa($element, ante){
+        if(ante === '0'){
+                //mostro solo il .fissa
+                $element.find('.no-fissa').hide();
+                $element.find('.fissa').show();
+            }
+            else{
+                $element.find('.fissa').hide();
+                $element.find('.no-fissa').show();                
+            }
     }
     
     

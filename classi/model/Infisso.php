@@ -30,6 +30,7 @@ class Infisso {
     private $maggiorazioni;
     private $antaPrincipale;
     private $posizioneSerratura;
+    private $verniciatura;
     
     function __construct() {
         //costruttore vuoto
@@ -177,6 +178,14 @@ class Infisso {
 
     function setPosizioneSerratura($posizioneSerratura) {
         $this->posizioneSerratura = $posizioneSerratura;
+    }
+
+    function getVerniciatura() {
+        return $this->verniciatura;
+    }
+
+    function setVerniciatura($verniciatura) {
+        $this->verniciatura = $verniciatura;
     }
 
 

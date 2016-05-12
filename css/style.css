@@ -423,16 +423,27 @@ and open the template in the editor.
 .select-ral div.text-white:hover {color:#fff}
 
 .ral-box.selettore-box{
-   
+   float:left;
 }
 
-.tipo-ral{
+.select-ral{
+    margin-top:50px;
+}
+
+.tipo-ral, .tipo-verniciatura{
     display:block;
-    clear:none;
+    clear:both;
+}
+
+.ral-personalizzato{
+    float:left;
+    margin-left:20px;
+    margin-top:3px;
 }
 
 .tipo-ral > input, .tipo-ral > label, 
-.tipo.radio > input, .tipo.radio > label{
+.tipo.radio > input, .tipo.radio > label,
+.tipo-verniciatura > input, .tipo-verniciatura > label{
     float: left;
     width: auto;
     margin-right: 10px;
@@ -445,6 +456,10 @@ and open the template in the editor.
     color:#000;
 }
 
+.tipo-verniciatura > input, .tipo-verniciatura > label{
+    height: 25px;
+    line-height: 25px;
+}
 
 .selettore-box .selettore-show div {
     color:#000;
@@ -478,7 +493,7 @@ and open the template in the editor.
     padding:20px 50px;    
     top:0px;
     left:-275px;
-    margin-top:15%;
+    margin-top:5%;
     margin-left:50%;
     background:rgba(242,242,242,0.9);
     display:none;
@@ -611,6 +626,16 @@ and open the template in the editor.
     display:block;
 }
 
+#container-infissi .container-serratura .box.fissa{
+    border: 1px solid rgb(0, 0, 0);
+    padding: 0;
+}
+
+#container-infissi .container-serratura .box.fissa p{
+    line-height: 140px;
+    font-size: 20px;
+}
+
 #container-infissi .container-nodo .box{
     width:145px;
     height: 200px;
@@ -658,6 +683,12 @@ and open the template in the editor.
 .seleziona-anta.F.selected{
     background:url('../images/finestra-anta-selezionata.png') no-repeat center center;
 }
+.seleziona-anta.F.selected.SX{
+    background:url('../images/finestra-anta-selezionata-sx.png') no-repeat center center;
+}
+.seleziona-anta.F.selected.DX{
+    background:url('../images/finestra-anta-selezionata-dx.png') no-repeat center center;
+}
 .seleziona-anta.P{    
     width:76px;
     height:200px;   
@@ -666,6 +697,13 @@ and open the template in the editor.
 .seleziona-anta.P.selected{
     background:url('../images/portafinestra-anta-selezionata.png') no-repeat center center;
 }
+.seleziona-anta.P.selected.SX{
+    background:url('../images/portafinestra-anta-selezionata-sx.png') no-repeat center center;
+}
+.seleziona-anta.P.selected.DX{
+    background:url('../images/portafinestra-anta-selezionata-dx.png') no-repeat center center;
+}
+
 
 .descrizione, .seleziona-anta-principale .tipo.radio{
     margin-left:45px;
@@ -678,10 +716,26 @@ and open the template in the editor.
 .descrizione .title{
     display: block;
     font-family: 'Open Sans Condensed', sans-serif;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: bold;
     color: #000;
     text-transform: uppercase;
+    text-decoration: underline;
+}
+
+.tipo-verniciatura p.descrizione{
+    margin-left:0;
+    margin-bottom:5px;
+    padding-top:15px;
+}
+
+.descrizione .subtitle{
+    display: block;
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    color: #000;
+    text-transform: uppercase;    
 }
 
 .seleziona-anta-principale .tipo.radio{
@@ -1003,7 +1057,7 @@ input[name=close-box]{
         width:90%;
     }
     
-    .tipo-ral, .selezione-cerniera .normale, #container-infissi .container-nodo .box.nodo-b,
+    .tipo-ral, .tipo-verniciatura, .selezione-cerniera .normale, #container-infissi .container-nodo .box.nodo-b,
     #fileupload, #description, textarea[name=note]{
       margin-left: 45px;
     }

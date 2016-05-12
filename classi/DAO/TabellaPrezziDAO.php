@@ -245,7 +245,7 @@ class TabellaPrezziDAO {
      */
     public function getAnte($string_parameters){
         try{
-            $query = "SELECT DISTINCT ante FROM ".$this->table_tabelle.' WHERE '.$string_parameters;
+            $query = "SELECT DISTINCT ante FROM ".$this->table_tabelle.' WHERE '.$string_parameters.' ORDER BY ante ASC';
             
             return $this->wpdb->get_results($query);            
         } catch (Exception $ex) {
