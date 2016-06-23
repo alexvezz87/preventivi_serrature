@@ -322,7 +322,7 @@ function dropTabellaFoto($wpdb){
         $wpdb->query($query);
         return true;
     } catch (Exception $ex) {
-        _e($e);
+        _e($ex);
         return false;
     }
 }

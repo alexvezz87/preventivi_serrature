@@ -878,26 +878,16 @@ jQuery(document).ready(function($){
             $('.nuovo-infisso input[name=ral-personalizzato]').val('');
             $('.nuovo-infisso .micacei').removeClass('hidden');
             $('.nuovo-infisso .box-zincatura').removeClass('hidden');
-            
-            
-            
-            $('.nuovo-infisso .selezione-ante').html('');
-            //$('.nuovo-infisso .selezione-ante').addClass('hidden');
+                        
+            $('.nuovo-infisso .selezione-ante').html('');            
             $('.nuovo-infisso .ricerca').addClass('hidden');
             $('.nuovo-infisso .selezione-infissi').html('');
-            //$('.nuovo-infisso .selezione-infissi').addClass('hidden');
-            $('.nuovo-infisso .selezione-misure').html('');
-            //$('.nuovo-infisso .selezione-misure').addClass('hidden');
-            //$('.nuovo-infisso .selezione-apertura').addClass('hidden');
-            //$('.nuovo-infisso .particolari-costruttivi').addClass('hidden');
-            //$('.nuovo-infisso .container-serratura').addClass('hidden');
-            //$('.nuovo-infisso .container-nodo').addClass('hidden');
-            //$('.nuovo-infisso .selezione-colore').addClass('hidden');
+            
+            $('.nuovo-infisso .selezione-misure').html('');           
             $('.nuovo-infisso .selezione-colore .ral-box .selettore-show').html('<div class="none" data-type="colore" data-name="none">seleziona RAL</div>');
-            //$('.nuovo-infisso .selezione-colore .micacei-box .selettore-show').html('<div class="none" data-type="colore" data-name="none">selezione Micacei</div>');
-            //$('.nuovo-infisso .selezione-cerniera').addClass('hidden');
+           
             $('.nuovo-infisso input[name=totale-infisso]').val('');
-            //$('.nuovo-infisso .maggiorazioni').addClass('hidden');
+           
             $('.nuovo-infisso .numero-infissi').addClass('hidden');
             $('.nuovo-infisso input[name=numero-infissi]').val(1);
             $('input[name=aggiungi-infisso]').prop('disabled', true);

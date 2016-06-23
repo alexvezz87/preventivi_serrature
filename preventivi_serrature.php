@@ -105,12 +105,12 @@ function add_calcola_preventivo(){
 }
 
 //registro gli stili
-add_action( 'wp_enqueue_scripts', 'register_style' );
+add_action( 'wp_enqueue_scripts', 'register_ps_style' );
 add_action( 'admin_enqueue_scripts', 'register_admin_style' );
 
-function register_style(){
-    wp_register_style('style_css', plugins_url('preventivi_serrature/css/style.css'));
-    wp_enqueue_style('style_css');
+function register_ps_style(){
+    wp_register_style('ps_style_css', plugins_url('preventivi_serrature/css/style.css'));
+    wp_enqueue_style('ps_style_css');
 }
 
 function register_admin_style() {
