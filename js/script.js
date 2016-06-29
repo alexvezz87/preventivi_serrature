@@ -219,112 +219,129 @@ jQuery(document).ready(function($){
 
                     //Evento click su un infisso
                     //$('.infisso').click(function(){
-                    $(document).on('click', '.infisso', function(){     
-                        //$(this).addClass('selected');
-                        var $boxMisure = $(this).parent('.selezione-infissi').siblings('.selezione-misure');
-                        
-                        //$boxMisure.addClass('hidden');
-                        //$boxMisure.siblings('.selezione-apertura').addClass('hidden');
-                        $boxMisure.html('');
-                        
-                        //azzero il parziale e il totale preventivo
-                        var $container = $(this).parent('.selezione-infissi');
-                        $container.siblings('input[name=totale-infisso]').val("");
-                        $container.siblings('.spesa-parziale-infisso').find('input[name=spesa-parziale-infisso]').val("");
-                        $container.siblings('.spesa-parziale-infisso').find('span.spesa-infisso').text('0');
-                        aggiornoTotalePreventivo();
-                        
-                        
-
-                        //gestione selezioni
-                        //checkSelected();
-
-                        var idTabella = $(this).find('input[name=infisso-id]').val();
-
-                        $.ajax({
-                            type:'POST',
-                            dataType: 'json',
-                            url: $urlAjax,
-                            data: {id_tabella : idTabella },
-                            success: function(data){
-                                printMisure(data, $boxMisure);
-                                //listener sulla modifica delle misure ed inserimento del prezzo
-                                $(document).on('click', 'input[name=conferma-misure]', function(){
-                                //$('input[name=conferma-misure]').click(function(){
-                                    
-                                    
-                                    var $container = $(this).parent('.selezione-misure');
-                                    
-                                    var nInfissi = $container.siblings('.numero-infissi').find('input[name=numero-infissi]').val();
-                                    //ottengo il valore del prezzo
-                                    var row = $(this).siblings('.table-misure').find('input[name=infisso-altezza]').val();
-                                    var col = $(this).siblings('.table-misure').find('input[name=infisso-lunghezza]').val();
-                                    
-                                    //sistemo il valore dell'attributo value
-                                    $(this).siblings('.table-misure').find('input[name=infisso-altezza]').attr('value', row);
-                                    $(this).siblings('.table-misure').find('input[name=infisso-lunghezza]').attr('value', col);
-                                    
-                                    if(row !== '' && row !== null && col !== '' && col !== null){
-
-                                        //chiamata ajax per il prezzo
-                                        $.ajax({
-                                            type:'POST',
-                                            dataType: 'json',
-                                            url: $urlAjax,
-                                            data: {id_tabella_2 : idTabella, row : row, col : col },
-                                            success: function(data){
-                                                //var totale = printPrezzo(data);
-                                               
-                                                //vado a beccare il numero degli infissi
-                                                
-                                                
-                                                var totaleParziale = parseFloat(data).toFixed(2); 
-                                                var totale = totaleParziale * nInfissi;
-                                                totale = parseFloat(totale).toFixed(2);
-                                                
-                                                //inserisco il prezzo nel parziale
-                                                $container.siblings('.spesa-parziale-infisso').find('input[name=spesa-parziale-infisso]').val(totaleParziale);
-                                                //aggiorno il prezzo totale dell'infisso                                            
-                                                $container.siblings('.spesa-parziale-infisso').find('span.spesa-infisso').text(totale);
-
-                                                //inserisco il prezzo dell'infisso senza maggiorazioni
-                                                $container.siblings('input[name=totale-infisso]').val(totaleParziale);
-
-                                                //aggiorno il preventivo totale
-                                                aggiornoTotalePreventivo();                                            
-                                            }
-                                        });
-                                        
-                                        //dal seleziona apertura devo capire se si stratta di inferriata fissa o no                                       
-                                        var nAnte = $container.siblings('.selezione-ante').find('select').val();   
-                                        $container.siblings('.selezione-apertura').find('.box').addClass('hidden'); 
-                                        $container.siblings('.selezione-apertura').find('.separator').addClass('hidden'); 
-                                        if(nAnte !== '0'){                                           
-                                            $container.siblings('.selezione-apertura').find('.interna').removeClass('hidden');
-                                            $container.siblings('.selezione-apertura').find('.esterna').removeClass('hidden');
-                                            $container.siblings('.selezione-apertura').find('.separator').removeClass('hidden'); 
-                                        }
-                                        else{
-                                            
-                                            $container.siblings('.selezione-apertura').find('.fx').removeClass('hidden');                                            
-                                        }
-                                        
-                                        $container.siblings('.selezione-apertura').removeClass('hidden');
-                                    }
-                                    else{
-                                        alert('Le misure da inserire sono obbligatorie!');
-                                    }
-                                });
-
-                            }
-
-                        });
-
-                    });
+                    
                 }
             });        
         });
     }   
+    
+    
+    
+    function ajaxCallSelezionaInfisso(){
+        $(document).on('click', '.infisso', function(){     
+            //$(this).addClass('selected');
+            var $boxMisure = $(this).parent('.selezione-infissi').siblings('.selezione-misure');
+
+            //$boxMisure.addClass('hidden');
+            //$boxMisure.siblings('.selezione-apertura').addClass('hidden');
+            $boxMisure.html('');
+
+            //azzero il parziale e il totale preventivo
+            var $container = $(this).parent('.selezione-infissi');
+            $container.siblings('input[name=totale-infisso]').val("");
+            $container.siblings('.spesa-parziale-infisso').find('input[name=spesa-parziale-infisso]').val("");
+            $container.siblings('.spesa-parziale-infisso').find('span.spesa-infisso').text('0');
+            aggiornoTotalePreventivo();
+
+
+
+            //gestione selezioni
+            //checkSelected();
+
+            var idTabella = $(this).find('input[name=infisso-id]').val();
+
+            $.ajax({
+                type:'POST',
+                dataType: 'json',
+                url: $urlAjax,
+                data: {id_tabella : idTabella },
+                success: function(data){
+                    printMisure(data, $boxMisure);
+                    //listener sulla modifica delle misure ed inserimento del prezzo
+
+
+                }
+
+            });
+
+        });
+    }
+    
+    
+    //Evento conferma misure
+    function confermaMisure(){
+        
+        $(document).on('click', 'input[name=conferma-misure]', function(){
+        //$('input[name=conferma-misure]').click(function(){            
+
+            var $container = $(this).parent('.selezione-misure');
+
+            var nInfissi = $container.siblings('.numero-infissi').find('input[name=numero-infissi]').val();
+            //ottengo il valore del prezzo
+            var row = $(this).siblings('.table-misure').find('input[name=infisso-altezza]').val();
+            var col = $(this).siblings('.table-misure').find('input[name=infisso-lunghezza]').val();
+            
+            //Correzione ed ottimizzazione bug ISSUE #9
+            var idTabellaI = $container.siblings('.selezione-infissi').find('.selected').data('name');
+
+
+            //sistemo il valore dell'attributo value
+            $(this).siblings('.table-misure').find('input[name=infisso-altezza]').attr('value', row);
+            $(this).siblings('.table-misure').find('input[name=infisso-lunghezza]').attr('value', col);
+
+            if(row !== '' && row !== null && col !== '' && col !== null){
+
+                //chiamata ajax per il prezzo
+                $.ajax({
+                    type:'POST',
+                    dataType: 'json',
+                    url: $urlAjax,
+                    data: {id_tabella_2 : idTabellaI, row : row, col : col },
+                    success: function(data){
+                        //var totale = printPrezzo(data);
+
+                        //vado a beccare il numero degli infissi
+                        //alert(idTabella);
+
+                        var totaleParziale = parseFloat(data).toFixed(2); 
+                        var totale = totaleParziale * nInfissi;
+                        totale = parseFloat(totale).toFixed(2);
+
+                        //inserisco il prezzo nel parziale
+                        $container.siblings('.spesa-parziale-infisso').find('input[name=spesa-parziale-infisso]').val(totaleParziale);
+                        //aggiorno il prezzo totale dell'infisso                                            
+                        $container.siblings('.spesa-parziale-infisso').find('span.spesa-infisso').text(totale);
+
+                        //inserisco il prezzo dell'infisso senza maggiorazioni
+                        $container.siblings('input[name=totale-infisso]').val(totaleParziale);
+
+                        //aggiorno il preventivo totale
+                        aggiornoTotalePreventivo();                                            
+                    }
+                });
+
+                //dal seleziona apertura devo capire se si stratta di inferriata fissa o no                                       
+                var nAnte = $container.siblings('.selezione-ante').find('select').val();   
+                $container.siblings('.selezione-apertura').find('.box').addClass('hidden'); 
+                $container.siblings('.selezione-apertura').find('.separator').addClass('hidden'); 
+                if(nAnte !== '0'){                                           
+                    $container.siblings('.selezione-apertura').find('.interna').removeClass('hidden');
+                    $container.siblings('.selezione-apertura').find('.esterna').removeClass('hidden');
+                    $container.siblings('.selezione-apertura').find('.separator').removeClass('hidden'); 
+                }
+                else{
+
+                    $container.siblings('.selezione-apertura').find('.fx').removeClass('hidden');                                            
+                }
+
+                $container.siblings('.selezione-apertura').removeClass('hidden');
+            }
+            else{
+                alert('Le misure da inserire sono obbligatorie!');
+            }
+        });
+    }
+    
     
     //Evento su scelta numero infissi
     function changeNumeroInfissi(){
@@ -715,6 +732,10 @@ jQuery(document).ready(function($){
         searchInfisso();
         gestoreSelettoreColori();
         changeNumeroInfissi();
+        
+        //Correzione ed ottimizzazione bug ISSUE #9
+        confermaMisure();
+        ajaxCallSelezionaInfisso();
         
         uploadFoto();
         
