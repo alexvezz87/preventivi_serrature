@@ -682,12 +682,34 @@ jQuery(document).ready(function($){
             
             if($(this).hasClass('selected')){
                 //aggiungo la spesa
-                totale = updatePrezzo(totale, st, qt, um);
+                //ISSUE #5
+                if(um === '%'){
+                    //nel caso della selezione devo aggiungere un input type hidden con valore in euro della maggiorazione in percentuale 
+                    totale = parseFloat(totale);
+                    var maggiorazione = ((qt * parseFloat(totale))/100);
+                    var inputHidden = '<input type="hidden" class="maggiorazione" name="maggiorazione" value="'+maggiorazione+'">';
+                    $(this).append(inputHidden);
+                    totale = parseFloat(totale + maggiorazione).toFixed(2);
+                }
+                else{
+                    totale = updatePrezzo(totale, st, qt, um);
+                }
             }
             else{
-                //sottraggo la spesa
-                qt = '-'+qt;
-                totale = updatePrezzo(totale, st, qt, um);
+                if(um === '%'){
+                    //prendo il valore della maggiorazione
+                    var maggiorazione = parseFloat($(this).find('input.maggiorazione').val());
+                    totale = parseFloat(totale - maggiorazione).toFixed(2);
+                    
+                    //devo eliminare l'input hidden
+                    $(this).find('input.maggiorazione').remove();
+                }
+                else{
+                     //sottraggo la spesa
+                    qt = '-'+qt;
+                    totale = updatePrezzo(totale, st, qt, um);
+                }                
+               //end ISSUE #5
             }
             
             //aggiorno il prezzo totale infisso
