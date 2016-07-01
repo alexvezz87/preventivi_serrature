@@ -28,5 +28,13 @@ require_once 'view/CalcolaPreventivoView.php';
 require_once 'view/GestioneMaggiorazioneView.php';
 require_once 'view/GestionePreventivoView.php';
 
+//ANAGRAFICA
+require_once 'model/Utente.php';
+require_once 'model/Cliente.php';
+require_once 'model/Agente.php';
+require_once 'model/Indirizzo.php';
+require_once 'model/Rivenditore.php';
+require_once 'model/Trasporto.php';
+
 
 ?>
