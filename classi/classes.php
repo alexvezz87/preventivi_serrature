@@ -36,5 +36,9 @@ require_once 'model/Indirizzo.php';
 require_once 'model/Rivenditore.php';
 require_once 'model/Trasporto.php';
 
+require_once 'DAO/UtenteDAO.php';
+require_once 'DAO/ClienteDAO.php';
+require_once 'DAO/AgenteDAO.php';
+
 
 ?>
