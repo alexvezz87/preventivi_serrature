@@ -10,6 +10,7 @@ class Utente {
     private $idUserWP;
     private $pi;
     private $indirizzo;
+    private $telefono;
     
     
     function __construct() {
@@ -49,5 +50,13 @@ class Utente {
     }
 
 
-    
+    function getTelefono() {
+        return $this->telefono;
+    }
+
+    function setTelefono($telefono) {
+        $this->telefono = $telefono;
+    }
+
+
 }

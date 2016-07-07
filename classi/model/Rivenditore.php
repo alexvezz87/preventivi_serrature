@@ -12,6 +12,7 @@ class Rivenditore extends Utente {
     private $condizioniVendita;
     private $pagamento;
     private $trasporto;
+    private $idUtente;
     
     public function __construct() {
         parent::__construct();
@@ -96,5 +97,23 @@ class Rivenditore extends Utente {
     function setTrasporto($trasporto) {
         $this->trasporto = $trasporto;
     }
+
+    public function getTelefono() {
+        return parent::getTelefono();
+    }
+
+    public function setTelefono($telefono) {
+        parent::setTelefono($telefono);
+    }
+    
+    function getIdUtente() {
+        return $this->idUtente;
+    }
+
+    function setIdUtente($idUtente) {
+        $this->idUtente = $idUtente;
+    }
+
+
 
 }

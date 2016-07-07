@@ -6,11 +6,11 @@
  *
  * @author Alex
  */
-class RivenditoreDAO {
-    
-    private $DAO;
+class RivenditoreDAO {    
+   
     private $wpdb;
     private $table;
+    private $fatherTable;
     
     function __construct() {
         global $wpdb;
@@ -18,6 +18,7 @@ class RivenditoreDAO {
         $wpdb->prefix = 'pps_';
         $this->wpdb = $wpdb;
         $this->table = $wpdb->prefix.'rivenditori';
+        $this->fatherTable = $wpdb->prefix.'utenti';
         
         //Istanzio la classe DAO padre
         $this->DAO = new UtenteDAO($wpdb);
@@ -29,15 +30,14 @@ class RivenditoreDAO {
      * @return boolean
      */
     public function saveRivenditore(Rivenditore $r){
-        //salvo prima l'utente
-        $idUtente = $this->DAO->saveUtente($r);
-        if($idUtente != false){
+               
+        if( $r->getIdUtente() != false){
             //salvo il rivenditore
             try{
                 $this->wpdb->insert(
                         $this->table,
                         array(
-                            'id_utente' => $idUtente,
+                            'id_utente' => $r->getIdUtente(),
                             'nominativo' => $r->getNominativo(),
                             'sconto' => $r->getSconto(),
                             'codice' => $r->getCodice(),
@@ -57,15 +57,12 @@ class RivenditoreDAO {
     
     /**
      * La funzione restituisce un Rivenditore passandogli l'ID utente di Wordpress
-     * @param type $idUserWP
+     * @param type $idUtente
      * @return \Rivenditore
      */
-    public function getRivenditore($idUserWP){
-        //ottengo l'utente dalla classe padre
-        $idUtente = $this->DAO->getIdUtente($idUserWP);
-        if($idUtente != null){
-            $utente = new Utente();
-            $utente = $this->DAO->getUtente($idUserWP);
+    public function getRivenditore($idUtente){
+               
+        if($idUtente != null){           
             try{
                 $query = "SELECT * FROM ".$this->table." WHERE id_utente = ".$idUtente;
                 $tempR = $this->wpdb->get_row($query);
@@ -74,14 +71,11 @@ class RivenditoreDAO {
                 $r = new Rivenditore();
                 $r->setCodice($tempR->codice);
                 $r->setCondizioniVendita($tempR->con_ven);
-                $r->setID($tempR->ID);
-                $r->setIdUserWP($utente->getIdUserWP());
+                $r->setID($tempR->ID);                
                 $r->setNominativo($tempR->nominativo);
-                $r->setPagamento($tempR->pagamento);
-                $r->setPi($utente->getPi());
+                $r->setPagamento($tempR->pagamento);                
                 $r->setSconto($tempR->sconto);
                 $r->setTrasporto($tempR->trasporto);
-                
                 return $r;
             } catch (Exception $ex) {
                 _e($ex);
@@ -92,18 +86,65 @@ class RivenditoreDAO {
     }
     
     /**
-     * La funzione cancella un Rivenditore dal DB
-     * @param type $idUserWP
+     * La funzione controlla se un id Utente passato è nella tabella Rivenditori
+     * @param type $idUtente
      * @return boolean
      */
-    public function deleteRivenditore($idUserWP){
+    public function isRivenditore($idUtente){
+        try{
+            if($idUtente != false && $idUtente != null){
+                $query = "SELECT ID FROM ".$this->table." WHERE id_utente = ".$idUtente;
+                if($this->wpdb->get_var($query) != null){
+                    return true;
+                }
+            }
+            return false;
+        } catch (Exception $ex) {
+            _e($ex);
+            return false;
+        }
+    }
+    
+    /**
+     * La funzione restituisce un array di ID Rivenditori
+     * @param type $parameters
+     * @return type
+     */
+    public function getIdRivenditoriByParameters($parameters){
+        //ottengo dei Rivenditori attraverso determinati parametri
+        
+        //parametri per rivenditori:
+        //nominativo --> Ricerca per nominativo
+	//sconto --> Ricerca per sconto
+	//codice --> Ricerca per codice Rivenditore
+        try{                       
+            $query = "SELECT ".$this->fatherTable.".id_user_wp as ID"
+                    . "FROM ".$this->table." "
+                    . "INNER JOIN ".$this->fatherTable." ON ".$this->fatherTable.".ID = ".$this->table.".id_utente "
+                    . "WHERE 1=1";
+            foreach($parameters as $k => $v){               
+                $query .= " AND ".$k." LIKE '%".$v."%'";                
+            }
+            return $this->wpdb->get_results($query);            
+            
+        } catch (Exception $ex) {
+            _e($ex);
+            return null;
+        }
+    }
+    
+    
+    /**
+     * La funzione cancella un Rivenditore dal DB
+     * @param type $idUtente
+     * @return boolean
+     */
+    public function deleteRivenditore($idUtente){
         //cancello prima il rivenditore 
-        $idUtente = $this->DAO->getIdUtente($idUserWP);
+        
         if($idUtente != null){
             try{
-                $this->wpdb->delete($this->table, array('id_utente' => $idUtente));
-                //cancello l'utente
-                $this->DAO->deleteUtente($idUserWP);
+                $this->wpdb->delete($this->table, array('id_utente' => $idUtente));                
                 return true;
             } catch (Exception $ex) {
                 _e($ex);
@@ -118,10 +159,9 @@ class RivenditoreDAO {
      * @param Rivenditore $r
      * @return boolean
      */
-    public function updateRivenditore(Rivenditore $r){
-        //ottengo l'utente
-        $idUtente = $this->DAO->getIdUtente($r->getIdUserWP());
-        if($idUtente != null){
+    public function updateRivenditore(Rivenditore $r){      
+       
+        if($r->getIdUtente() != null){
             //aggiorno il rivenditore
             try{
                 $this->wpdb->update(
@@ -134,12 +174,10 @@ class RivenditoreDAO {
                             'pagamento' => $r->getPagamento(),
                             'trasporto' => $r->getTrasporto()
                         ),
-                        array('id_utente' => $idUtente),
+                        array('id_utente' => $r->getIdUtente()),
                         array('%s', '%f', '%s', '%s', '%s', '%s'),
                         array('%d')
-                    );
-                //aggiorno utente
-                $this->DAO->updateUtente($r);
+                    );                
                 return true;
             } catch (Exception $ex) {
                 _e($ex);

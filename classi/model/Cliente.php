@@ -8,6 +8,7 @@
 class Cliente extends Utente {
     private $nome;
     private $cognome;
+    private $idUtente;
     
     function __construct() {
         parent::__construct();
@@ -61,4 +62,24 @@ class Cliente extends Utente {
         parent::setIndirizzo($indirizzo);
     }
 
+    public function getTelefono() {
+        return parent::getTelefono();
+    }
+
+    public function setTelefono($telefono) {
+        parent::setTelefono($telefono);
+    }
+
+    function getIdUtente() {
+        return $this->idUtente;
+    }
+
+    function setIdUtente($idUtente) {
+        $this->idUtente = $idUtente;
+    }
+
+
+
+
+    
 }

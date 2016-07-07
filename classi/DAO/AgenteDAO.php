@@ -5,21 +5,20 @@
  *
  * @author Alex
  */
-class AgenteDAO {
+class AgenteDAO {    
     
-    private $DAO;
     private $wpdb;
     private $table;
-    
+    private $fatherTable;
+    private $grandFatherTable;
     
     function __construct() {
         global $wpdb;
         $wpdb->prefix = 'pps_';
         $this->wpdb = $wpdb;
         $this->table = $wpdb->prefix.'agenti';
-        
-        //Istanzio la classe DAO padre
-        $this->DAO = new ClienteDAO();
+        $this->fatherTable = $wpdb->prefix.'clienti';
+        $this->grandFatherTable = $wpdb->prefix.'utenti';
     }
     
     /**
@@ -27,16 +26,15 @@ class AgenteDAO {
      * @param Agente $a
      * @return boolean
      */
-    public function saveAgente(Agente $a){
-        //salvo prima il cliente
-        $idCliente = $this->DAO->saveCliente($a);
-        if($idCliente != false){
+    public function saveAgente(Agente $a){       
+       
+        if($a->getIdUtente() != false){
             //salvo l'agente
             try{
                 $this->wpdb->insert(
                         $this->table,
                         array(
-                            'id_utente' => $idCliente,
+                            'id_utente' => $a->getIdUtente(),
                             'provvigione' => $a->getProvvigione()
                         ),
                         array('%d', '%f')
@@ -50,28 +48,22 @@ class AgenteDAO {
     }
     
     /**
-     * La funzione restituisce un Agente, passandogli l'ID utente di Wordpress
-     * @param type $idUserWP
+     * La funzione restituisce un Agente, passandogli l'ID Cliente
+     * @param type $idCliente
      * @return \Agente
      */
-    public function getAgente($idUserWP){
+    public function getAgente($idCliente){
         //ottengo il cliente
-        $cliente = new Cliente();
-        $cliente = $this->DAO->getCliente($idUserWP);
-        if($cliente != null){
+        
+        if($idCliente != null){
             try{
-                $query = "SELECT * FROM ".$this->table." WHERE id_utente = ".$cliente->getID();
+                $query = "SELECT * FROM ".$this->table." WHERE id_utente = ".$idCliente;
                 $tempAgente = $this->wpdb->get_row($query);
                 
                 //restituisco un oggetto Agente
-                $agente = new Agente();
-                $agente->setCognome($cliente->getCognome());
+                $agente = new Agente();                
                 $agente->setID($tempAgente->ID);
-                $agente->setIdUserWP($cliente->getIdUserWP());
-                $agente->setNome($cliente->getNome());
-                $agente->setCognome($cliente->getCognome());
-                $agente->setPi($cliente->getPi());
-                $agente->setProvvigione($tempAgente->provvigione);
+                $agente->setProvvigione($tempAgente->provvigione);                
                 
                 return $agente;
                 
@@ -83,19 +75,62 @@ class AgenteDAO {
     }
     
     /**
-     * La funzione cancella un Agente dal DB, passato l'ID utente di Wordpress
-     * @param type $idUserWP
+     * LA funzione controlla se un id Cliente passato è nella tabella Agenti
+     * @param type $idCliente
      * @return boolean
      */
-    public function deleteAgente($idUserWP){
-        //ottengo l'id cliente
-        $cliente = new Cliente();
-        $cliente = $this->DAO->getCliente($idUserWP);
-        if($cliente != null){
+    public function isAgente($idCliente){
+        try{
+            if($idCliente != false && $idCliente != null){
+                $query = "SELECT ID FROM ".$this->table." WHERE id_utente = ".$idCliente;
+                if($this->wpdb->get_var($query) != null){
+                    return true;
+                }
+            }
+            return false;
+        } catch (Exception $ex) {
+            _e($ex);
+            return false;
+        }
+    }
+    
+    /**
+     * Funzione che restituisce un array di ID Agenti
+     * @param type $parameters
+     * @return type
+     */
+    public function getIdAgentiByParameters($parameters){
+        //ottengo degli Agenti attraverso determinati parametri
+        //su Agenti i parametri ricevuti possono essere
+        //provvigione --> Ricerca per provvigione        
+        try{
+            $query = "SELECT ".$this->grandFatherTable.".id_user_wp AS ID"
+                    . "FROM ".$this->table." "
+                    . "INNER JOIN ".$this->fatherTable." ON ".$this->fatherTable.".ID = ".$this->table.".id_utente "
+                    . "INNER JOIN ".$this->grandFatherTable." ON ".$this->grandFatherTable.".ID = ".$this->fatherTable.".id_utente "
+                    . "WHERE 1=1";
+            foreach($parameters as $k => $v){               
+                $query .= " AND ".$k." LIKE '%".$v."%'";                
+            }
+            return $this->wpdb->get_results($query);
+            
+        } catch (Exception $ex) {
+            _e($ex);
+            return null;
+        }
+    }
+    
+    
+    /**
+     * La funzione cancella un Agente dal DB, passato l'ID Cliente
+     * @param type $idCliente
+     * @return boolean
+     */
+    public function deleteAgente($idCliente){       
+        if($idCliente != null){
             try{
-                $this->wpdb->delete($this->table, array('id_utente' => $cliente->getID()));
-                //cancello il cliente
-                $this->DAO->deleteCliente($idUserWP);
+                $this->wpdb->delete($this->table, array('id_utente' => $idCliente));
+                
                 return true;
             } catch (Exception $ex) {
                 _e($ex);
@@ -110,21 +145,17 @@ class AgenteDAO {
      * @param Agente $a
      * @return boolean
      */
-    public function updateAgente(Agente $a){
-        //ottengo il cliente
-        $cliente = new Cliente();
-        $cliente = $this->DAO->getCliente($a->getIdUserWP());
-        if($cliente != null){
+    public function updateAgente(Agente $a){        
+       
+        if($a->getIdUtente() != null){
             try{
                 $this->wpdb->update(
                         $this->table,
                         array('provvigione' => $a->getProvvigione()),
-                        array('id_utente' => $cliente->getID()),
+                        array('id_utente' => $a->getIdUtente()),
                         array('%f'),
                         array('%d')
-                    );
-                //aggiorno il cliente
-                $this->DAO->updateCliente($a);
+                    );                
                 return true;
             } catch (Exception $ex) {
                 _e($ex);

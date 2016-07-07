@@ -43,7 +43,7 @@ class IndirizzoDAO {
     }
     
     /**
-     * La funzione restituisce un array di indirzzi attraverso dei campi passati per parametro
+     * La funzione restituisce un array di indirizzi attraverso dei campi passati per parametro
      * @param type $parameters
      * @return array
      */
@@ -132,5 +132,23 @@ class IndirizzoDAO {
             return false;
         }
     }
-
+    
+    /**
+     * La funzione controlla nel database se esiste un indirizzo associato all'utente di Wordpress
+     * @param type $idUserWP
+     * @return boolean
+     */
+    public function existsIndirizzo($idUserWP){
+        try{
+            $query = "SELECT ID FROM ".$this->table." WHERE id_utente = ".$idUserWP;
+            if($this->wpdb->get_var($query) != null){
+                return true;
+            }
+            return false;
+        } catch (Exception $ex) {
+            _e($ex);
+            return false;
+        }
+    }
+    
 }

@@ -39,6 +39,14 @@ require_once 'model/Trasporto.php';
 require_once 'DAO/UtenteDAO.php';
 require_once 'DAO/ClienteDAO.php';
 require_once 'DAO/AgenteDAO.php';
+require_once 'DAO/RivenditoreDAO.php';
+require_once 'DAO/IndirizzoDAO.php';
+require_once 'DAO/TrasportoDAO.php';
+
+require_once 'controller/UtenteController.php';
+require_once 'controller/ClienteController.php';
+require_once 'controller/AgenteController.php';
+require_once 'controller/RivenditoreController.php';
 
 
 ?>
