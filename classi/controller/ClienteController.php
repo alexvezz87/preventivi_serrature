@@ -7,10 +7,12 @@
  */
 class ClienteController extends UtenteController {
     private $cDAO;   
+    private $rcDAO;
     
     function __construct() {       
         parent::__construct();
-        $this->cDAO = new ClienteDAO();        
+        $this->cDAO = new ClienteDAO();    
+        $this->rcDAO = new RivenditoreClienteDAO();
     }
     
     /**
@@ -63,6 +65,9 @@ class ClienteController extends UtenteController {
             $result->setIndirizzo($utente->getIndirizzo());
             $result->setPi($utente->getPi());
             $result->setTelefono($utente->getTelefono());
+            
+            //ottengo i rivenditori associati (array di ID)
+            $result->setRivenditori($this->rcDAO->getRivenditori($result->getID()));
             
             return $result;
         }
@@ -147,6 +152,13 @@ class ClienteController extends UtenteController {
      */
     public function getIdCliente($idUserWP){
        $idUtente = parent::getIdUtente($idUserWP);
+       
+       //ottengo l'id cliente
+       $idCliente = $this->cDAO->getIdCliente($idUtente);
+       
+       //elimino tutte le associazioni che possono esserci tra cliente e rivenditore
+       $this->rcDAO->deleteCliente($idCliente);
+       
        if($idUtente != null){
            return $this->cDAO->getIdCliente($idUtente);
        }
@@ -154,6 +166,15 @@ class ClienteController extends UtenteController {
        
     }
     
+    /**
+     * La funzione associa un Cliente ad un Rivenditore
+     * @param type $idRivenditore
+     * @param type $idCliente
+     * @return type
+     */
+    public function associaRivenditore($idRivenditore, $idCliente){
+        return $this->rcDAO->saveRivenditoreCliente($idRivenditore, $idCliente);
+    }
     
     
     

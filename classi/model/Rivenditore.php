@@ -13,6 +13,8 @@ class Rivenditore extends Utente {
     private $pagamento;
     private $trasporto;
     private $idUtente;
+    private $agenti;
+    private $clienti;
     
     public function __construct() {
         parent::__construct();
@@ -112,6 +114,22 @@ class Rivenditore extends Utente {
 
     function setIdUtente($idUtente) {
         $this->idUtente = $idUtente;
+    }
+
+    function getAgenti() {
+        return $this->agenti;
+    }
+
+    function setAgenti($agenti) {
+        $this->agenti = $agenti;
+    }
+
+    function getClienti() {
+        return $this->clienti;
+    }
+
+    function setClienti($clienti) {
+        $this->clienti = $clienti;
     }
 
 

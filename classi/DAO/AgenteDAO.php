@@ -95,6 +95,25 @@ class AgenteDAO {
     }
     
     /**
+     * La funzione restituisce un ID Agente conoscendo l'ID Cliente
+     * @param type $idCliente
+     * @return type
+     */
+    public function getIdAgente($idCliente){
+        try{
+            if($idCliente != false && $idCliente != null){
+                $query = "SELECT ID FROM ".$this->table." WHERE id_utente = ".$idCliente;
+                return $this->wpdb->get_var($query);                   
+            }
+            return null;
+        } catch (Exception $ex) {
+            _e($ex);
+            return null;
+        }
+    }
+    
+    
+    /**
      * Funzione che restituisce un array di ID Agenti
      * @param type $parameters
      * @return type

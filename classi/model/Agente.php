@@ -10,6 +10,7 @@ class Agente extends Cliente {
     
     private $provvigione;
     private $idUtente;
+    private $rivenditore;
     
     public function __construct() {
         parent::__construct();
@@ -85,6 +86,14 @@ class Agente extends Cliente {
 
     function setIdUtente($idUtente) {
         $this->idUtente = $idUtente;
+    }
+
+    function getRivenditore() {
+        return $this->rivenditore;
+    }
+
+    function setRivenditore($rivenditore) {
+        $this->rivenditore = $rivenditore;
     }
 
 

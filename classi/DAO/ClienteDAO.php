@@ -102,7 +102,7 @@ class ClienteDAO {
             return false;
         }
     }
-    
+       
     /**
      * Funzione che restituise un array di ID Clienti
      * @param type $parameters

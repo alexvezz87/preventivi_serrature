@@ -9,6 +9,7 @@ class Cliente extends Utente {
     private $nome;
     private $cognome;
     private $idUtente;
+    private $rivenditori;
     
     function __construct() {
         parent::__construct();
@@ -78,7 +79,13 @@ class Cliente extends Utente {
         $this->idUtente = $idUtente;
     }
 
+    function getRivenditori() {
+        return $this->rivenditori;
+    }
 
+    function setRivenditori($rivenditori) {
+        $this->rivenditori = $rivenditori;
+    }
 
 
     

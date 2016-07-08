@@ -7,10 +7,12 @@
  */
 class AgenteController extends ClienteController {
     private $aDAO;
+    private $raDAO;
     
     function __construct() {
         parent::__construct();
         $this->aDAO = new AgenteDAO();
+        $this->raDAO = new RivenditoreAgenteDAO();
     }
     
     /**
@@ -63,6 +65,9 @@ class AgenteController extends ClienteController {
             $result->setNome($cliente->getNome());
             $result->setPi($cliente->getPi());
             $result->setTelefono($cliente->getTelefono());
+            
+            //ottengo i rivenditori associati (sono un array di ID)
+            $result->setRivenditore($this->raDAO->getRivenditori($result->getID()));
             
             return $result;
         }
@@ -124,6 +129,13 @@ class AgenteController extends ClienteController {
     public function deleteAgente($idUserWP){
         //cancello prima l'agente
         $idCliente = parent::getIdCliente($idUserWP);
+        
+        //ottengo l'id agente
+        $idAgente = $this->aDAO->getIdAgente($idCliente);
+        
+        //rimuovo tutte le associazioni tra Agente e Rivenditore
+        $this->raDAO->deleteAgente($idAgente);
+        
         if($this->aDAO->deleteAgente($idCliente)){
             //elimino il cliente
             return parent::deleteCliente($idUserWP);

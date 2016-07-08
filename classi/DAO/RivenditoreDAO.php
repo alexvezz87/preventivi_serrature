@@ -106,6 +106,24 @@ class RivenditoreDAO {
     }
     
     /**
+     * La funzione restituisce l'ID rivenditore conoscendo l'id utente
+     * @param type $idUtente
+     * @return type
+     */
+    public function getIdRivenditore($idUtente){
+        try{
+            if($idUtente != false && $idUtente != null){
+                $query = "SELECT ID FROM ".$this->table." WHERE id_utente = ".$idUtente;
+                return $this->wpdb->get_var($query);                 
+            }
+            return null;
+        } catch (Exception $ex) {
+            _e($ex);
+            return null;
+        }
+    }
+    
+    /**
      * La funzione restituisce un array di ID Rivenditori
      * @param type $parameters
      * @return type

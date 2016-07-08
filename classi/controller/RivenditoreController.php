@@ -8,9 +8,13 @@
  */
 class RivenditoreController extends UtenteController {
     private $rDAO;
+    private $raDAO;
+    private $rcDAO;
     function __construct() {
         parent::__construct();
         $this->rDAO = new RivenditoreDAO();
+        $this->raDAO = new RivenditoreAgenteDAO();
+        $this->rcDAO = new RivenditoreClienteDAO();
     }
     
     /**
@@ -62,6 +66,12 @@ class RivenditoreController extends UtenteController {
             $result->setIndirizzo($utente->getIndirizzo());
             $result->setPi($utente->getPi());
             $result->setTelefono($utente->getTelefono());
+            
+            //trovo gli agenti associati (sono un array di ID)
+            $result->setAgenti($this->raDAO->getAgenti($result->getID()));
+            
+            //trovo tutti i clienti associati (sono array di ID)
+            $result->setClienti($this->rcDAO->getClienti($result->getID()));
             
             return $result;
         }
@@ -129,6 +139,15 @@ class RivenditoreController extends UtenteController {
     public function deleteRivenditore($idUserWP){
         //cancello prima il rivenditore
         $idUtente = parent::getIdUtente($idUserWP);
+        //ottengo l'id rivenditore
+        $idRivenditore = $this->rDAO->getIdRivenditore($idUtente);
+        
+        //elimino tutte le eventuali associazioni tra rivenditore e agenti
+        $this->raDAO->deleteRivenditore($idRivenditore);
+        
+        //elimino tutte le eventuali associazioni tra rivenditori e clienti
+        $this->rcDAO->deleteRivenditore($idRivenditore);
+        
         if($this->rDAO->deleteRivenditore($idUtente)){
             //elimino l'utente
             return parent::deleteUtente($idUserWP);
@@ -136,6 +155,35 @@ class RivenditoreController extends UtenteController {
         return false;
     }
     
-       
+    /**
+     * Associo un agente ad un rivenditore
+     * @param type $idRivenditore
+     * @param type $idAgente
+     * @return type
+     */ 
+    public function associaAgente($idRivenditore, $idAgente){
+        return $this->raDAO->saveRivenditoreAgente($idRivenditore, $idAgente);
+    }
     
+    /**
+     * Toglie l'associazine tra rivenditore ed agente
+     * @param type $idRivenditore
+     * @param type $idAgente
+     * @return type
+     */
+    public function rimuoviAgente($idRivenditore, $idAgente){
+        return $this->raDAO->deleteRivenditoreAgente($idRivenditore, $idAgente);
+    }
+    
+    /**
+     * Toglie l'associazione tra rivenditore e cliente
+     * @param type $idRivenditore
+     * @param type $idCliente
+     * @return type
+     */
+    public function rimuoviCliente($idRivenditore, $idCliente){
+        return $this->rcDAO->deleteRivenditoreCliente($idRivenditore, $idCliente);
+    }
+            
+       
 }
