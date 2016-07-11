@@ -21,13 +21,14 @@ class UtenteController {
      * @param Indirizzo $i
      * @return type
      */
-    public function saveUtente(Utente $u, Indirizzo $i){
+    public function saveUtente(Utente $u){
         //salvo l'utente e ne ottengo l'id
         $idUtente = $this->uDAO->saveUtente($u);
-        if($idUtente != false && $i != null){
+        if($idUtente != false && $u->getIndirizzo() != null){            
             //salvo l'indirizzo
-            $idUserWP = $this->uDAO->getIdUserWP($idUtente);
-            $i->setIdUtente($idUserWP);
+            //l'indirizzo ha come riferimento l'id utente appena creato
+            $i = $u->getIndirizzo();
+            $i->setIdUtente($idUtente);
             $this->iDAO->saveIndirizzo($i);
         }
         return $idUtente;        
@@ -41,7 +42,9 @@ class UtenteController {
     public function getUtente($idUserWP){
         $utente = new Utente();
         $utente = $this->uDAO->getUtente($idUserWP);
-        $param['id-utente'] = $idUserWP;        
+        
+        //l'indirizzo è relazionato all'id utente appena ottenuto
+        $param['id-utente'] = $utente->getID();        
         $utente->setIndirizzo($this->iDAO->getIndirizzo($param));
         
         return $utente;

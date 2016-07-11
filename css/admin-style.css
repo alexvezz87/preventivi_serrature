@@ -11,6 +11,8 @@ and open the template in the editor.
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800);
 @import url(https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,300italic,700);
 
+body {height: auto;}
+
 body.toplevel_page_gestione_preventivi, 
 body.gestione-preventivi_page_gestione_ordini,
 body.gestione-preventivi_page_gestione_prezzi,
@@ -231,4 +233,9 @@ form.inserisci-infisso input[type=submit],
 
 .container-tabella.maggiorazioni td {
     text-align: left;
+}
+
+.form-inserimento {
+    background:rgba(187,187,187,0.2);
+    padding:10px;
 }

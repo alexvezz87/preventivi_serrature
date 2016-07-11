@@ -23,15 +23,15 @@ class RivenditoreController extends UtenteController {
      * @param Indirizzo $i
      * @return boolean
      */
-    public function saveRivenditore(Rivenditore $r, Indirizzo $i){
+    public function saveRivenditore(Rivenditore $r){
         //salvo utente
-        $idUtente = parent::saveUtente($r, $i);
+        $idUtente = parent::saveUtente($r);        
         if($idUtente != false){
             $r->setIdUtente($idUtente);
             return $this->rDAO->saveRivenditore($r);
         }
         return false;       
-    }
+    }    
     
     /**
      * La funzione restituisce vero o falso a seconda se un utente di Wordpress è un Rivenditore

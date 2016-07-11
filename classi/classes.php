@@ -42,11 +42,22 @@ require_once 'DAO/AgenteDAO.php';
 require_once 'DAO/RivenditoreDAO.php';
 require_once 'DAO/IndirizzoDAO.php';
 require_once 'DAO/TrasportoDAO.php';
+require_once 'DAO/RivenditoreAgenteDAO.php';
+require_once 'DAO/RivenditoreClienteDAO.php';
 
 require_once 'controller/UtenteController.php';
 require_once 'controller/ClienteController.php';
 require_once 'controller/AgenteController.php';
 require_once 'controller/RivenditoreController.php';
+require_once 'controller/TrasportoController.php';
+
+require_once 'view/PrinterView.php';
+require_once 'view/UtenteView.php';
+require_once 'view/RivenditoreView.php';
+require_once 'view/ClienteView.php';
+require_once 'view/AgenteView.php';
+require_once 'view/TrasportoView.php';
+
 
 
 ?>

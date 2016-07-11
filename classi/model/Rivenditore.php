@@ -11,6 +11,7 @@ class Rivenditore extends Utente {
     private $codice;
     private $condizioniVendita;
     private $pagamento;
+    //elementi dinamici
     private $trasporto;
     private $idUtente;
     private $agenti;

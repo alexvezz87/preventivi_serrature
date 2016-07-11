@@ -35,8 +35,26 @@ class TrasportoController {
      * La funzione restituisce tutti i trasporti presenti
      * @return type
      */
-    public function getTrasporti(){
-        return $this->tDAO->getTrasporti();
+    public function getTrasporti($mode){
+        //mode == 1 --> return object
+        //mode == 0 --> return array
+        
+        $temp = $this->tDAO->getTrasporti();
+        if($mode == 1){
+            return $temp;
+        }
+        else if($mode == 0){
+            //devo convertire l'array di oggetti in array normale
+            $results = array();
+            foreach($temp as $item){
+                $t = new Trasporto();
+                $t = $item;
+                $result[$t->getID()] = $t->getArea();
+                
+                array_push($results, $result);
+            }            
+            return $result;            
+        }
     }
     
     /**
