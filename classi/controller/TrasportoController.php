@@ -72,7 +72,7 @@ class TrasportoController {
      * @return type
      */
     public function deleteTrasporto($idTrasporto){
-        return $this->tDAO->deleteTrasporto($idTrasporto);
+        return $this->tDAO->deleteTrasporto($idTrasporto);        
     }
     
     

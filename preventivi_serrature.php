@@ -46,6 +46,7 @@ function add_admin_menu(){
     add_submenu_page('gestione_preventivi', 'Gestione Prezzi', 'Gestione prezzi', 'edit_plugins', 'gestione_prezzi', 'add_gestione_prezzi');
     add_submenu_page('gestione_preventivi', 'Maggiorazioni', 'Maggiorazioni', 'edit_plugins', 'gestione_maggiorazioni', 'add_gestione_maggiorazioni');
     add_submenu_page('gestione_preventivi', 'Anagrafica', 'Anagrafica', 'edit_plugins', 'gestione_anagrafica', 'add_gestione_anagrafica');
+    add_submenu_page('', 'Pagina dettaglio',  'Pagina dettaglio', 'edit_plugins', 'pagina_dettaglio', 'add_pagina_dettaglio');
 }
 
 
@@ -67,6 +68,10 @@ function add_gestione_maggiorazioni(){
 
 function add_gestione_anagrafica(){
     include 'pages/admin/gestione_anagrafica.php';
+}
+
+function add_pagina_dettaglio(){
+    include 'pages/admin/anagrafica/pagina_dettaglio.php';
 }
 
 //registro il menu

@@ -52,8 +52,10 @@ class RivenditoreController extends UtenteController {
      * @return type
      */
     public function getRivenditore($idUserWP){
+        
         $idUtente = parent::getIdUtente($idUserWP);
-        if($this->isRivenditore($idUtente)){
+        
+        if($this->isRivenditore($idUserWP)){            
             $result = new Rivenditore();
             
             //prendo l'utente
@@ -83,11 +85,18 @@ class RivenditoreController extends UtenteController {
      * @param type $users
      * @return array
      */
-    public function getRivenditori($users){
+    public function getRivenditori(){
+        
+        //ottengo i rivenditori
+        $args = array('role' => 'rivenditore');
+        $users = get_users($args);
+        
+       
+        
         $result = array();
         foreach($users as $u){
             $user = new WP_User();
-            $user = $u;
+            $user = $u;  
             $temp = $this->getRivenditore($user->ID);
             
             if($temp != null){
@@ -124,9 +133,9 @@ class RivenditoreController extends UtenteController {
      * @param Indirizzo $i
      * @return boolean
      */
-    public function updateRivenditore(Rivenditore $r, Indirizzo $i){
+    public function updateRivenditore(Rivenditore $r){
         if($this->rDAO->updateRivenditore($r)){
-            return parent::updateUtente($r, $i);
+            return parent::updateUtente($r);
         }
         return false;
     }

@@ -16,3 +16,6 @@ $view = new RivenditoreView();
 </div>
 <div class="clear"></div>
 <hr>
+<h3>Visualizza Rivenditori</h3>
+
+<?php $view->printTableRivenditori() ?>

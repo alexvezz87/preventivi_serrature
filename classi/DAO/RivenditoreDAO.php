@@ -162,8 +162,7 @@ class RivenditoreDAO {
         
         if($idUtente != null){
             try{
-                $this->wpdb->delete($this->table, array('id_utente' => $idUtente));                
-                return true;
+                return $this->wpdb->delete($this->table, array('id_utente' => $idUtente)); 
             } catch (Exception $ex) {
                 _e($ex);
                 return false;
@@ -195,8 +194,9 @@ class RivenditoreDAO {
                         array('id_utente' => $r->getIdUtente()),
                         array('%s', '%f', '%s', '%s', '%s', '%s'),
                         array('%d')
-                    );                
-                return true;
+                    );                  
+                    return true;               
+               
             } catch (Exception $ex) {
                 _e($ex);
                 return false;

@@ -16,5 +16,5 @@ $view = new TrasportoView();
 </div>
 <div class="clear"></div>
 <hr>
-<h3 class="show-form">Visualizza trasporti</h3>
+<h3>Visualizza trasporti</h3>
 <?php $view->printTableTrasporti() ?>

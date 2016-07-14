@@ -113,7 +113,8 @@ class UtenteDAO {
      */
     public function getIdUtente($idUserWP){
         try{
-            $query = "SELECT ID FROM ".$this->table." WHERE id_user_wp = ".$idUserWP;
+            $query = "SELECT ID FROM ".$this->table." WHERE id_user_wp = ".$idUserWP;           
+           //echo $query;
             return $this->wpdb->get_var($query);
         } catch (Exception $ex) {
             _e($ex);
@@ -145,7 +146,7 @@ class UtenteDAO {
      */
     public function deleteUtente($idUserWP){
         try{
-            $this->wpdb->delete($this->table, array('id_user_wp' => $idUserWP));
+            return $this->wpdb->delete($this->table, array('id_user_wp' => $idUserWP));
         } catch (Exception $ex) {
             _e($ex);
             return false;
@@ -168,7 +169,8 @@ class UtenteDAO {
                     array('id_user_wp' => $u->getIdUserWP()),
                     array('%s'),
                     array('%d')
-                );
+                );  
+           
             return true;
         } catch (Exception $ex) {
             _e($ex);

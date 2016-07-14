@@ -98,8 +98,7 @@ class TrasportoDAO {
      */
     public function deleteTrasporto($idTrasporto){
         try{
-            $this->wpdb->delete($this->table, array('ID' => $idTrasporto));
-            return true;
+            return $this->wpdb->delete($this->table, array('ID' => $idTrasporto));            
         } catch (Exception $ex) {
             _e($ex);
             return false;

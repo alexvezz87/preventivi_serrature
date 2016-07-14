@@ -98,8 +98,7 @@ class IndirizzoDAO {
      */
     public function deleteIndirizzo($idUtente){
         try{
-            $this->wpdb->delete($this->table, array('id_utente' => $idUtente));
-            return true;
+            return $this->wpdb->delete($this->table, array('id_utente' => $idUtente));            
         } catch (Exception $ex) {
             _e($ex);
             return false;
@@ -126,7 +125,9 @@ class IndirizzoDAO {
                     array('%s', '%s', '%s', '%s', '%s'),
                     array('%d')
                 );
+          
             return true;
+           
         } catch (Exception $ex) {
             _e($ex);
             return false;
@@ -138,9 +139,9 @@ class IndirizzoDAO {
      * @param type $idUserWP
      * @return boolean
      */
-    public function existsIndirizzo($idUserWP){
+    public function existsIndirizzo($idUtente){
         try{
-            $query = "SELECT ID FROM ".$this->table." WHERE id_utente = ".$idUserWP;
+            $query = "SELECT ID FROM ".$this->table." WHERE id_utente = ".$idUtente;
             if($this->wpdb->get_var($query) != null){
                 return true;
             }

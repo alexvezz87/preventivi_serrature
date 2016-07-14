@@ -8,33 +8,38 @@
  */
 class TrasportoView extends PrinterView {
     private $cTrasporto;
+    private $form, $label;
     
     function __construct() {
         parent::__construct();
         $this->cTrasporto = new TrasportoController();
+        
+        global $TRAS_FORM_SUBMIT, $TRAS_LABEL_SUBMIT, $FORM_AREA, $LABEL_AREA, $FORM_PREZZO, $LABEL_PREZZO, $TRAS_FORM_SELECT, $TRAS_LABEL_SELECT;
+        
+        $this->form['submit'] = $TRAS_FORM_SUBMIT;
+        $this->form['area'] = $FORM_AREA;
+        $this->form['prezzo'] = $FORM_PREZZO;
+        $this->form['select'] = $TRAS_FORM_SELECT;
+        
+        $this->label['submit'] = $TRAS_LABEL_SUBMIT;
+        $this->label['area'] = $LABEL_AREA;
+        $this->label['prezzo'] = $LABEL_PREZZO;
+        $this->label['select'] = $TRAS_LABEL_SELECT;
     }
     
     /**
      * Stampa il form di inserimento dei trasporti
-     * @global type $TRAS_FORM_SUBMIT
-     * @global type $TRAS_LABEL_SUBMIT
-     * @global type $FORM_AREA
-     * @global type $LABEL_AREA
-     * @global type $FORM_PREZZO
-     * @global type $LABEL_PREZZO
      */
-    public function printForm(){
-        global $TRAS_FORM_SUBMIT, $TRAS_LABEL_SUBMIT, $FORM_AREA, $LABEL_AREA, $FORM_PREZZO, $LABEL_PREZZO;
-        
+    public function printForm(){  
     ?>
         <form class="form-horizontal" role="form" action="<?php echo curPageURL() ?>" name="form-trasporto" method="POST" >
             <div class="col-xs-12 col-sm-6">
-                <?php parent::printTextFormField($FORM_AREA, $LABEL_AREA, true); ?>
-                <?php parent::printTextFormField($FORM_PREZZO, $LABEL_PREZZO, true); ?>
+                <?php parent::printTextFormField($this->form['area'], $this->label['area'], true); ?>
+                <?php parent::printTextFormField($this->form['prezzo'], $this->label['prezzo'], true); ?>
 
             </div>            
             <div class="clear"></div>
-            <?php parent::printSubmitFormField($TRAS_FORM_SUBMIT, $TRAS_LABEL_SUBMIT) ?>
+            <?php parent::printSubmitFormField($this->form['submit'], $this->label['submit']) ?>
             <div class="clear"></div>
         </form>
     <?php
@@ -42,21 +47,18 @@ class TrasportoView extends PrinterView {
     }
     
     /**
-     * Ascoltatore del form sul
-     * @global type $TRAS_FORM_SUBMIT
-     * @global type $FORM_AREA
-     * @global type $FORM_PREZZO
+     * Ascoltatore del form dei trasporti
      */
     public function listenerForm(){
-        global $TRAS_FORM_SUBMIT, $FORM_AREA, $FORM_PREZZO;
         
-        if(isset($_POST[$TRAS_FORM_SUBMIT])){
+        //salva il trasporto
+        if(isset($_POST[$this->form['submit']])){
             
-            if(isset($_POST[$FORM_AREA]) && $_POST[$FORM_AREA] != '' && isset($_POST[$FORM_PREZZO]) && $_POST[$FORM_PREZZO] != ''){
+            if(isset($_POST[$this->form['area']]) && $_POST[$this->form['area']] != '' && isset($_POST[$this->form['prezzo']]) && $_POST[$this->form['prezzo']] != ''){
                 //creo l'oggetto trasporto
                 $trasporto = new Trasporto();
-                $trasporto->setArea($_POST[$FORM_AREA]);
-                $trasporto->setPrezzo($_POST[$FORM_PREZZO]);
+                $trasporto->setArea($_POST[$this->form['area']]);
+                $trasporto->setPrezzo($_POST[$this->form['prezzo']]);
                 
                 //salvo il trasporto nel database
                 if($this->cTrasporto->saveTrasporto($trasporto) == false){
@@ -70,9 +72,43 @@ class TrasportoView extends PrinterView {
                     unset($_POST);
                 }
             }
+        }  
+        
+        //cancella il trasporto
+        if(isset($_POST['delete-trasporto'])){
+           
+            $idTrasporto = $_POST['id']; 
+            if($this->cTrasporto->deleteTrasporto($idTrasporto) == false){
+                parent::printErrorBoxMessage('Cancellazione non avvenuta!');
+                unset($_POST);
+            }
+            else{
+                parent::printOkBoxMessage('Trasporto cancellato con successo!');
+                unset($_POST);
+            }
             
+        }
+        
+        
+        //aggiorna trasporto
+        if(isset($_POST['update-trasporto'])){
+            $idTrasporto = $_POST['id'];
+            //creo un oggetto trasporto nuovo
+            $t = new Trasporto();
+            $t = $this->cTrasporto->getTrasporto($idTrasporto);
+            $t->setPrezzo($_POST[$this->form['prezzo']]);
+            //Aggiorno
+            if($this->cTrasporto->updateTrasporto($t)==false){
+                parent::printErrorBoxMessage('E\' subentrato un errore nell\'aggiornamento del campo'.$this->label['prezzo']);
+                unset($_POST);
+            }
+            else{
+                parent::printOkBoxMessage('Campo '.$this->label['prezzo'].' aggiornato correttamente!');
+                unset($_POST);
+            }
             
-        }        
+        }
+        
     }
     
     /**
@@ -81,17 +117,22 @@ class TrasportoView extends PrinterView {
      * @param type $actions
      * @return string
      */
-    protected function printBodyTable($array, $actions=null) {
+    protected function printBodyTable($array, $actions=false) {
         parent::printBodyTable($array);
+       
         $html = "";
         foreach($array as $item){
             $t = new Trasporto();
             $t = $item;
+            $htmlActions = ""; 
+            if($actions != false){
+                $htmlActions = parent::printDeleteForm($t->getID(), 'trasporto');
+            }
     
-            $html.= '<tr>';
-            $html.= '<td>'.$t->getID().'</td>';
+            $html.= '<tr>';           
             $html.= '<td>'.$t->getArea().'</td>';
-            $html.= '<td>'.$t->getPrezzo().'</td>';
+            $html.= '<td>'.parent::printUpdateFieldForm($t->getID(), 'trasporto', parent::printTextField($this->form['prezzo'], $t->getPrezzo(), true)).'</td>';            
+            $html.= '<td>'.$htmlActions.'</td>';
             $html.= '</tr>';   
         }        
         return $html;
@@ -102,27 +143,43 @@ class TrasportoView extends PrinterView {
      * @global type $LABEL_AREA
      * @global type $LABEL_PREZZO
      */
-    public function printTableTrasporti(){
-        global $LABEL_AREA, $LABEL_PREZZO;
+    public function printTableTrasporti(){      
 
         //ottengo i trasporti
         $trasporti = $this->cTrasporto->getTrasporti(1);
                 
-        $header = array('ID', $LABEL_AREA, $LABEL_PREZZO);
-        $bodyTable = $this->printBodyTable($trasporti);        
+        $header = array($this->label['area'], $this->label['prezzo'], 'Azioni');
+        $bodyTable = $this->printBodyTable($trasporti, true);        
         
-        parent::printTableHover($header, $bodyTable, null);  
+        parent::printTableHover($header, $bodyTable);  
         
     }
     
-    
-    public function printSelectTrasporti(){
-        global $TRAS_FORM_SELECT, $TRAS_LABEL_SELECT;
-        parent::printSelectFormField($TRAS_FORM_SELECT, $TRAS_LABEL_SELECT, $this->cTrasporto->getTrasporti(0), true);
+    /**
+     * Stampa a video la select box di trasporti
+     */
+    public function printSelectTrasporti($value=null){       
+        parent::printSelectFormField($this->form['select'], $this->label['select'], $this->cTrasporto->getTrasporti(0), true, $value);
     }
     
     
-   
+    function getForm() {
+        return $this->form;
+    }
+
+    function getLabel() {
+        return $this->label;
+    }
+
+    function setForm($form) {
+        $this->form = $form;
+    }
+
+    function setLabel($label) {
+        $this->label = $label;
+    }
+
+
     
 
 }

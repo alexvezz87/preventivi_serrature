@@ -2,6 +2,10 @@
 
 //Autore: Alex Vezzelli - Alex Soluzioni Web
 //url: http://www.alexsoluzioniweb.it/
+
+
+
+
 ?>
 
 <h1>Gestione Anagrafica</h1>

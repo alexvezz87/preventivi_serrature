@@ -44,7 +44,7 @@ class UtenteController {
         $utente = $this->uDAO->getUtente($idUserWP);
         
         //l'indirizzo è relazionato all'id utente appena ottenuto
-        $param['id-utente'] = $utente->getID();        
+        $param['id_utente'] = $utente->getID();        
         $utente->setIndirizzo($this->iDAO->getIndirizzo($param));
         
         return $utente;
@@ -65,11 +65,38 @@ class UtenteController {
      * @param Indirizzo $i
      * @return boolean
      */
-    public function updateUtente(Utente $u, Indirizzo $i){
+    public function updateUtente(Utente $u){
        //aggiorno utente
+       //imposto l'idUtente
+       $u->setID($this->uDAO->getIdUtente($u->getIdUserWP()));          
+        
        if($this->uDAO->updateUtente($u)){
-            if($i != null){
-                return $this->iDAO->updateIndirizzo($i);
+            if($u->getIndirizzo() != null){
+                
+                //quando aggiorno l'utente con un indirizzo, può capitare che l'indirizzo non sia presente nel database
+                if($this->iDAO->existsIndirizzo($u->getID())){                    
+                    //nel caso l'indirizzo esista allora aggiorno 
+                    $i = new Indirizzo();
+                    $i = $u->getIndirizzo();
+                    $i->setIdUtente($u->getID());
+                    return $this->iDAO->updateIndirizzo($u->getIndirizzo());
+                }
+                else{
+                    //altrimenti devo aggiungerne uno nuovo
+                    $i = new Indirizzo();
+                    $i = $u->getIndirizzo();
+                    $i->setIdUtente($u->getID());
+                    
+                    return $this->iDAO->saveIndirizzo($i);                    
+                }
+            }
+            else{
+                //Se l'indirizzo non c'è guardo se esiste e in quel caso lo elimino
+                if($this->iDAO->existsIndirizzo($u->getID())){
+                    //elimino l'indirizzo
+                    $this->iDAO->deleteIndirizzo($u->getID());
+                }
+                
             }
             return true;
        }
@@ -83,12 +110,26 @@ class UtenteController {
      */
     public function deleteUtente($idUserWP){
         //controllo se esiste un indirizzo associato all'utente
-        if($this->iDAO->existsIndirizzo($idUserWP)){
+        
+        
+        $idUtente = $this->uDAO->getIdUtente($idUserWP);
+        
+        //cancello indirizzo
+        if($this->iDAO->existsIndirizzo($idUtente)){
             //cancello l'indirizzo
-            $this->iDAO->deleteIndirizzo($idUserWP);
+            $this->iDAO->deleteIndirizzo($idUtente);
         }
+        
         //cancello utente
-        return $this->uDAO->deleteUtente($idUserWP);        
+        if($this->uDAO->deleteUtente($idUserWP)!= false){
+          
+            //cancello l'utenza di wordpress
+            return wp_delete_user($idUserWP);            
+        }   
+        
+        
+        
+        return false;
     }
     
 

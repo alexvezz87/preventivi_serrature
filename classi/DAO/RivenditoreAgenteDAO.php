@@ -69,8 +69,7 @@ class RivenditoreAgenteDAO {
      */
     public function deleteRivenditore($idRivenditore){
         try{
-            $this->wpdb->delete($this->table, array('id_rivenditore' => $idRivenditore));
-            return true;
+            return $this->wpdb->delete($this->table, array('id_rivenditore' => $idRivenditore));            
         } catch (Exception $ex) {
             _e($ex);
             return false;
