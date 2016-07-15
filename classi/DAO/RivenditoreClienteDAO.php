@@ -82,8 +82,7 @@ class RivenditoreClienteDAO {
      */
     public function deleteCliente($idCliente){
         try{
-            $this->wpdb->delete($this->table, array('id_cliente' => $idCliente));
-            return true;
+            return $this->wpdb->delete($this->table, array('id_cliente' => $idCliente));            
         } catch (Exception $ex) {
             _e($ex);
             return false;

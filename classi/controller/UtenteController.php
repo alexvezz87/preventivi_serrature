@@ -29,7 +29,7 @@ class UtenteController {
             //l'indirizzo ha come riferimento l'id utente appena creato
             $i = $u->getIndirizzo();
             $i->setIdUtente($idUtente);
-            $this->iDAO->saveIndirizzo($i);
+           $this->iDAO->saveIndirizzo($i);
         }
         return $idUtente;        
     }
@@ -109,12 +109,11 @@ class UtenteController {
      * @return type
      */
     public function deleteUtente($idUserWP){
-        //controllo se esiste un indirizzo associato all'utente
-        
-        
+       
         $idUtente = $this->uDAO->getIdUtente($idUserWP);
         
         //cancello indirizzo
+        //controllo se esiste un indirizzo associato all'utente   
         if($this->iDAO->existsIndirizzo($idUtente)){
             //cancello l'indirizzo
             $this->iDAO->deleteIndirizzo($idUtente);
@@ -125,9 +124,7 @@ class UtenteController {
           
             //cancello l'utenza di wordpress
             return wp_delete_user($idUserWP);            
-        }   
-        
-        
+        } 
         
         return false;
     }

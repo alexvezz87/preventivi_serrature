@@ -27,7 +27,7 @@
 
     </div>
     <div id="menu2" class="tab-pane fade">
-      <h3>Clienti</h3>
+      <?php include 'anagrafica/gestione_clienti.php' ?>
 
     </div>
     

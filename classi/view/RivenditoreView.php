@@ -74,13 +74,13 @@ class RivenditoreView extends UtenteView {
         $r = $this->cRivenditore->getRivenditore($idUserWP);
         if($r != null){
     ?>
-        <h3>Dettaglio rivenditore: <?php echo $r->getNominativo() ?></h3>
+        <h3>Dettaglio Rivenditore: <?php echo $r->getNominativo() ?></h3>
         <div class="col-sm-8">
             <form class="form-horizontal" role="form" action="<?php echo curPageURL() ?>" name="form-rivenditore" method="POST" >
                 <?php parent::printTextFormField($this->form['codice'], $this->label['codice'], true, $r->getCodice()) ?>
                 <?php parent::printTextFormField($this->form['nominativo'], $this->label['nominativo'], true, $r->getNominativo()) ?>
                 
-                <?php parent::printDettaglioForm($r); ?>
+                <?php parent::printDettaglioForm($r, $r->getIdUtente()); ?>
                 
                 <?php parent::printTextFormField($this->form['sconto'], $this->label['sconto'], false, $r->getSconto()); ?>
                 <?php $this->vTrasporti->printSelectTrasporti($r->getTrasporto()) ?>
@@ -139,7 +139,7 @@ class RivenditoreView extends UtenteView {
                 return;
             }
             
-            //se ho superato tutti i controlli, posso salvare il rivenditore nel datbase
+            //se ho superato tutti i controlli, posso salvare il rivenditore nel database
             if($this->cRivenditore->saveRivenditore($rivenditore) == false){
                 //errore nel salvataggio
                 parent::printErrorBoxMessage('Rivenditore non salvato nel Sistema!');
@@ -187,8 +187,7 @@ class RivenditoreView extends UtenteView {
             
             //controllo se ci sono degli errori
             if($errors > 0){
-                //se ci sono stati errori concludo l'operazione
-                wp_delete_user($utente->getIdUserWP());
+                //se ci sono stati errori concludo l'operazione                
                 return;
             }
             

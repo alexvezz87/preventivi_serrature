@@ -68,6 +68,7 @@ class RivenditoreController extends UtenteController {
             $result->setIndirizzo($utente->getIndirizzo());
             $result->setPi($utente->getPi());
             $result->setTelefono($utente->getTelefono());
+            $result->setIdUtente($utente->getID());
             
             //trovo gli agenti associati (sono un array di ID)
             $result->setAgenti($this->raDAO->getAgenti($result->getID()));
@@ -89,9 +90,7 @@ class RivenditoreController extends UtenteController {
         
         //ottengo i rivenditori
         $args = array('role' => 'rivenditore');
-        $users = get_users($args);
-        
-       
+        $users = get_users($args);  
         
         $result = array();
         foreach($users as $u){

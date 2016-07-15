@@ -163,10 +163,10 @@ class UtenteView extends PrinterView {
      * La funzione stampa a video dettagli dell'utente
      * @param Utente $u
      */
-    public function printDettaglioForm(Utente $u){
+    public function printDettaglioForm(Utente $u, $idUtente){
         $user = get_userdata($u->getIdUserWP());
         parent::printDisabledTextFormField('user-name-wordpress', 'ID WP', $user->user_login);
-        parent::printHiddenFormField('id', $u->getID());
+        parent::printHiddenFormField('id', $idUtente);
         parent::printHiddenFormField('idUserWP', $u->getIdUserWP());
         parent::printEmailFormField($this->form['email'], $this->label['email'], true, $user->user_email );
         parent::printTextFormField($this->form['piva'], $this->label['piva'], false, $u->getPi());
@@ -243,7 +243,7 @@ class UtenteView extends PrinterView {
             if($okInd == 5){
                 $indirizzo = new Indirizzo();
                 $indirizzo->setIndirizzo($_POST[$this->form['indirizzo']]);
-                $indirizzo->setCivico($this->form['civico']);
+                $indirizzo->setCivico($_POST[$this->form['civico']]);
                 $indirizzo->setCap($_POST[$this->form['cap']]);
                 $indirizzo->setCitta($_POST[$this->form['citta']]);
                 $indirizzo->setProv($_POST[$this->form['prov']]);
@@ -319,7 +319,7 @@ class UtenteView extends PrinterView {
             if($okInd == 5){
                 $indirizzo = new Indirizzo();
                 $indirizzo->setIndirizzo($_POST[$this->form['indirizzo']]);
-                $indirizzo->setCivico($this->form['civico']);
+                $indirizzo->setCivico($_POST[$this->form['civico']]);
                 $indirizzo->setCap($_POST[$this->form['cap']]);
                 $indirizzo->setCitta($_POST[$this->form['citta']]);
                 $indirizzo->setProv($_POST[$this->form['prov']]);

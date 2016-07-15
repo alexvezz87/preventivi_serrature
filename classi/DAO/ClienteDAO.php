@@ -66,12 +66,14 @@ class ClienteDAO {
         if($idUtente != null){ 
             try{
                 $query = "SELECT * FROM ".$this->table." WHERE id_utente = ".$idUtente;
+                
                 $tempCliente = $this->wpdb->get_row($query);                
                 //restituisco un oggetto cliente (mi piace poco perchè dovrebbe farla il controller)
                 $cliente = new Cliente();
                 $cliente->setCognome($tempCliente->cognome);
                 $cliente->setNome($tempCliente->nome);
                 $cliente->setID($tempCliente->ID);
+                $cliente->setIdUtente($tempCliente->id_utente);                
                 return $cliente;
             } catch (Exception $ex) {
                 _e($ex);
@@ -140,8 +142,7 @@ class ClienteDAO {
         //cancello prima il cliente ottenendo l'ID dall'utente        
         if($idUtente != null){
             try{
-                $this->wpdb->delete($this->table, array('id_utente' => $idUtente));                                
-                return true;                
+                return $this->wpdb->delete($this->table, array('id_utente' => $idUtente));                                                                
             } catch (Exception $ex) {
                 _e($ex);
                 return false;

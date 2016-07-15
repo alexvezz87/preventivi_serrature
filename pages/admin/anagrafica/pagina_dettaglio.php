@@ -24,7 +24,10 @@ else if($_GET['tipo'] == 'agente'){
     include 'dettaglio/dettaglio_agente.php';
 }
 else if($_GET['tipo'] == 'cliente'){
-    include 'dettaglio/dettaglio_cliente.php';
+    //CLIENTE
+    $viewC = new ClienteView();
+    $viewC->listenerDettaglioForm();
+    $viewC->printDettaglioClienteForm($id);
 }
 
 ?>

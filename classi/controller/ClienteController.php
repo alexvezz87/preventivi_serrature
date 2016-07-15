@@ -21,9 +21,9 @@ class ClienteController extends UtenteController {
      * @param Indirizzo $i
      * @return boolean
      */
-    public function saveCliente(Cliente $c, Indirizzo $i){
+    public function saveCliente(Cliente $c){
         //salvo subito il cliente nel db
-        $idUtente = parent::saveUtente($c, $i);
+        $idUtente = parent::saveUtente($c);
         if($idUtente != false){
             $c->setIdUtente($idUtente);
             return $this->cDAO->saveCliente($c);     
@@ -65,6 +65,7 @@ class ClienteController extends UtenteController {
             $result->setIndirizzo($utente->getIndirizzo());
             $result->setPi($utente->getPi());
             $result->setTelefono($utente->getTelefono());
+            $result->setIdUtente($utente->getID());
             
             //ottengo i rivenditori associati (array di ID)
             $result->setRivenditori($this->rcDAO->getRivenditori($result->getID()));
@@ -79,8 +80,12 @@ class ClienteController extends UtenteController {
      * @param type $users
      * @return array
      */
-    public function getClienti($users){
+    public function getClienti(){
         $result = array();         
+        
+        //ottengo i clienti
+        $args = array('role' => 'cliente');
+        $users = get_users($args);
         
         foreach($users as $u){
             $user = new WP_User();
@@ -122,9 +127,9 @@ class ClienteController extends UtenteController {
      * @param Indirizzo $i
      * @return boolean
      */
-    public function updateCliente(Cliente $c, Indirizzo $i){
+    public function updateCliente(Cliente $c){
         if($this->cDAO->updateCliente($c)){
-            return parent::updateUtente($c, $i);
+            return parent::updateUtente($c);
         }            
         return false;        
     }
@@ -137,6 +142,12 @@ class ClienteController extends UtenteController {
     public function deleteCliente($idUserWP){
         //cancello prima il cliente
         $idUtente = parent::getIdUtente($idUserWP);
+        //ottengo l'id del Cliente
+        $idCliente = $this->cDAO->getIdCliente($idUtente);
+        
+        //elimino tutte le eventuali associazioni tra cliente e rivenditore
+        $this->rcDAO->deleteCliente($idCliente);
+                
         if($this->cDAO->deleteCliente($idUtente)){
             //elimino l'utente
             return parent::deleteUtente($idUserWP);
@@ -152,12 +163,6 @@ class ClienteController extends UtenteController {
      */
     public function getIdCliente($idUserWP){
        $idUtente = parent::getIdUtente($idUserWP);
-       
-       //ottengo l'id cliente
-       $idCliente = $this->cDAO->getIdCliente($idUtente);
-       
-       //elimino tutte le associazioni che possono esserci tra cliente e rivenditore
-       $this->rcDAO->deleteCliente($idCliente);
        
        if($idUtente != null){
            return $this->cDAO->getIdCliente($idUtente);
@@ -177,13 +182,5 @@ class ClienteController extends UtenteController {
     }
     
     
-    
-    
-    
-   
-    
-    
-    
-
     
 }

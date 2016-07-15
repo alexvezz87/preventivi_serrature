@@ -87,10 +87,17 @@ $FORM_AREA = 'area';
 $LABEL_AREA = 'Area';
 $FORM_PREZZO = 'prezzo';
 $LABEL_PREZZO = 'Prezzo (€)';
-
 $TRAS_FORM_SELECT = 'select-trasporti';
 $TRAS_LABEL_SELECT = 'Trasporto';
 
 
+//Cliente
+global $CLI_FORM_SUBMIT, $CLI_LABEL_SUBMIT, $FORM_NOME, $LABEL_NOME, $FORM_COGNOME, $LABEL_COGNOME;
 
+$CLI_FORM_SUBMIT = 'salva-cliente';
+$CLI_LABEL_SUBMIT = 'Salva Cliente';
+$FORM_NOME = 'nome';
+$LABEL_NOME = 'Nome';
+$FORM_COGNOME = 'cognome';
+$LABEL_COGNOME = 'Cognome';
 ?>
