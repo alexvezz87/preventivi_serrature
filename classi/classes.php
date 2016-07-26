@@ -59,5 +59,4 @@ require_once 'view/AgenteView.php';
 require_once 'view/TrasportoView.php';
 
 
-
 ?>
