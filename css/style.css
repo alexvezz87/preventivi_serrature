@@ -981,12 +981,20 @@ input[name=close-box]{
 
 /** TABLET **/
 @media (min-width: 768px) {
-    .intestazione .rivenditore{
-        width:72%;
+    .intestazione .rivenditore, .intestazione .agente{
+        width:60%;
+    }
+    
+    .intestazione .codice-rivenditore{
+        width:20%
+    }
+    
+    .intestazione .sconto, .intestazione .trasporto{
+        width:15%
     }
 
     .intestazione .data-odierna{
-        width:25%;
+        width:16%;
     }
     
     .intestazione input[name=nome-cliente]{
@@ -1082,7 +1090,7 @@ input[name=close-box]{
     }
     
     .intestazione{      
-        max-height: 285px;
+        
     }
     
 }

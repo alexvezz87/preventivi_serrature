@@ -22,7 +22,7 @@ class PdfController extends FPDF {
     public function setPage(){
         $this->AliasNbPages();
         $this->AddPage();
-        $this->SetFont('Times','',12);
+        $this->SetFont('Arial','',12);
     }    
     
     public function createHeader($num, $tipo){
@@ -44,7 +44,24 @@ class PdfController extends FPDF {
         $this->Ln(7);
     }
     
-    public function createBody(Preventivo $p){  
+    /**
+     * Creazione di un header per la conferma d'ordine
+     * @global type $URL_IMG
+     * @param type $numCommessa
+     */
+    public function createOrdineHeader($numCommessa){
+        global $URL_IMG;        
+                
+        $this->SetFont('Arial','B',18);
+        $this->Image($URL_IMG.'logo_pradelli.png',10,10,30);
+        $this->Cell(40);        
+        $this->Cell(60,10, 'Conferma d\'ordine: '.$numCommessa,0,0,'L');
+        $this->Ln();
+        $this->Line(5, 25, 205, 25);
+        $this->Ln(7);
+    }
+    
+    public function createBody(Preventivo $p, $ordine = false){  
         
         define('EURO',chr(128));
         //scrivo i dati generali del preventivo
@@ -54,34 +71,77 @@ class PdfController extends FPDF {
         $info_preventivo = array();
         $info_preventivo['Data'] = getTime($p->getData());
         
-        $info_preventivo['Rivenditore/Agente'] = $p->getNomeRivenditore();
+        $info_preventivo['Codice Rivenditore'] = $p->getCodiceRivenditore();
+        $info_preventivo['Rivenditore'] = $p->getNomeRivenditore(); 
+        
+        
+        
+        $info_preventivo['Agente'] = $p->getAgente();
         $info_preventivo['Tipo Cliente'] = $p->getClienteTipo();
-        $info_preventivo['Cliente'] = $p->getClienteNome();
+        $info_preventivo['Riferimento'] = $p->getClienteNome();
         $info_preventivo['CF/PIVA'] = $p->getClienteCF();
         $info_preventivo['Indirizzo'] = $p->getClienteVia();
         $info_preventivo['Telefono'] = $p->getClienteTel();
         $info_preventivo['Email'] = $p->getClienteEmail();
         $tipo = "";
-        if($p->getTipo() == 0){
-            $tipo = 'Preventivo';
+        
+        if($ordine == false){
+            if($p->getTipo() == 0){
+                $tipo = 'Preventivo';
+            }
+            else{
+                $tipo = 'Conferma Ordine';
+            }  
         }
         else{
-            $tipo = 'Ordine';
+            $tipo = "Conferma Ordine";
+        }
+        $info_preventivo['Documento'] = $tipo;
+        
+        //conto tutti gli infissi ordinati comprensivi di copie
+        $countInfissi = 0;
+        foreach($infissi as $i){
+            $inf = new Infisso();
+            $inf = $i;
+            $countInfissi+= $inf->getNInfisso();
+        }
+        
+        $info_preventivo['Totale Infissi'] = $countInfissi;
+        $info_preventivo['Totale'] = EURO.' '.$p->getSpesaTotale();
+        
+        if($p->getScontoRivenditore() != '' && $p->getScontoRivenditore() != 0){
+            $totaleScontato = number_format($p->getSpesaTotale() - ((floatval($p->getScontoRivenditore()) * $p->getSpesaTotale()) / 100 ),2); 
+        }
+        else{
+            $totaleScontato = ' ';
+        }
+        
+        $sconto = '';
+        if($p->getScontoRivenditore() != 0){
+            $sconto = $p->getScontoRivenditore().' %';
+        }
+        $info_preventivo['Sconto Rivenditore'] = $sconto;
+        
+        $info_preventivo['Totale scontato'] = EURO.' '.$totaleScontato;
+        
+        $trasporto = ' ';
+        if($p->getTrasporto() != '' && $p->getTrasporto() != 0){
+            $trasporto = number_format($p->getTrasporto(), 2);
         }        
-        $info_preventivo['Tipo'] = $tipo;
-        $info_preventivo['Num. Infissi'] = count($infissi);
-        $info_preventivo['Prezzo Totale'] = EURO.' '.$p->getSpesaTotale();
+        $info_preventivo['Costo trasporto'] = EURO.' '.$trasporto;
+        
         $info_preventivo['Note'] = $p->getNote();
         
         $this->printPdfTable($info_preventivo);   
         
         
         
-        
+        /*
         //stampo una linea
             $this->Ln(3);
             $this->Cell(180,0,'',1);
             $this->Ln(3);
+        */
         
         //scrivo la tabella per gli infissi 
         $this->printTableInfissi($infissi);        
@@ -117,38 +177,80 @@ class PdfController extends FPDF {
                        
             $array['Infisso'] = $tPrezzi->getNomeInfisso($i->getIdInfisso());
             $array['Larghezza'] = $i->getLunghezza().' mm';
-            $array['Altezza'] = $i->getAltezza().' mm';            
-            $array['Apertura (vista interna)'] = str_replace('-', ' ', $i->getApertura());
+            $array['Altezza'] = $i->getAltezza().' mm';
+            
+            $apertura = $i->getApertura();
+            if($i->getApertura() == 'interna'){
+                $apertura = "Interna, telaio e anta in tubolare 40x30 mm";
+            }
+           
+            $array['Apertura (vista interna)'] = str_replace('-', ' ', $apertura);
             
             $antaPrincipale = "";
-            switch ($i->getAntaPrincipale()){
-                case 'D': $antaPrincipale = "Destra"; break;
-                case 'DC': $antaPrincipale = "Centrale Destra"; break;
-                case 'S' : $antaPrincipale = "Sinistra"; break;
-                case 'SC' : $antaPrincipale = "Centrale Sinistra"; break;
-                default : $antaPrincipale = "Centrale"; break;
-            }                        
+            
+            if($i->getNAnte() == 0){
+                $antaPrincipale = "Nessuna";
+            }
+            else{
+                switch ($i->getAntaPrincipale()){
+                    case 'D': $antaPrincipale = "Destra"; break;
+                    case 'DC': $antaPrincipale = "Centrale Destra"; break;
+                    case 'S' : $antaPrincipale = "Sinistra"; break;
+                    case 'SC' : $antaPrincipale = "Centrale Sinistra"; break;
+                    default : $antaPrincipale = "Centrale"; break;
+                }          
+            }
             $array['Anta principale'] = $antaPrincipale;
             
             $posizioneSerratura = "";
-            switch($i->getPosizioneSerratura()){
-                case 'S': $posizioneSerratura = "Sinistra"; break;
-                case 'D': $posizioneSerratura = "Destra"; break;
-                default : $posizioneSerratura = "Nessuna"; break;                
-            }            
-            $array['Posizione serratura'] = $posizioneSerratura;
+            $manoAperutra = "";
+            if($i->getNAnte() == 0){
+                $posizioneSerratura = "Nessuna";
+                $manoAperutra = "Nessuna";
+            }
+            else{
+                switch($i->getPosizioneSerratura()){
+                    case 'S': 
+                        $posizioneSerratura = "Sinistra"; 
+                        if($i->getApertura() == 'interna'){
+                            $manoAperutra = "Destra a tirare";
+                        }
+                        else if($i->getApertura() == 'esterna'){
+                            $manoAperutra = "Destra a spingere";
+                        }
+                        break;
+                    case 'D': 
+                        $posizioneSerratura = "Destra"; 
+                        if($i->getApertura() == 'interna'){
+                            $manoAperutra = "Sinistra a tirare";
+                        }
+                        else if($i->getApertura() == 'esterna'){
+                            $manoAperutra = "Sinistra a spingere";
+                        }
+                        break;
+                    default : $posizioneSerratura = "Nessuna"; break;                
+                }        
+            }
+            //$array['Posizione serratura'] = $posizioneSerratura;
+            $array['Mano d\'apertura '] = $manoAperutra;
             
             $array['Barra'] = str_replace('-', ' ', $i->getBarra());
-            if($i->getSerratura() == 'cilindro'){
-                $array['Serratura'] = 'Solo cilindro';
-            }           
+            
+            if($i->getNAnte() == 0){
+                $array['Serratura'] = 'Nessuna';
+            }
             else{
-                $array['Serratura'] = 'A leva con maniglia in pvc';
+                if($i->getSerratura() == 'cilindro'){
+                    $array['Serratura'] = 'Solo cilindro, telaio e anta in tubolare 40x30 mm';
+                }           
+                else{
+                    $array['Serratura'] = 'A leva con maniglia in pvc';
+                }
             }
             $array['Nodo'] = 'Nodo '.$i->getNodo();
             $array['Colore'] = str_replace('-', ' ', $i->getColore());
             
-            $array['Verniciatura'] = $i->getVerniciatura();
+            $array['Trattamento'] = $i->getVerniciatura();
             $array['Cerniera'] = str_replace('-', ' ', $i->getCerniera());
             //maggiorazioni
             $maggiorazioni = $i->getMaggiorazioni();
@@ -157,8 +259,8 @@ class PdfController extends FPDF {
                 $array['Maggiorazione '.$count_maggiorazioni] = str_replace('€', EURO, $cMaggiorazione->getInfoMaggiorazione($m));               
                 $count_maggiorazioni++;
             }            
-            $array['Spesa'] = EURO.' '.$i->getSpesaInfisso();
-            $array['Copie infisso'] = $i->getNInfisso();            
+            $array['Listino'] = EURO.' '.$i->getSpesaInfisso();
+            $array['Numero Pezzi'] = $i->getNInfisso();            
             
             
             if($count % 2 == 0){
@@ -260,6 +362,7 @@ class PdfController extends FPDF {
                     //$this->Text(($x2-10), ($y2+25), $r.' '.$g.' '.$b);
                     $this->SetFillColor($r, $g, $b);
                     $this->Rect($x2, $y2, 50, 30, 'DF');
+                    $this->Text(($x2), ($y2+40), str_replace('-', ' ', $i->getColore()));
                 }
             }
             else if($i->getColore() == 'solo zincatura'){
@@ -269,21 +372,28 @@ class PdfController extends FPDF {
                 //micaceo
                 $urlColore = str_replace(' ','-',strtolower($i->getColore()));                
                 $this->Image($URL_IMG.'pdf/'.$urlColore.'.jpg', $x2, $y2, 50);
+                $this->Text(($x2), ($y2+40), str_replace('-', ' ', $i->getColore()));
             }
-            
+            $this->SetFont('Arial','B',14);
             if($i->getTipo() == 'Finestra'){
                 //stampo la larghezza
                 $this->Text(($x+40), ($y + 60), 'L: '.$i->getLunghezza().' mm');            
                 //stampo l'altezza
                 $this->Text(($x-15), ($y+25), 'H: '.$i->getAltezza().' mm');
+                $this->SetFont('Arial','',18);
+                $this->Text(($x+30), ($y + 70), 'MISURE FORO MURO');
             }
             else{
                 //stampo la larghezza
                 $this->Text(($x+40), ($y + 80), 'L: '.$i->getLunghezza().' mm');            
                 //stampo l'altezza
                 $this->Text(($x-15), ($y+35), 'H: '.$i->getAltezza().' mm');
+                $this->SetFont('Arial','',18);
+                $this->Text(($x+30), ($y + 90), 'MISURE FORO MURO');
             }
 
+            
+            
             
             $count++;
         }

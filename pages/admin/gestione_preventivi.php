@@ -17,9 +17,9 @@ if(isset($_POST['cancella-preventivo'])){
     $writer->listenerCancella();
 }
 
-if(isset($_POST['ordine'])){
-    $writer->listenerPreventivo();
-}
+
+ $writer->listenerPreventivo();
+
 
 
 ?>

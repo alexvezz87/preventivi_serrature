@@ -78,6 +78,7 @@ class PreventivoController {
     public function getPreventivi($parameters){
                 
         $array = $this->pDAO->getPreventivi($parameters);
+        
         if(count($array) == 0){
             return false;
         }
@@ -100,6 +101,12 @@ class PreventivoController {
             $p->setClienteTipo($item->cliente_tipo);
             $p->setClienteEmail($item->cliente_email);
             $p->setClienteCF($item->cliente_cf);
+            $p->setCodiceRivenditore($item->codice_rivenditore);
+            $p->setAgente($item->agente);
+            $p->setScontoRivenditore($item->sconto_rivenditore);
+            $p->setTrasporto($item->trasporto);
+            $p->setCommessa($item->commessa);
+            $p->setPdfOrdine($item->pdf_ordine);
             
             //ottengo gli infissi
             $array2 = $this->iDAO->getInfissi($p->getId());
@@ -140,6 +147,12 @@ class PreventivoController {
         $p->setClienteTipo($item->cliente_tipo);
         $p->setClienteEmail($item->cliente_email);
         $p->setClienteCF($item->cliente_cf);
+        $p->setCodiceRivenditore($item->codice_rivenditore);
+        $p->setAgente($item->agente);
+        $p->setScontoRivenditore($item->sconto_rivenditore);
+        $p->setTrasporto($item->trasporto);
+        $p->setCommessa($item->commessa);
+        $p->setPdfOrdine($item->pdf_ordine);
 
         //ottengo gli infissi
         $array2 = $this->iDAO->getInfissi($p->getId());
@@ -173,6 +186,10 @@ class PreventivoController {
         $p->setClienteTipo($item['clienteTipo']);
         $p->setClienteEmail($item['clienteEmail']);
         $p->setClienteCF($item['clienteCF']);
+        $p->setCodiceRivenditore($item['codiceRivenditore']);
+        $p->setAgente($item['agente']);
+        $p->setScontoRivenditore($item['scontoRivenditore']);
+        $p->setTrasporto($item['trasporto']);
         
         //gli ho passato un array di nomi di foto
         //NB. Non è un oggetto foto
@@ -321,6 +338,63 @@ class PreventivoController {
             _e($ex);
             return false;
         }        
+    }
+    
+    /**
+     * Funzione che crea un pdf preventivo in una conferma ordine e aggiorna il database con i campi nuovi (commessa e url_pdf_ordine)
+     * @global type $DIR_PDF
+     * @global type $URL_PDF
+     * @param type $idPreventivo
+     * @param type $commessa
+     * @return boolean
+     */
+    public function convertPDFtoOrdine($idPreventivo, $commessa){
+        //Da un id preventivo già esistente devo ri-creare un pdf con un campo ulteriore:
+        // - numero commessa
+        
+        global $DIR_PDF;
+        global $URL_PDF;
+        
+        //ottengo il preventivo
+        $p = new Preventivo();
+        $p = $this->getPreventivo($idPreventivo);   
+                      
+        $name = 'conferma-ordine-'.$commessa.'.pdf';
+        
+        try{
+            //creo la pagina
+            $this->pdfWriter->setPage();
+            
+            //intestazione          
+            $this->pdfWriter->createOrdineHeader($commessa);
+            
+            //corpo del preventivo
+            $this->pdfWriter->createBody($p, true);
+            
+            //stampo immagini se ce ne sono
+            $foto = $this->getFotoPreventivo($idPreventivo);
+            if($foto != null){
+                $this->pdfWriter->printFoto($foto);
+            }
+                       
+            //salvo il pdf
+            $this->pdfWriter->savePDF($DIR_PDF.$name);            
+            
+            //$result['url'] = $URL_PDF.$name;
+            //$result['dir'] = $DIR_PDF.$name;
+            
+            if($this->pDAO->updatePreventivoToOrdine($idPreventivo, $commessa, $URL_PDF.$name)){
+                //aggiornamento ottenuto
+                return true;
+            }
+            return false;
+        }
+        catch (Exception $ex){
+            _e($ex);
+            return false;
+        }        
+        
+       
     }
     
     /**

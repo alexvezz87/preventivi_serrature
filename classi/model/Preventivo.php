@@ -30,6 +30,12 @@ class Preventivo {
     private $clienteEmail;
     private $foto;
     private $nomeRivenditore;
+    private $codiceRivenditore;
+    private $agente;
+    private $scontoRivenditore;
+    private $trasporto;
+    private $commessa;
+    private $pdfOrdine;
         
     function __construct() {
         //costruttore vuoto
@@ -169,6 +175,54 @@ class Preventivo {
 
     function setNomeRivenditore($nomeRivenditore) {
         $this->nomeRivenditore = $nomeRivenditore;
+    }
+
+    function getCodiceRivenditore() {
+        return $this->codiceRivenditore;
+    }
+
+    function setCodiceRivenditore($codiceRivenditore) {
+        $this->codiceRivenditore = $codiceRivenditore;
+    }
+
+    function getAgente() {
+        return $this->agente;
+    }
+
+    function setAgente($agente) {
+        $this->agente = $agente;
+    }
+
+    function getScontoRivenditore() {
+        return $this->scontoRivenditore;
+    }
+
+    function setScontoRivenditore($scontoRivenditore) {
+        $this->scontoRivenditore = $scontoRivenditore;
+    }
+
+    function getTrasporto() {
+        return $this->trasporto;
+    }
+
+    function setTrasporto($trasporto) {
+        $this->trasporto = $trasporto;
+    }
+
+    function getCommessa() {
+        return $this->commessa;
+    }
+
+    function getPdfOrdine() {
+        return $this->pdfOrdine;
+    }
+
+    function setCommessa($commessa) {
+        $this->commessa = $commessa;
+    }
+
+    function setPdfOrdine($pdfOrdine) {
+        $this->pdfOrdine = $pdfOrdine;
     }
 
 

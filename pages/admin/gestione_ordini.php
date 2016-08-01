@@ -17,6 +17,8 @@ if(isset($_POST['cancella-preventivo'])){
     $writer->listenerCancella();
 }
 
+$writer->listenerPreventivo();
+
 
 ?>
 
@@ -27,7 +29,7 @@ if(isset($_POST['cancella-preventivo'])){
     <?php echo $writer->printOrdiniNonVisionati() ?>
 </div>
 <div class="fascia-titolo">
-    <h3>Ordini visionati</h3>
+    <h3>Ordini approvati</h3>
 </div>
 <div class="container-tabella">    
     <?php echo $writer->printOrdiniVisionati() ?>

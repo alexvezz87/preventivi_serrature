@@ -56,7 +56,7 @@ class GestionePreventivoView {
        
         $preventivi = $this->pController->getPreventivi($parameters);
         
-        $this->printTable($preventivi, 0);
+        $this->printTable($preventivi, 0, true);
         
     }
      
@@ -86,7 +86,7 @@ class GestionePreventivoView {
        
         $preventivi = $this->pController->getPreventivi($parameters);
         
-        $this->printTable($preventivi, 0);
+        $this->printTable($preventivi, 0, false);
         
     }
      
@@ -102,8 +102,9 @@ class GestionePreventivoView {
         
         $preventivi = $this->pController->getPreventivi($parameters);
         
+        //print_r($preventivi);
               
-        $this->printTable($preventivi, 1, false, true);
+        $this->printTable($preventivi, 1, false);
     }
     
     
@@ -117,7 +118,18 @@ class GestionePreventivoView {
     ?>
             <table class="table" >
                 <tr class="row-title">
+        <?php
+                if($visionato == 1 && $preventivo == false){
+    ?>
+                    <td>Commessa</td>
+    <?php
+                }
+                else{
+    ?>
                     <td>Codice</td>
+    <?php
+                }
+    ?>
                     <td>Data</td>
                     <td>Rivenditore/Agente</td>
                     <td>Nome</td>
@@ -135,7 +147,18 @@ class GestionePreventivoView {
                 
     ?>
                 <tr class="row-data">
+    <?php
+                if($visionato == 1 && $preventivo == false){
+    ?>
+                    <td><?php echo $p->getCommessa() ?></td>
+    <?php
+                }
+                else{
+    ?>                    
                     <td><?php echo $p->getId() ?></td>
+    <?php
+                }
+    ?>
                     <td><?php echo getTime($p->getData()) ?></td>
                     <td><?php echo $p->getNomeRivenditore() ?></td>                    
                     <td><?php echo $p->getClienteNome() ?></td>
@@ -144,6 +167,17 @@ class GestionePreventivoView {
                     <td>&euro; <?php echo $p->getSpesaTotale() ?></td>
                     <td>
     <?php
+                if($visionato == 1 && $preventivo == false){   
+                    //print_r($p);
+                    if($p->getPdfOrdine() != null && $p->getPdfOrdine() != ''){
+    ?>
+                        <a target="_blank" href="<?php echo $p->getPdfOrdine() ?>">
+                            <img alt="pdf" src="<?php echo $URL_IMG ?>ico_pdf.png" />
+                        </a>
+    <?php                    
+                    }
+                }
+                else{
                     if($p->getPdf() != null && $p->getPdf() != ''){
     ?>
                         <a target="_blank" href="<?php echo $p->getPdf() ?>">
@@ -151,6 +185,7 @@ class GestionePreventivoView {
                         </a>
     <?php                    
                     }
+                }
     ?>
                     </td>
                     <td>
@@ -175,17 +210,19 @@ class GestionePreventivoView {
                         <form action="<?php echo curPageURL(); ?>" method="POST" >
                              <input type="hidden" name="idPreventivo" value="<?php echo $p->getId() ?>" />
     <?php
-                if($visionato == 0){
+                if($visionato == 0 && $preventivo == true){
     ?>                  
                             <input type="submit" name="visionato" value="VISIONATO" />                    
     <?php
-                }else if($visionato == 1 && $preventivo == true){
+                }else if($visionato == 1 && $preventivo == true || $visionato == 0 && $preventivo == false){
     ?>
-                            <input type="submit" name="ordine" value="APPROVA ORDINE" />
+                                               
+                            <input type="text" name="commessa" value="" placeholder="NUMERO COMMESSA" />
+                            <input type="submit" name="approva-ordine" value="APPROVA ORDINE" />
+                           
     <?php
-                }else if($visionato == 1 && $pdfSchema == true){
-    ?>
-                            <input type="submit" name="pdfSchema" value="PDF SCHEMA" />
+                }else if($visionato == 1 && $pdfSchema == true){    ?>
+                            
     <?php
                 }
     ?>                  
@@ -220,8 +257,21 @@ class GestionePreventivoView {
     }
     
     public function listenerPreventivo(){
-        $idPreventivo = isset($_POST['idPreventivo']) ? stripslashes($_POST['idPreventivo']) : null;
-        $this->pController->setPreventivoToOrdine($idPreventivo);
+        if(isset($_POST['approva-ordine'])){
+            
+            
+            //ottengo idPreventivo e Commessa
+            $idPreventivo = isset($_POST['idPreventivo']) ? stripslashes($_POST['idPreventivo']) : null;
+            $commessa = isset($_POST['commessa']) ? stripslashes($_POST['commessa']) : null;
+            
+            //echo $idPreventivo.', '.$commessa;
+            //creo il pdf
+            $this->pController->convertPDFtoOrdine($idPreventivo, $commessa);
+            //lo sposto in ordine
+            $this->pController->setPreventivoToOrdine($idPreventivo);
+            //lo visiono
+            $this->pController->setPreventivoVisionato($idPreventivo);
+        }
     }
     
 }

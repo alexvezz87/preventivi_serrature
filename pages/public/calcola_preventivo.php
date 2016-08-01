@@ -19,25 +19,53 @@ $current_user = wp_get_current_user();
         <div class="intestazione">
             
             <div class="rivenditore field">
-                <?php if(!current_user_can('edit_plugins')){ ?>
-                    <input disabled type="text" name="rivenditore-agente" value="<?php echo $current_user->display_name ?>" />
+                <?php if(!current_user_can('edit_plugins')){ //se è un rivenditore ?>
+                    <input disabled type="text" name="rivenditore" value="<?php echo $current_user->display_name ?>" />
                    
-                <?php } else { ?>
-                    <input name="rivenditore-agente" placeholder="RIVENDITORE/AGENTE" type="text" value="" />
-                    
+                <?php } else { //se è un admin ?>
+                    <input name="rivenditore" placeholder="RIVENDITORE" type="text" value="" />
                 <?php } ?>
+                    
+                    
                     <input type="hidden" name="id-user" value="<?php echo $current_user->ID ?>" />
             </div>
+            <?php if(current_user_can('edit_plugins')){ ?>
+                <div class="codice-rivenditore field">
+                    <input name="codice-rivenditore" placeholder="CODICE" type="text" value="" />
+                </div>
+            <?php } ?>
+                
+            
             <div class="data-odierna field">                
                 <input type="text" value="<?php echo date('d/m/Y') ?>" disabled />
                 <input type="hidden" name="data-odierna" value="<?php echo date('d/m/Y') ?>" />
             </div>
+            <?php if(current_user_can('edit_plugins')){ ?>
+                <div class="agente field">
+                    <input name="agente" placeholder="AGENTE" type="text" value="" />
+                </div>
+            
+            <?php } ?>
+            
+            <?php if(current_user_can('edit_plugins')){ ?>
+                <div class="sconto field">
+                    <input name="sconto-rivenditore" placeholder="SCONTO" type="text" value="" />
+                </div>            
+            <?php } ?>
+            
+            <?php if(current_user_can('edit_plugins')){ ?>
+                <div class="trasporto field">
+                    <input name="trasporto" placeholder="TRASPORTO" type="text" value="" />
+                </div>            
+            <?php } ?>
+            
+            
             <div class="info-cliente field">
-                <input type="text" placeholder="CLIENTE/RAGIONE SOCIALE" value="" name="nome-cliente" />
+                <input type="text" placeholder="RIFERIMENTO" value="" name="nome-cliente" />
                 
                 <div class="tipo-cliente radio">
                     <input type="radio" name="tipo-cliente" value="privato" checked><label>PRIVATO</label>
-                    <input type="radio" name="tipo-cliente" value="societa"><label>SOCIET&Agrave;</label>
+                    <input type="radio" name="tipo-cliente" value="rivenditore"><label>RIVENDITORE</label>
                     <div class="clear"></div>
                 </div>
                 
@@ -49,8 +77,8 @@ $current_user = wp_get_current_user();
             </div>
             <div class="tipo radio clear">                           
                 <input type="radio" name="tipo" value="0" checked /><label>PREVENTIVO</label>
-                <?php if(current_user_can('agente') || current_user_can( 'rivenditore') || current_user_can( 'administrator')){ ?>
-                    <input type="radio" name="tipo" value="1" /><label>ORDINE</label>
+                <?php if(current_user_can('agente') || current_user_can( 'rivenditore') || current_user_can( 'edit_plugins')){ ?>
+                    <input type="radio" name="tipo" value="1" /><label>CONFERMA ORDINE</label>
                 <?php } ?>
             </div>
             <div class="clear"></div>

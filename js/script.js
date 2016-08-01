@@ -1170,7 +1170,11 @@ jQuery(document).ready(function($){
             /*
             * Quando viene inviato un preventivo devo effettuare un controllo dei dati compilati:
             * 1. Data odierna
-            * 2. Nome rivenditore/agente
+            * 2. Nome rivenditore
+            * 2a. Codice rivenditore
+            * 2b. Nome agente
+            * 2c. Sconto rivenditore
+            * 2d. Trasporto
             * 3. Nome cliente
             * 4. Via cliente
             * 5. Telefono cliente
@@ -1205,8 +1209,28 @@ jQuery(document).ready(function($){
             //1. Data odierna
             var preventivo = new Object();
             preventivo.data = $('input[name=data-odierna]').val();
-            //2. Nome rivenditore/agente
-            preventivo.rivenditore = $('input[name=rivenditore-agente]').val();
+            //2. Nome rivenditore
+            preventivo.rivenditore = $('input[name=rivenditore]').val();
+            //2a. Codice rivenditore
+            preventivo.codiceRivenditore = '';
+            if($('input[name=codice-rivenditore]').size() > 0){
+                preventivo.codiceRivenditore = $('input[name=codice-rivenditore]').val();
+            }
+            //2b. Nome Agente
+            preventivo.agente = '';
+            if($('input[name=agente]').size() > 0){
+                preventivo.agente = $('input[name=agente]').val();
+            }   
+            //2c. Sconto rivenditore
+            preventivo.scontoRivenditore = '';
+            if($('input[name=sconto-rivenditore]').size() > 0){
+                preventivo.scontoRivenditore = $('input[name=sconto-rivenditore]').val();
+            }  
+            //2d. Trasporto
+            preventivo.trasporto = '';
+            if($('input[name=trasporto]').size() > 0){
+                preventivo.trasporto = $('input[name=trasporto]').val();
+            }  
             preventivo.idUser = $('input[name=id-user]').val();
             //3. Nome cliente
             preventivo.clienteNome = $('input[name=nome-cliente]').val();
@@ -1462,10 +1486,12 @@ jQuery(document).ready(function($){
             mancanti[2] = 'Indicare il nome del cliente';
         }
         if(preventivo.clienteVia === ''){
-            mancanti[3] = 'Indicare l\'indirizzo del cliente';
+            //rendo non obbligatorio il campo indirizzo
+            //mancanti[3] = 'Indicare l\'indirizzo del cliente';
         }
         if(preventivo.clienteTel === ''){
-            mancanti[4]= 'Indicare il recapito telefonico del cliente';
+            //rendo non obbligatorio il campo telefono
+            //mancanti[4]= 'Indicare il recapito telefonico del cliente';
         }
         
         if(typeof(preventivo.tipo) === 'undefined'){
@@ -1534,9 +1560,7 @@ jQuery(document).ready(function($){
            
             
         }
-        
-        
-        
+                
         if(mancanti.length > 0){
             return mancanti;
         }

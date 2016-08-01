@@ -65,9 +65,13 @@ class PreventivoDAO {
                         'tipo' => $p->getTipo(),
                         'cliente_tipo' => $p->getClienteTipo(),
                         'cliente_email' => $p->getClienteEmail(),
-                        'cliente_cf' => $p->getClienteCF()
+                        'cliente_cf' => $p->getClienteCF(),
+                        'codice_rivenditore' => $p->getCodiceRivenditore(),
+                        'agente' => $p->getAgente(),
+                        'sconto_rivenditore' => $p->getScontoRivenditore(),
+                        'trasporto' => $p->getTrasporto()
                     ),
-                    array('%s', '%d', '%s', '%s', '%s', '%s', '%f', '%d', '%s', '%d', '%s', '%s', '%s')
+                    array('%s', '%d', '%s', '%s', '%s', '%s', '%f', '%d', '%s', '%d', '%s', '%s', '%s', '%s', '%s', '%f', '%f')
                 );
             //restituisco l'id del record di preventivo inserito
             return $this->wpdb->insert_id;  
@@ -148,6 +152,32 @@ class PreventivoDAO {
                     array('spesa_totale' => $spesa),
                     array('ID' => $id),
                     array('%f'),
+                    array('%d')
+                );
+            return true;
+        } catch (Exception $ex) {
+            _e($ex);
+            return false;
+        }
+    }
+    
+    /**
+     * La funzione aggiorna i campi di un preventivo in modo da renderlo ordine
+     * @param type $id
+     * @param type $commessa
+     * @param type $pdfOrdine
+     * @return boolean
+     */
+    public function updatePreventivoToOrdine($id, $commessa, $pdfOrdine){
+        try{
+            $this->wpdb->update(
+                    $this->table,
+                    array(
+                        'commessa' => $commessa,
+                        'pdf_ordine' => $pdfOrdine
+                    ),
+                    array('ID' => $id),
+                    array('%s', '%s'),
                     array('%d')
                 );
             return true;

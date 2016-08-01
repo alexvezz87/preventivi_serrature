@@ -41,7 +41,7 @@ class CalcolaPreventivoView {
             <div data-order="5" class="selezione-apertura container-order hidden">
                 <p class="step">5. Seleziona il tipo di apertura</p>
                 
-                <div class="box box-lungo interna order" data-type="apertura" data-name="interna"><p>Interna (10% in più da listino)</p></div>
+                <div class="box box-lungo interna order" data-type="apertura" data-name="interna"><p>Interna (10% in più da listino)</p><span>telaio e anta in tubolare 40x30 mm</span></div>
                 <div class="separator"></div>
                 <div class="box box-lungo esterna order" data-type="apertura" data-name="esterna"><p>Esterna</p></div>
                 <div class="separator"></div>
@@ -93,7 +93,7 @@ class CalcolaPreventivoView {
                 <div class="box serratura-cilindro order no-fissa" data-type="serratura" data-name="cilindro">
                     <p>
                         Solo cilindro
-                        <span>tipo cilindro europeo</span>
+                        <span>tipo cilindro europeo, telaio e anta in tubolare 40x30 mm</span>
                     </p>
                 </div>
                 <div class="clear last"></div>
@@ -193,7 +193,7 @@ class CalcolaPreventivoView {
                     <div class="clear"></div>
                 </div>
                 <div class="tipo-verniciatura tipo-verniciatura-micaceo">
-                    <p class="descrizione"><span class="subtitle">Verniciatura</span></p>
+                    <p class="descrizione"><span class="subtitle">Trattamento</span></p>
                     <input type="radio" name="verniciatura-micaceo-1" value="cataforesi" checked /><label>Cataforesi (compresa nel prezzo)</label>
                     <div class="clear"></div>
                     <input type="radio" name="verniciatura-micaceo-1" value="zincatura" /><label>Zincatura (15% in più da listino)</label>
@@ -219,7 +219,7 @@ class CalcolaPreventivoView {
                     <p>Nessuna</p>
                 </div>
                 <div class="box normale order no-fissa" data-type="cerniera" data-name="normale">
-                    <p>Normale</p>
+                    <p>Normale<br><span style="font-size:0.7em">senza collo</span></p>
                 </div>
                 <div class="box collo-standard order no-fissa" data-type="cerniera" data-name="collo-standard-3cm">
                     <p>Collo standard 3 cm</p>
