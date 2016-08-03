@@ -101,6 +101,7 @@ function add_calcola_preventivo(){
     }
     else{
         echo '<p>Per effettuare un preventivo devi essere registrato al sito!</p>';
+        wp_login_form();
     }
 }
 

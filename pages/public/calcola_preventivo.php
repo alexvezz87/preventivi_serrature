@@ -97,7 +97,7 @@ $current_user = wp_get_current_user();
         <div class="clear"></div>
         <hr>
         <div class="upload-immagini">
-            <p class="step">Aggiungi eventuali foto (inserisci al massimo 3 foto)</p>
+            <p class="step">Aggiungi eventuali foto (inserisci al massimo 5 foto)</p>
             <input id="fileupload" type="file" name="files[]" data-url="<?php echo plugins_url().'/preventivi_serrature/upload_index.php' ?>" multiple>
             
             <div class="clear" id="description"></div>
@@ -107,6 +107,8 @@ $current_user = wp_get_current_user();
             <input class="input-immagine" data-img="1" type="hidden" name="immagine-01" value="" />
             <input class="input-immagine" data-img="2" type="hidden" name="immagine-02" value="" />
             <input class="input-immagine" data-img="3" type="hidden" name="immagine-03" value="" />
+            <input class="input-immagine" data-img="4" type="hidden" name="immagine-04" value="" />
+            <input class="input-immagine" data-img="5" type="hidden" name="immagine-05" value="" />
         </div>
         <div class="note clear">
             <p class="step">Note</p>
