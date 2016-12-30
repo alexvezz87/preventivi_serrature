@@ -19,33 +19,8 @@ License: GPLv2 or later
 require_once 'install_db.php';
 require_once 'classi/classes.php';
 require_once 'functions.php';
+require_once 'variabili_globali.php';
 
-//definizione dei percorsi da utilizzare
-//NB. bisogna cambiare il senso degli slash quando si passa da locale a web server
-global $DIR_PDF;
-global $URL_PDF;
-global $URL_IMG;
-global $URL_IMG_PREVENTIVI;
-global $URL_IMG_PREVENTIVI_THUMB;
-global $DIR_IMG_PREVENTIVI; 
-global $DIR_IMG_PREVENTIVI_THUMB;
-global $DIR_TEMP_IMG_PREVENTIVI;
-global $DIR_TEMP_IMG_PREVENTIVI_THUMB;
-global $SENT_EMAIL;
-
-$DIR_PDF = plugin_dir_path(__FILE__).'\\preventivi_pdf\\';
-$DIR_IMG_PREVENTIVI = plugin_dir_path(__FILE__).'\\preventivi_immagini\\';
-$DIR_IMG_PREVENTIVI_THUMB = $DIR_IMG_PREVENTIVI.'thumbnail\\';
-$DIR_TEMP_IMG_PREVENTIVI = plugin_dir_path(__FILE__).'\\files\\';
-$DIR_TEMP_IMG_PREVENTIVI_THUMB = $DIR_TEMP_IMG_PREVENTIVI.'thumbnail\\';
-
-
-$URL_PDF = plugins_url().'/preventivi_serrature/preventivi_pdf/';
-$URL_IMG = plugins_url().'/preventivi_serrature/images/';
-$URL_IMG_PREVENTIVI = plugins_url().'/preventivi_serrature/preventivi_immagini/';
-$URL_IMG_PREVENTIVI_THUMB = $URL_IMG_PREVENTIVI.'thumbnail/';
-
-$SENT_EMAIL = 'info@alexsoluzioniweb.it';
 
 //indico la cartella dove è contenuto il plugin
 require_once (dirname(__FILE__) . '/preventivi_serrature.php');
@@ -70,6 +45,8 @@ function add_admin_menu(){
     add_submenu_page('gestione_preventivi', 'Gestione Ordini', 'Gestione ordini', 'edit_plugins', 'gestione_ordini', 'add_gestione_ordini');
     add_submenu_page('gestione_preventivi', 'Gestione Prezzi', 'Gestione prezzi', 'edit_plugins', 'gestione_prezzi', 'add_gestione_prezzi');
     add_submenu_page('gestione_preventivi', 'Maggiorazioni', 'Maggiorazioni', 'edit_plugins', 'gestione_maggiorazioni', 'add_gestione_maggiorazioni');
+    add_submenu_page('gestione_preventivi', 'Anagrafica', 'Anagrafica', 'edit_plugins', 'gestione_anagrafica', 'add_gestione_anagrafica');
+    add_submenu_page('', 'Pagina dettaglio',  'Pagina dettaglio', 'edit_plugins', 'pagina_dettaglio', 'add_pagina_dettaglio');
 }
 
 
@@ -87,6 +64,14 @@ function add_gestione_prezzi(){
 
 function add_gestione_maggiorazioni(){
     include 'pages/admin/gestione_maggiorazioni.php';
+}
+
+function add_gestione_anagrafica(){
+    include 'pages/admin/gestione_anagrafica.php';
+}
+
+function add_pagina_dettaglio(){
+    include 'pages/admin/anagrafica/pagina_dettaglio.php';
 }
 
 //registro il menu
@@ -116,7 +101,10 @@ function register_ps_style(){
 
 function register_admin_style() {
     wp_register_style('admin-style', plugins_url('preventivi_serrature/css/admin-style.css') );
+    wp_register_style('admin-bootstrap-style', plugins_url('preventivi_serrature/css/bootstrap.min.css') );
+    
     wp_enqueue_style('admin-style');
+    wp_enqueue_style('admin-bootstrap-style');
 }
 
 
@@ -135,8 +123,14 @@ function register_js_script(){
      wp_enqueue_script('widget');
      wp_enqueue_script('transport');
      wp_enqueue_script('file-upload');  
-
 } 
 
+//aggiungo gli script lato amministratore
+function register_admin_js_script(){
+    wp_register_script('bootstrap-js', plugins_url('preventivi_serrature/js/bootstrap.min.js'), array('jquery'), '1.0', false);   
+    wp_enqueue_script('bootstrap-js');   
+}
+
+add_action( 'admin_enqueue_scripts', 'register_admin_js_script' );
 
 ?>
